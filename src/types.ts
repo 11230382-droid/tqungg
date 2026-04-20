@@ -19,6 +19,17 @@ export interface User {
   itemCount: string;
   totalValue: string;
   isVerified?: boolean;
+  xp?: number;
+}
+
+export interface Seller {
+  id: string;
+  name: string;
+  avatar: string;
+  rating: number;
+  reviewCount: number;
+  location: string;
+  specialty: string;
 }
 
 export interface Post {

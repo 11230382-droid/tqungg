@@ -1,4 +1,4 @@
-import { Post, NewsArticle, Auction, Category, Asset, User, Badge, Challenge } from './types.ts';
+import { Post, NewsArticle, Auction, Category, Asset, User, Badge, Challenge, Seller } from './types.ts';
 
 export const currentUser: User = {
   id: 'u1',
@@ -11,8 +11,73 @@ export const currentUser: User = {
   following: '842',
   itemCount: '1,248',
   totalValue: '$342.5k',
-  isVerified: true
+  isVerified: true,
+  xp: 8450
 };
+
+export const sellers: Seller[] = [
+  {
+    id: 's1',
+    name: 'Neo Toy Shop',
+    avatar: 'https://picsum.photos/seed/shop1/100/100',
+    rating: 4.9,
+    reviewCount: 1240,
+    location: 'Tokyo, JP',
+    specialty: 'Rare Figures'
+  },
+  {
+    id: 's2',
+    name: 'Diecast Haven',
+    avatar: 'https://picsum.photos/seed/shop2/100/100',
+    rating: 4.8,
+    reviewCount: 850,
+    location: 'Los Angeles, US',
+    specialty: 'Vintage Cars'
+  },
+  {
+    id: 's3',
+    name: 'Card Kingdom',
+    avatar: 'https://picsum.photos/seed/shop3/100/100',
+    rating: 4.7,
+    reviewCount: 3100,
+    location: 'Seattle, US',
+    specialty: 'Trading Cards'
+  },
+  {
+    id: 's4',
+    name: 'Mecha Central',
+    avatar: 'https://picsum.photos/seed/shop4/100/100',
+    rating: 4.6,
+    reviewCount: 520,
+    location: 'Seoul, KR',
+    specialty: 'Gunpla'
+  }
+];
+
+export const topCollectors: User[] = [
+  { ...currentUser },
+  {
+    id: 'u2',
+    name: 'Neo_Collector',
+    username: 'Neo_Collector',
+    avatar: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCRccu69zn53Ggc_sLFKTYnF3ZpYvxmPwLIHhfmOLPxLOCZsJ1Kp8araLPTuy6DoAeIqOrIjVxdJRVINz4HbNnOYgBR8ogyRyYpeF0fEWYfBzJZn8FRKtH4ty2v8GJtiRl-_DmQTlzrEnTbVn_s6v6iLG-qpIQ-oLoeb3jtepSZRq4NptHD4psMHItZeP8N5K0LJoAsgWL3E_xoq0KjyXi0IRd01bhypEBiqkfJ9DNQAXq5daQNZmaMDF_77vNGLr1qxwFtBf4tvy0',
+    followers: '2.5k', following: '150', itemCount: '42', totalValue: '$12k', xp: 9200
+  },
+  {
+    id: 'u4',
+    name: 'PokeMaster_99',
+    username: 'PokeMaster_99',
+    avatar: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBSe7FtMVg71eyBu6tiuSh_XZ3qLXfSpRY0hqYV_YQJygR6AZEF932KxTSdH1TX9xe1hOsRI1c6FAL8DL09ErR6snmsS_m9wy_JUeiWO5GlPOjr9BNGJybeHsTrQANcNAJDhGeqBoc8fmIcmpOKI1-SBebuFp0NWYKI2Cn3bh84iMuq2bHfMZ2wC8EkOo4hwaSX3gGzhmpvEY2dgkUIRXD2hyJna_tvHQEwcZKvURvGHhWoWI56cIeOycVcquOviKld4JptJW4wg5o',
+    followers: '5k', following: '200', itemCount: '3000', totalValue: '$50k', xp: 7800
+  },
+  {
+    id: 'u5',
+    name: 'Luna_Vibe',
+    username: 'Luna_Vibe',
+    avatar: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCTTitKG60xEj1vn3OCTSYU4g0sVeGLArS7-Iw9Sw9aU8SJV-WKFSZqpIedOpLsPPyM3bhTtXbwQ9pxLv5OIJYthkVLxl-egtDesVaHBmTn06l-9PqgfQPD33sff6j9Cn-8wvB72BVW8hrsNGP4ZOfEctGcf0GB_KNq4wNFi-kOI8aFgLFzcxh5DxO48R0IsNS8QwTeqI5FfgDuwNMrKGYIY6zDUq6oSs4JAbjDWcW8h37msGyeGH_Duqexr0G1T4kWcnEccNVgpV8',
+    followers: '10k', following: '500', itemCount: '500', totalValue: '$25k', xp: 6500
+  }
+];
 
 export const posts: Post[] = [
   {

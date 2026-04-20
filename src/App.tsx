@@ -4,7 +4,7 @@
  */
 
 import { useState, useEffect } from 'react';
-import { Screen, Post, Asset, NewsArticle } from './types';
+import { Screen, Post, Asset, NewsArticle, User, Seller } from './types';
 import TopAppBar from './components/TopAppBar';
 import BottomNavBar from './components/BottomNavBar';
 import FeedScreen from './screens/FeedScreen';
@@ -18,15 +18,18 @@ import ProductDetailScreen from './screens/ProductDetailScreen';
 import ArticleDetailScreen from './screens/ArticleDetailScreen';
 import WishlistScreen from './screens/WishlistScreen';
 import { AnimatePresence, motion } from 'motion/react';
-import { posts as mockPosts, currentUser, articles as mockArticles, allAssets } from './mockData';
+import { posts as mockPosts, currentUser, articles as mockArticles, allAssets, sellers as mockSellers, topCollectors as mockCollectors } from './mockData';
 
 export default function App() {
   const [activeScreen, setActiveScreen] = useState<Screen>('feed');
   const [posts, setPosts] = useState<Post[]>([]);
+  const [sellers, setSellers] = useState<Seller[]>([]);
+  const [collectors, setCollectors] = useState<User[]>([]);
   const [articles, setArticles] = useState<NewsArticle[]>([]);
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
   const [selectedProduct, setSelectedProduct] = useState<Asset | null>(null);
   const [selectedArticle, setSelectedArticle] = useState<NewsArticle | null>(null);
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [previousScreen, setPreviousScreen] = useState<Screen>('feed');
   const [wishlist, setWishlist] = useState<{ posts: string[], products: string[] }>({ posts: [], products: [] });
 
@@ -34,8 +37,10 @@ export default function App() {
   useEffect(() => {
     setPosts(mockPosts);
     setArticles(mockArticles);
+    setSellers(mockSellers);
+    setCollectors(mockCollectors);
     
-    // Load wishlist from local storage if available (mocking persistence)
+    // Load wishlist from local storage if available
     const savedWishlist = localStorage.getItem('collector_wishlist');
     if (savedWishlist) {
       setWishlist(JSON.parse(savedWishlist));
@@ -47,6 +52,18 @@ export default function App() {
     localStorage.setItem('collector_wishlist', JSON.stringify(wishlist));
   }, [wishlist]);
 
+  // XP logic: each product in wishlist increases current user XP in collectors list
+  useEffect(() => {
+    setCollectors(prev => prev.map(c => {
+      if (c.id === currentUser.id) {
+        const baseXP = 8000;
+        const wishlistXP = wishlist.products.length * 500;
+        return { ...c, xp: baseXP + wishlistXP };
+      }
+      return c;
+    }));
+  }, [wishlist.products.length]);
+
   const handlePostClick = (post: Post) => {
     setPreviousScreen(activeScreen);
     setSelectedPost(post);
@@ -57,6 +74,30 @@ export default function App() {
     setPreviousScreen(activeScreen);
     setSelectedProduct(product);
     setActiveScreen('product-detail');
+  };
+
+  const handleCollectorClick = (user: User) => {
+    setPreviousScreen(activeScreen);
+    setSelectedUser(user);
+    setActiveScreen('profile');
+  };
+
+  const handleSellerClick = (seller: Seller) => {
+    setPreviousScreen(activeScreen);
+    setSelectedUser({
+      id: seller.id,
+      name: seller.name,
+      username: seller.name.toLowerCase().replace(/\s/g, '_'),
+      avatar: seller.avatar,
+      role: seller.specialty,
+      location: seller.location,
+      followers: '5k',
+      following: '120',
+      itemCount: '450',
+      totalValue: '$84k',
+      xp: seller.rating * 1000
+    });
+    setActiveScreen('profile');
   };
 
   const handleArticleClick = (article: NewsArticle) => {
@@ -98,7 +139,6 @@ export default function App() {
       return p;
     }));
     
-    // Update selected post if it matches
     if (selectedPost?.id === postId) {
       setSelectedPost(prev => {
         if (!prev) return null;
@@ -142,18 +182,20 @@ export default function App() {
     setActiveScreen(previousScreen);
   };
 
-  // Derived data for Wishlist Screen
   const wishlistedPosts = posts.filter(p => wishlist.posts.includes(p.id));
   const wishlistedProducts = allAssets.filter(p => wishlist.products.includes(p.id));
 
-  // Simple screen router
   const renderScreen = () => {
     switch (activeScreen) {
       case 'feed':
         return (
           <FeedScreen 
             posts={posts} 
+            collectors={collectors}
+            sellers={sellers}
             onPostClick={handlePostClick} 
+            onCollectorClick={handleCollectorClick}
+            onSellerClick={handleSellerClick}
             onWishlistToggle={togglePostWishlist}
             wishlist={wishlist.posts}
           />
@@ -167,6 +209,7 @@ export default function App() {
       case 'profile':
         return (
           <ProfileScreen 
+            user={selectedUser || currentUser}
             onProductClick={handleProductClick} 
             onPostClick={handlePostClick}
             wishlist={wishlist} 
@@ -201,7 +244,11 @@ export default function App() {
         ) : (
           <FeedScreen 
             posts={posts} 
+            collectors={collectors}
+            sellers={sellers}
             onPostClick={handlePostClick} 
+            onCollectorClick={handleCollectorClick}
+            onSellerClick={handleSellerClick}
             onWishlistToggle={togglePostWishlist}
             wishlist={wishlist.posts}
           />
@@ -215,6 +262,7 @@ export default function App() {
           />
         ) : (
           <ProfileScreen 
+            user={currentUser}
             onProductClick={handleProductClick} 
             onPostClick={handlePostClick}
             wishlist={wishlist} 
@@ -230,7 +278,14 @@ export default function App() {
           />
         ) : <NewsScreen onArticleClick={handleArticleClick} />;
       default:
-        return <FeedScreen posts={posts} onPostClick={handlePostClick} />;
+        return <FeedScreen 
+          posts={posts} 
+          collectors={collectors}
+          sellers={sellers}
+          onPostClick={handlePostClick} 
+          onCollectorClick={handleCollectorClick}
+          onSellerClick={handleSellerClick}
+        />;
     }
   };
 
@@ -266,7 +321,10 @@ export default function App() {
       {!isDetailView && (
         <BottomNavBar 
           activeScreen={activeScreen} 
-          onScreenChange={(screen) => setActiveScreen(screen)} 
+          onScreenChange={(screen) => {
+            setSelectedUser(null);
+            setActiveScreen(screen);
+          }} 
         />
       )}
     </div>

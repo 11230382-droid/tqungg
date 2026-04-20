@@ -7,9 +7,10 @@ import { Verified, Grid, List, ArrowRight, Box, Plus, Bookmark, Image } from 'lu
 import { currentUser } from '../mockData';
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Asset, Post } from '../types';
+import { Asset, Post, User } from '../types';
 
 interface ProfileScreenProps {
+  user?: User;
   onProductClick: (product: Asset) => void;
   onPostClick: (post: Post) => void;
   wishlist: { posts: string[], products: string[] };
@@ -17,9 +18,15 @@ interface ProfileScreenProps {
   allAssets: Asset[];
 }
 
-export default function ProfileScreen({ onProductClick, onPostClick, wishlist, allPosts, allAssets }: ProfileScreenProps) {
+export default function ProfileScreen({ user = currentUser, onProductClick, onPostClick, wishlist, allPosts, allAssets }: ProfileScreenProps) {
   const [activeTab, setActiveTab] = useState<'collection' | 'wishlist'>('collection');
-  const collectionItems = allAssets.filter(asset => asset.id !== 'a2'); 
+  
+  // Custom collection logic: users other than current might have different items, 
+  // but for the mock we'll just show all assets or a subset.
+  const isMe = user.id === currentUser.id;
+  const collectionItems = isMe 
+    ? allAssets.filter(asset => asset.id !== 'a2')
+    : allAssets.slice(0, 2); // Mock some items for others
   
   const wishlistedPosts = allPosts.filter(p => wishlist.posts.includes(p.id));
   const wishlistedProducts = allAssets.filter(p => wishlist.products.includes(p.id));
@@ -31,33 +38,41 @@ export default function ProfileScreen({ onProductClick, onPostClick, wishlist, a
         <div className="relative group">
           <div className="w-28 h-28 rounded-full border-2 border-zinc-100 dark:border-zinc-800 overflow-hidden shadow-sm">
             <img 
-              src={currentUser.avatar} 
-              alt={currentUser.name} 
+              src={user.avatar} 
+              alt={user.name} 
               className="w-full h-full object-cover"
               referrerPolicy="no-referrer"
             />
           </div>
-          {currentUser.isVerified && (
+          {user.isVerified && (
             <div className="absolute bottom-0 right-0 bg-zinc-900 dark:bg-zinc-50 w-8 h-8 rounded-full border-4 border-white dark:border-zinc-950 flex items-center justify-center text-white dark:text-zinc-900 shadow-lg">
               <Verified size={14} fill="currentColor" fillOpacity={0.2} />
             </div>
           )}
         </div>
         <div className="mt-4 text-center">
-          <h1 className="text-2xl font-extrabold tracking-tight text-zinc-900 dark:text-zinc-50">{currentUser.name}</h1>
-          <p className="text-zinc-500 text-sm font-medium mt-1 uppercase tracking-widest leading-none">{currentUser.role} • {currentUser.location}</p>
-          <p className="text-zinc-400 text-xs mt-3 max-w-xs font-medium leading-relaxed">
-            Curating rare die-cast and high-fidelity figurines since 2012. Always looking for the next grail piece.
+          <h1 className="text-2xl font-extrabold tracking-tight text-zinc-900 dark:text-zinc-50">{user.name}</h1>
+          <p className="text-zinc-500 text-sm font-medium mt-1 uppercase tracking-widest leading-none">{user.role || 'Collector'} • {user.location || 'Unknown'}</p>
+          {user.xp && (
+            <div className="mt-3 inline-flex items-center gap-2 px-3 py-1 bg-zinc-100 dark:bg-zinc-800 rounded-full">
+              <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
+              <span className="text-[10px] font-black uppercase tracking-widest text-zinc-900 dark:text-zinc-50">{user.xp.toLocaleString()} XP</span>
+            </div>
+          )}
+          <p className="text-zinc-400 text-xs mt-4 max-w-xs font-medium leading-relaxed">
+            {isMe 
+              ? "Curating rare die-cast and high-fidelity figurines since 2012. Always looking for the next grail piece."
+              : `Passionate ${user.role || 'collector'} specializing in unique finds.`}
           </p>
         </div>
 
         {/* Stats Grid */}
         <div className="grid grid-cols-4 gap-4 w-full mt-8 py-6 border-y border-zinc-100 dark:border-zinc-800">
           {[
-            { label: 'Followers', value: currentUser.followers },
-            { label: 'Following', value: currentUser.following },
-            { label: 'Items', value: currentUser.itemCount },
-            { label: 'Value', value: currentUser.totalValue }
+            { label: 'Followers', value: user.followers },
+            { label: 'Following', value: user.following },
+            { label: 'Items', value: user.itemCount },
+            { label: 'Value', value: user.totalValue }
           ].map(stat => (
             <div key={stat.label} className="text-center">
               <p className="text-lg font-bold text-zinc-900 dark:text-zinc-50">{stat.value}</p>
@@ -66,9 +81,15 @@ export default function ProfileScreen({ onProductClick, onPostClick, wishlist, a
           ))}
         </div>
 
-        <button className="mt-8 w-full py-4 bg-zinc-900 dark:bg-zinc-50 text-white dark:text-zinc-900 font-bold rounded-xl active:scale-[0.98] transition-all text-sm uppercase tracking-widest">
-          Edit Profile
-        </button>
+        {isMe ? (
+          <button className="mt-8 w-full py-4 bg-zinc-900 dark:bg-zinc-50 text-white dark:text-zinc-900 font-bold rounded-xl active:scale-[0.98] transition-all text-sm uppercase tracking-widest">
+            Edit Profile
+          </button>
+        ) : (
+          <button className="mt-8 w-full py-4 bg-zinc-900 dark:bg-zinc-50 text-white dark:text-zinc-900 font-bold rounded-xl active:scale-[0.98] transition-all text-sm uppercase tracking-widest">
+            Follow
+          </button>
+        )}
       </section>
 
       {/* Recent Scans */}

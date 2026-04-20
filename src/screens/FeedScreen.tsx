@@ -5,17 +5,31 @@
 
 import React from 'react';
 import { MoreHorizontal, Heart, MessageCircle, Share2, Plus, Bookmark } from 'lucide-react';
-import { Post } from '../types';
+import { Post, User, Seller } from '../types';
 import { motion } from 'motion/react';
+import RankingSection from '../components/RankingSection';
 
 interface FeedScreenProps {
   posts: Post[];
+  collectors: User[];
+  sellers: Seller[];
   onPostClick: (post: Post) => void;
+  onCollectorClick: (user: User) => void;
+  onSellerClick: (seller: Seller) => void;
   onWishlistToggle?: (postId: string) => void;
   wishlist?: string[];
 }
 
-export default function FeedScreen({ posts, onPostClick, onWishlistToggle, wishlist = [] }: FeedScreenProps) {
+export default function FeedScreen({ 
+  posts, 
+  collectors, 
+  sellers, 
+  onPostClick, 
+  onCollectorClick, 
+  onSellerClick,
+  onWishlistToggle, 
+  wishlist = [] 
+}: FeedScreenProps) {
   return (
     <div className="pt-20 px-4 md:px-6 max-w-5xl mx-auto pb-32">
       <section className="mb-8">
@@ -55,7 +69,7 @@ export default function FeedScreen({ posts, onPostClick, onWishlistToggle, wishl
         </div>
       </section>
 
-      <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 mb-10">
         {posts.map((post, index) => (
           <PostCard 
             key={post.id} 
@@ -67,6 +81,14 @@ export default function FeedScreen({ posts, onPostClick, onWishlistToggle, wishl
           />
         ))}
       </div>
+
+      {/* Ranking Section */}
+      <RankingSection 
+        collectors={collectors} 
+        sellers={sellers} 
+        onCollectorClick={onCollectorClick}
+        onSellerClick={onSellerClick}
+      />
 
       <button className="fixed right-6 bottom-28 w-14 h-14 bg-zinc-900 dark:bg-zinc-50 text-white dark:text-zinc-900 rounded-full shadow-2xl flex items-center justify-center active:scale-90 transition-transform z-40">
         <Plus size={28} />
