@@ -3,10 +3,15 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { NewsArticle } from '../types';
 import { articles, auctions } from '../mockData';
 import { motion } from 'motion/react';
 
-export default function NewsScreen() {
+interface NewsScreenProps {
+  onArticleClick?: (article: NewsArticle) => void;
+}
+
+export default function NewsScreen({ onArticleClick }: NewsScreenProps) {
   const heroArticle = articles.find(a => a.isHero);
   const otherArticles = articles.filter(a => !a.isHero);
 
@@ -14,7 +19,7 @@ export default function NewsScreen() {
     <div className="pt-20 pb-32 px-4 max-w-7xl mx-auto space-y-16">
       {/* Hero Editorial */}
       {heroArticle && (
-        <section>
+        <section onClick={() => onArticleClick?.(heroArticle)}>
           <motion.div 
             initial={{ opacity: 0, scale: 0.98 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -62,6 +67,7 @@ export default function NewsScreen() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1 }}
               className="group cursor-pointer"
+              onClick={() => onArticleClick?.(article)}
             >
               <div className="aspect-[4/5] overflow-hidden rounded-lg mb-4 bg-zinc-100 dark:bg-zinc-800">
                 <img 

@@ -1,4 +1,11 @@
-export type Screen = 'feed' | 'news' | 'search' | 'rewards' | 'profile' | 'scanning' | 'asset-detail';
+export type Screen = 'feed' | 'news' | 'search' | 'rewards' | 'profile' | 'scanning' | 'post-detail' | 'product-detail' | 'wishlist' | 'article-detail';
+
+export interface Comment {
+  id: string;
+  user: User;
+  text: string;
+  timestamp: string;
+}
 
 export interface User {
   id: string;
@@ -18,12 +25,17 @@ export interface Post {
   id: string;
   user: User;
   image: string;
+  images?: string[]; 
+  title: string;
   caption: string;
   timestamp: string;
-  likes: string;
-  comments: number;
+  likes: number; 
+  likedByCurrentUser?: boolean;
+  comments: Comment[];
+  estimatedValue?: string;
   tags?: string[];
   isPremium?: boolean;
+  isWishlisted?: boolean;
   type?: 'large' | 'square' | 'wide' | 'vertical';
 }
 
@@ -36,6 +48,7 @@ export interface NewsArticle {
   timestamp: string;
   isHero?: boolean;
   category?: string;
+  content?: string;
 }
 
 export interface Auction {
@@ -68,6 +81,7 @@ export interface Asset {
     stockNumber: string;
   };
   scarcity: string;
+  isWishlisted?: boolean;
   matchPercentage?: number;
 }
 
