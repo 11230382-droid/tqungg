@@ -298,7 +298,7 @@ export default function App() {
     <div className="min-h-screen bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-50 font-body selection:bg-zinc-200">
       {!isDetailView && (
         <TopAppBar 
-          title={activeScreen === 'scanning' ? 'THE VAULT' : activeScreen === 'wishlist' ? 'MY VAULT' : activeScreen === 'games' ? 'PLAY ZONE' : 'Collecseum'} 
+          title="COLLECSEUM" 
           onSearchClick={() => {
             setPreviousScreen(activeScreen);
             setActiveScreen('search');
