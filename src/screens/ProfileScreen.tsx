@@ -100,9 +100,9 @@ export default function ProfileScreen({ user = currentUser, onProductClick, onPo
         </div>
         <div className="flex gap-4 overflow-x-auto pb-4 no-scrollbar">
           {[
-             { time: '2m ago', img: 'https://picsum.photos/seed/scan1/200/200' },
-             { time: '1h ago', img: 'https://picsum.photos/seed/scan2/200/200' },
-             { time: '4h ago', img: 'https://picsum.photos/seed/scan3/200/200' }
+             { time: '2m ago', img: 'https://picsum.photos/seed/scan_gundam_parts/200/200' },
+             { time: '1h ago', img: 'https://picsum.photos/seed/scan_diecast_chassis/200/200' },
+             { time: '4h ago', img: 'https://picsum.photos/seed/scan_card_hologram/200/200' }
           ].map((scan, i) => (
             <div key={i} className="flex-shrink-0 flex flex-col items-center gap-2">
               <div className="w-16 h-16 rounded-xl overflow-hidden ring-2 ring-zinc-50 dark:ring-zinc-800 ring-offset-2">

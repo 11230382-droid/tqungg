@@ -72,7 +72,7 @@ export default function GamesScreen({ collectedItems }: GamesScreenProps) {
       category: 'Figure',
       color: 'from-purple-600 to-indigo-900',
       theme: 'MECHA',
-      img: 'https://picsum.photos/seed/mecha_game/800/400'
+      img: 'https://picsum.photos/seed/cybernetic_mecha_pilot/800/400'
     },
     {
       id: 'puzzle',
@@ -84,7 +84,7 @@ export default function GamesScreen({ collectedItems }: GamesScreenProps) {
       category: 'Card',
       color: 'from-blue-600 to-cyan-900',
       theme: 'HOLOGRAM',
-      img: 'https://picsum.photos/seed/puzzle_game/800/400'
+      img: 'https://picsum.photos/seed/trading_card_hologram/800/400'
     },
     {
       id: 'racing',
@@ -96,7 +96,7 @@ export default function GamesScreen({ collectedItems }: GamesScreenProps) {
       category: 'Car',
       color: 'from-red-600 to-orange-900',
       theme: 'NEON',
-      img: 'https://picsum.photos/seed/racing_game/800/400'
+      img: 'https://picsum.photos/seed/nissan_gtr_night_raceway/800/400'
     },
     {
       id: 'bookshelf',
@@ -108,7 +108,7 @@ export default function GamesScreen({ collectedItems }: GamesScreenProps) {
       category: 'Book',
       color: 'from-emerald-600 to-teal-900',
       theme: 'ORGANIC',
-      img: 'https://picsum.photos/seed/bookshelf_game/800/400'
+      img: 'https://picsum.photos/seed/minimalist_luxury_bookshelf/800/400'
     }
   ];
 

@@ -19,7 +19,7 @@ export const sellers: Seller[] = [
   {
     id: 's1',
     name: 'Neo Toy Shop',
-    avatar: 'https://picsum.photos/seed/shop1/100/100',
+    avatar: 'https://picsum.photos/seed/toy_store_tokyo/100/100',
     rating: 4.9,
     reviewCount: 1240,
     location: 'Tokyo, JP',
@@ -28,7 +28,7 @@ export const sellers: Seller[] = [
   {
     id: 's2',
     name: 'Diecast Haven',
-    avatar: 'https://picsum.photos/seed/shop2/100/100',
+    avatar: 'https://picsum.photos/seed/vintage_car_garage/100/100',
     rating: 4.8,
     reviewCount: 850,
     location: 'Los Angeles, US',
@@ -37,7 +37,7 @@ export const sellers: Seller[] = [
   {
     id: 's3',
     name: 'Card Kingdom',
-    avatar: 'https://picsum.photos/seed/shop3/100/100',
+    avatar: 'https://picsum.photos/seed/trading_card_display/100/100',
     rating: 4.7,
     reviewCount: 3100,
     location: 'Seattle, US',
@@ -46,7 +46,7 @@ export const sellers: Seller[] = [
   {
     id: 's4',
     name: 'Mecha Central',
-    avatar: 'https://picsum.photos/seed/shop4/100/100',
+    avatar: 'https://picsum.photos/seed/gundam_collection/100/100',
     rating: 4.6,
     reviewCount: 520,
     location: 'Seoul, KR',
@@ -92,8 +92,8 @@ export const posts: Post[] = [
     image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDkZMccRsY21qoXb_g3LG0idR5NgXG-Lqjtrc9ED00w1KEQ9gpyA-AhJiX45uDvaHtzgU0Bn0__Js5Lk1fCfKZS83_duDLn8S74weHQZusxQ5xgp6Fu0wAaylcT5ahspKGUjE1kSKVKTBemqAaVR99drgbYJlz6E9aG1fqnx4EKakRHRu55hF-GNGLtlOugxwoRNyOhUJZBEMsi5EBNyfhQn2c4MEFHmWXIYrDa8p7G1r2wcfGrct8gCKD9dKvsLWxQ_hkmAWlY_e4',
     images: [
       'https://lh3.googleusercontent.com/aida-public/AB6AXuDkZMccRsY21qoXb_g3LG0idR5NgXG-Lqjtrc9ED00w1KEQ9gpyA-AhJiX45uDvaHtzgU0Bn0__Js5Lk1fCfKZS83_duDLn8S74weHQZusxQ5xgp6Fu0wAaylcT5ahspKGUjE1kSKVKTBemqAaVR99drgbYJlz6E9aG1fqnx4EKakRHRu55hF-GNGLtlOugxwoRNyOhUJZBEMsi5EBNyfhQn2c4MEFHmWXIYrDa8p7G1r2wcfGrct8gCKD9dKvsLWxQ_hkmAWlY_e4',
-      'https://picsum.photos/seed/vanguard2/800/800',
-      'https://picsum.photos/seed/vanguard3/800/800'
+      'https://picsum.photos/seed/mecha_robot_detail/800/800',
+      'https://picsum.photos/seed/sci-fi_armor_close/800/800'
     ],
     title: '1/6 Scale Vanguard Unit',
     caption: 'Finally secured the 1/6 scale Vanguard Unit. The articulation on this piece is absolutely insane. Worth the 8-month wait! The detail on the weathered armor plating and the LED integration in the visor is simply industry-leading.',
@@ -301,11 +301,11 @@ export const scanningAsset: Asset = {
 
 const figureAsset: Asset = {
   id: 'a4',
-  name: 'Iron Commander 7',
+  name: 'Iron Commander',
   series: 'Neo-Future Legends',
   price: '$450.00',
   change: '+8.5%',
-  image: 'https://picsum.photos/seed/actionfig1/800/800',
+  image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT_qhlL_VGdxKtsEyDQDeMIBSAcYQk54M6hzQ&s',
   description: 'Hyper-articulated commander unit with interchangeable plasma blades.',
   specs: {
     releaseDate: '2023',
@@ -317,33 +317,14 @@ const figureAsset: Asset = {
   category: 'Figure'
 };
 
-const bookAsset: Asset = {
-  id: 'a5',
-  name: 'The Art of Rare Finds',
-  series: 'Collector Archives',
-  price: '$85.00',
-  change: '+2.1%',
-  image: 'https://picsum.photos/seed/book1/800/800',
-  description: 'A comprehensive guide to identifying and preserving museum-grade collectibles.',
-  specs: {
-    releaseDate: '2021',
-    colorway: 'Matte Black / Gold Foil',
-    retailPrice: '$45.00',
-    stockNumber: '#BOOK-ARF'
-  },
-  scarcity: 'COMMON',
-  category: 'Book'
-};
-
 export const allAssets: Asset[] = [
   mainAsset,
   scanningAsset,
   { ...mainAsset, id: 'a3', name: 'MC Astray Gold Frame', series: 'Legacy Digital Assets', image: 'https://i.redd.it/1gz70oxuxkzd1.jpeg', price: '$2,400.00', scarcity: 'EPIC', category: 'Figure' },
   figureAsset,
-  bookAsset,
-  { ...figureAsset, id: 'a6', name: 'Vanguard Elite', category: 'Figure', image: 'https://picsum.photos/seed/fig2/800/800' },
-  { ...scanningAsset, id: 'a7', name: 'Nissan Skyline GTR', category: 'Car', image: 'https://picsum.photos/seed/car2/800/800' },
-  { ...mainAsset, id: 'a8', name: 'Blue-Eyes White Dragon', category: 'Card', image: 'https://picsum.photos/seed/card2/800/800' },
+  { ...figureAsset, id: 'a6', name: 'Vanguard Elite', category: 'Figure', image: 'https://cards.scryfall.io/large/front/2/8/28a5c350-2ed1-4a25-9626-0f8da5d1aef7.jpg?1580013650' },
+  { ...scanningAsset, id: 'a7', name: 'Nissan Skyline GTR', category: 'Car', image: 'https://down-vn.img.susercontent.com/file/vn-11134207-7ras8-mbv28z8kh0fm92' },
+  { ...mainAsset, id: 'a8', name: 'Blue-Eyes White Dragon', category: 'Card', image: 'https://i.ebayimg.com/images/g/H6QAAOSw-hJnzbHp/s-l1600.webp' },
 ];
 
 export const badges: Badge[] = [
