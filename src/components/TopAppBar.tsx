@@ -11,7 +11,7 @@ interface TopAppBarProps {
   notificationCount?: number;
 }
 
-export default function TopAppBar({ title = 'COLLECTOR', onSearchClick, notificationCount = 0 }: TopAppBarProps) {
+export default function TopAppBar({ title = 'Collecseum', onSearchClick, notificationCount = 0 }: TopAppBarProps) {
   return (
     <header className="fixed top-0 z-50 flex justify-between items-center w-full px-6 h-16 bg-white dark:bg-zinc-950 border-b border-zinc-100 dark:border-zinc-800 font-['Be_Vietnam_Pro'] font-medium tracking-tight">
       <div className="flex items-center gap-4">

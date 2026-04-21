@@ -1,4 +1,4 @@
-import { Post, NewsArticle, Auction, Category, Asset, User, Badge, Challenge, Seller } from './types.ts';
+import { Post, NewsArticle, Auction, Category, Asset, User, Badge, Challenge, Seller, GameLeaderboardEntry } from './types.ts';
 
 export const currentUser: User = {
   id: 'u1',
@@ -276,6 +276,7 @@ export const mainAsset: Asset = {
     stockNumber: '#001-FF-SPEC'
   },
   scarcity: 'RARE',
+  category: 'Card',
   matchPercentage: 98.4
 };
 
@@ -294,13 +295,55 @@ export const scanningAsset: Asset = {
     stockNumber: '#H69-DODGE'
   },
   scarcity: 'RARE',
+  category: 'Car',
   matchPercentage: 98.4
+};
+
+const figureAsset: Asset = {
+  id: 'a4',
+  name: 'Iron Commander 7',
+  series: 'Neo-Future Legends',
+  price: '$450.00',
+  change: '+8.5%',
+  image: 'https://picsum.photos/seed/actionfig1/800/800',
+  description: 'Hyper-articulated commander unit with interchangeable plasma blades.',
+  specs: {
+    releaseDate: '2023',
+    colorway: 'Crimson Red / Gunmetal',
+    retailPrice: '$299.99',
+    stockNumber: '#FIG-IC7'
+  },
+  scarcity: 'EPIC',
+  category: 'Figure'
+};
+
+const bookAsset: Asset = {
+  id: 'a5',
+  name: 'The Art of Rare Finds',
+  series: 'Collector Archives',
+  price: '$85.00',
+  change: '+2.1%',
+  image: 'https://picsum.photos/seed/book1/800/800',
+  description: 'A comprehensive guide to identifying and preserving museum-grade collectibles.',
+  specs: {
+    releaseDate: '2021',
+    colorway: 'Matte Black / Gold Foil',
+    retailPrice: '$45.00',
+    stockNumber: '#BOOK-ARF'
+  },
+  scarcity: 'COMMON',
+  category: 'Book'
 };
 
 export const allAssets: Asset[] = [
   mainAsset,
   scanningAsset,
-  { ...mainAsset, id: 'a3', name: 'MC Astray Gold Frame', series: 'Legacy Digital Assets', image: 'https://i.redd.it/1gz70oxuxkzd1.jpeg', price: '$2,400.00', scarcity: 'EPIC' }
+  { ...mainAsset, id: 'a3', name: 'MC Astray Gold Frame', series: 'Legacy Digital Assets', image: 'https://i.redd.it/1gz70oxuxkzd1.jpeg', price: '$2,400.00', scarcity: 'EPIC', category: 'Figure' },
+  figureAsset,
+  bookAsset,
+  { ...figureAsset, id: 'a6', name: 'Vanguard Elite', category: 'Figure', image: 'https://picsum.photos/seed/fig2/800/800' },
+  { ...scanningAsset, id: 'a7', name: 'Nissan Skyline GTR', category: 'Car', image: 'https://picsum.photos/seed/car2/800/800' },
+  { ...mainAsset, id: 'a8', name: 'Blue-Eyes White Dragon', category: 'Card', image: 'https://picsum.photos/seed/card2/800/800' },
 ];
 
 export const badges: Badge[] = [
@@ -315,3 +358,26 @@ export const challenges: Challenge[] = [
   { id: 'ch1', title: 'Visual Hunter', description: 'Identify 10 unique vintage labels today.', xp: '+200 XP', progress: 70, icon: 'image_search' },
   { id: 'ch2', title: 'The Chronicler', description: 'Write 5 detailed descriptions for your collection.', xp: '+500 XP', progress: 40, icon: 'history_edu' }
 ];
+
+export const gameLeaderboards: Record<string, GameLeaderboardEntry[]> = {
+  kitbash: [
+    { id: 'lb1', user: topCollectors[1], score: 98, formattedScore: '98/100', timestamp: '10m ago' },
+    { id: 'lb2', user: topCollectors[2], score: 95, formattedScore: '95/100', timestamp: '1h ago' },
+    { id: 'lb3', user: currentUser, score: 88, formattedScore: '88/100', timestamp: '2h ago' },
+  ],
+  puzzle: [
+    { id: 'lb4', user: topCollectors[3], score: 45, formattedScore: '45.2s', timestamp: '30m ago' },
+    { id: 'lb5', user: topCollectors[1], score: 52, formattedScore: '52.5s', timestamp: '5h ago' },
+    { id: 'lb6', user: currentUser, score: 68, formattedScore: '68.1s', timestamp: '1d ago' },
+  ],
+  racing: [
+    { id: 'lb7', user: topCollectors[2], score: 12, formattedScore: '12.4s', timestamp: '15m ago' },
+    { id: 'lb8', user: topCollectors[3], score: 14, formattedScore: '14.8s', timestamp: '4h ago' },
+    { id: 'lb9', user: currentUser, score: 18, formattedScore: '18.2s', timestamp: '1d ago' },
+  ],
+  bookshelf: [
+    { id: 'lb10', user: topCollectors[1], score: 12, formattedScore: '12 Items', timestamp: '1h ago' },
+    { id: 'lb11', user: topCollectors[3], score: 8, formattedScore: '8 Items', timestamp: '6h ago' },
+    { id: 'lb12', user: currentUser, score: 5, formattedScore: '5 Items', timestamp: '2d ago' },
+  ],
+};

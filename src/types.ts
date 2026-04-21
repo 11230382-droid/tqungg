@@ -1,4 +1,4 @@
-export type Screen = 'feed' | 'news' | 'search' | 'rewards' | 'profile' | 'scanning' | 'post-detail' | 'product-detail' | 'wishlist' | 'article-detail';
+export type Screen = 'feed' | 'news' | 'search' | 'games' | 'rewards' | 'profile' | 'scanning' | 'post-detail' | 'product-detail' | 'wishlist' | 'article-detail';
 
 export interface Comment {
   id: string;
@@ -92,6 +92,7 @@ export interface Asset {
     stockNumber: string;
   };
   scarcity: string;
+  category: 'Figure' | 'Card' | 'Car' | 'Book' | 'Other';
   isWishlisted?: boolean;
   matchPercentage?: number;
 }
@@ -111,4 +112,12 @@ export interface Challenge {
   xp: string;
   progress: number;
   icon: string;
+}
+
+export interface GameLeaderboardEntry {
+  id: string;
+  user: User;
+  score: number;
+  formattedScore: string;
+  timestamp: string;
 }

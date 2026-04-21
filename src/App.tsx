@@ -17,6 +17,7 @@ import PostDetailScreen from './screens/PostDetailScreen';
 import ProductDetailScreen from './screens/ProductDetailScreen';
 import ArticleDetailScreen from './screens/ArticleDetailScreen';
 import WishlistScreen from './screens/WishlistScreen';
+import GamesScreen from './screens/GamesScreen';
 import { AnimatePresence, motion } from 'motion/react';
 import { posts as mockPosts, currentUser, articles as mockArticles, allAssets, sellers as mockSellers, topCollectors as mockCollectors } from './mockData';
 
@@ -202,6 +203,8 @@ export default function App() {
         );
       case 'news':
         return <NewsScreen onArticleClick={handleArticleClick} />;
+      case 'games':
+        return <GamesScreen collectedItems={wishlistedProducts} />;
       case 'search':
         return <SearchScreen onScanTrigger={() => setActiveScreen('scanning')} />;
       case 'rewards':
@@ -295,7 +298,7 @@ export default function App() {
     <div className="min-h-screen bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-50 font-body selection:bg-zinc-200">
       {!isDetailView && (
         <TopAppBar 
-          title={activeScreen === 'scanning' ? 'THE VAULT' : activeScreen === 'wishlist' ? 'MY VAULT' : 'COLLECTOR'} 
+          title={activeScreen === 'scanning' ? 'THE VAULT' : activeScreen === 'wishlist' ? 'MY VAULT' : activeScreen === 'games' ? 'PLAY ZONE' : 'Collecseum'} 
           onSearchClick={() => {
             setPreviousScreen(activeScreen);
             setActiveScreen('search');

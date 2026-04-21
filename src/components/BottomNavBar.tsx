@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Grid, Newspaper, Search, Gift, User } from 'lucide-react';
+import { Grid, Newspaper, Search, Gift, User, Gamepad2 } from 'lucide-react';
 import { Screen } from '../types';
 
 interface BottomNavBarProps {
@@ -16,6 +16,7 @@ export default function BottomNavBar({ activeScreen, onScreenChange }: BottomNav
     { id: 'feed', icon: Grid, label: 'Feed' },
     { id: 'news', icon: Newspaper, label: 'News' },
     { id: 'search', icon: Search, label: 'Search' },
+    { id: 'games', icon: Gamepad2, label: 'Games' },
     { id: 'rewards', icon: Gift, label: 'Rewards' },
     { id: 'profile', icon: User, label: 'Profile' },
   ];
