@@ -16,16 +16,16 @@ interface ProfileScreenProps {
   wishlist: { posts: string[], products: string[] };
   allPosts: Post[];
   allAssets: Asset[];
+  museumItemIds: string[];
 }
 
-export default function ProfileScreen({ user = currentUser, onProductClick, onPostClick, wishlist, allPosts, allAssets }: ProfileScreenProps) {
+export default function ProfileScreen({ user = currentUser, onProductClick, onPostClick, wishlist, allPosts, allAssets, museumItemIds }: ProfileScreenProps) {
   const [activeTab, setActiveTab] = useState<'collection' | 'wishlist'>('collection');
   
-  // Custom collection logic: users other than current might have different items, 
-  // but for the mock we'll just show all assets or a subset.
+  // Custom collection logic
   const isMe = user.id === currentUser.id;
   const collectionItems = isMe 
-    ? allAssets.filter(asset => asset.id !== 'a2')
+    ? allAssets.filter(asset => museumItemIds.includes(asset.id))
     : allAssets.slice(0, 2); // Mock some items for others
   
   const wishlistedPosts = allPosts.filter(p => wishlist.posts.includes(p.id));

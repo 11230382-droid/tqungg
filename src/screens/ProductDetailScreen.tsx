@@ -11,9 +11,11 @@ interface ProductDetailScreenProps {
   product: Asset;
   onBack: () => void;
   onWishlistToggle?: (productId: string) => void;
+  onMuseumClick?: () => void;
+  isInMuseum?: boolean;
 }
 
-export default function ProductDetailScreen({ product, onBack, onWishlistToggle }: ProductDetailScreenProps) {
+export default function ProductDetailScreen({ product, onBack, onWishlistToggle, onMuseumClick, isInMuseum }: ProductDetailScreenProps) {
   return (
     <div className="pt-16 pb-32 min-h-screen bg-zinc-50 dark:bg-zinc-950">
       {/* Detail Header */}
@@ -101,10 +103,19 @@ export default function ProductDetailScreen({ product, onBack, onWishlistToggle 
             </div>
 
             <div className="flex flex-col md:flex-row gap-4">
-               <button className="flex-1 bg-zinc-900 dark:bg-zinc-50 text-white dark:text-zinc-900 py-6 rounded-2xl font-black uppercase tracking-widest text-xs flex items-center justify-center gap-3 transition-all hover:opacity-90 active:scale-[0.98]">
-                  <Landmark size={20} />
-                  Add to Museum
-               </button>
+               {isInMuseum ? (
+                 <div className="flex-1 bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-100 dark:border-emerald-900/30 text-emerald-600 dark:text-emerald-400 py-6 rounded-2xl font-black uppercase tracking-widest text-xs flex items-center justify-center gap-3">
+                    <ShieldCheck size={20} />
+                    In Museum
+                 </div>
+               ) : (
+                 <button 
+                  onClick={onMuseumClick}
+                  className="flex-1 bg-zinc-900 dark:bg-zinc-50 text-white dark:text-zinc-900 py-6 rounded-2xl font-black uppercase tracking-widest text-xs flex items-center justify-center gap-3 transition-all hover:opacity-90 active:scale-[0.98]">
+                    <Landmark size={20} />
+                    Add to Museum
+                 </button>
+               )}
                <button className="flex-1 bg-white dark:bg-zinc-800 border border-zinc-100 dark:border-zinc-700 text-zinc-900 dark:text-zinc-50 py-6 rounded-2xl font-black uppercase tracking-widest text-xs flex items-center justify-center gap-3 transition-all hover:bg-zinc-50 active:scale-[0.98]">
                   <ArrowRight size={20} />
                   Market Listing

@@ -33,6 +33,7 @@ export default function App() {
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [previousScreen, setPreviousScreen] = useState<Screen>('feed');
   const [wishlist, setWishlist] = useState<{ posts: string[], products: string[] }>({ posts: [], products: [] });
+  const [museumItemIds, setMuseumItemIds] = useState<string[]>([]);
 
   // Initialize data
   useEffect(() => {
@@ -40,6 +41,9 @@ export default function App() {
     setArticles(mockArticles);
     setSellers(mockSellers);
     setCollectors(mockCollectors);
+
+    // Initial museum items: all assets except a2 (scanningAsset)
+    setMuseumItemIds(allAssets.filter(a => a.id !== 'a2').map(a => a.id));
     
     // Load wishlist from local storage if available
     const savedWishlist = localStorage.getItem('collector_wishlist');
@@ -183,6 +187,13 @@ export default function App() {
     setActiveScreen(previousScreen);
   };
 
+  const handleAddToMuseum = (productId: string) => {
+    setMuseumItemIds(prev => {
+      if (prev.includes(productId)) return prev;
+      return [...prev, productId];
+    });
+  };
+
   const wishlistedPosts = posts.filter(p => wishlist.posts.includes(p.id));
   const wishlistedProducts = allAssets.filter(p => wishlist.products.includes(p.id));
 
@@ -218,6 +229,7 @@ export default function App() {
             wishlist={wishlist} 
             allPosts={posts}
             allAssets={allAssets}
+            museumItemIds={museumItemIds}
           />
         );
       case 'scanning':
@@ -231,9 +243,11 @@ export default function App() {
               }
             }}
             onMuseumClick={() => {
+              handleAddToMuseum(scanningAsset.id);
               setSelectedProduct(scanningAsset);
               setActiveScreen('product-detail');
             }}
+            isInMuseum={museumItemIds.includes(scanningAsset.id)}
           />
         );
       case 'wishlist':
@@ -276,6 +290,8 @@ export default function App() {
             product={{...selectedProduct, isWishlisted: wishlist.products.includes(selectedProduct.id)}} 
             onBack={handleBack}
             onWishlistToggle={toggleProductWishlist}
+            onMuseumClick={() => handleAddToMuseum(selectedProduct.id)}
+            isInMuseum={museumItemIds.includes(selectedProduct.id)}
           />
         ) : (
           <ProfileScreen 
@@ -285,6 +301,7 @@ export default function App() {
             wishlist={wishlist} 
             allPosts={posts}
             allAssets={allAssets}
+            museumItemIds={museumItemIds}
           />
         );
       case 'article-detail':

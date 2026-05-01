@@ -10,9 +10,10 @@ import { motion } from 'motion/react';
 interface MuseumScreenProps {
   onBack?: () => void;
   onMuseumClick?: () => void;
+  isInMuseum?: boolean;
 }
 
-export default function MuseumScreen({ onBack, onMuseumClick }: MuseumScreenProps) {
+export default function MuseumScreen({ onBack, onMuseumClick, isInMuseum }: MuseumScreenProps) {
   return (
     <div className="pt-0 pb-32 min-h-screen bg-zinc-50 dark:bg-zinc-950">
       {/* Detail Header for Scanning */}
@@ -147,13 +148,20 @@ export default function MuseumScreen({ onBack, onMuseumClick }: MuseumScreenProp
 
           {/* Actions */}
           <div className="flex flex-col gap-3">
-            <button 
-              onClick={onMuseumClick}
-              className="w-full bg-zinc-900 dark:bg-zinc-50 text-white dark:text-zinc-900 py-5 rounded-2xl font-headline font-bold flex items-center justify-center gap-2 hover:opacity-90 transition-all active:scale-95 duration-150"
-            >
-              <Landmark size={20} />
-              Add to Museum
-            </button>
+            {isInMuseum ? (
+              <div className="w-full bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-100 dark:border-emerald-900/30 text-emerald-600 dark:text-emerald-400 py-5 rounded-2xl font-headline font-bold flex items-center justify-center gap-2">
+                <ShieldCheck size={20} />
+                In Museum
+              </div>
+            ) : (
+              <button 
+                onClick={onMuseumClick}
+                className="w-full bg-zinc-900 dark:bg-zinc-50 text-white dark:text-zinc-900 py-5 rounded-2xl font-headline font-bold flex items-center justify-center gap-2 hover:opacity-90 transition-all active:scale-95 duration-150"
+              >
+                <Landmark size={20} />
+                Add to Museum
+              </button>
+            )}
             <button className="w-full bg-white dark:bg-zinc-800 border border-zinc-100 dark:border-zinc-700 text-zinc-900 dark:text-zinc-50 py-5 rounded-2xl font-headline font-bold flex items-center justify-center gap-2 hover:bg-zinc-50 transition-all active:scale-95 duration-150">
               <ArrowRight size={20} />
               Market Listing
