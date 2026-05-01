@@ -12,14 +12,14 @@ import NewsScreen from './screens/NewsScreen';
 import SearchScreen from './screens/SearchScreen';
 import RewardsScreen from './screens/RewardsScreen';
 import ProfileScreen from './screens/ProfileScreen';
-import VaultScreen from './screens/VaultScreen';
+import MuseumScreen from './screens/MuseumScreen';
 import PostDetailScreen from './screens/PostDetailScreen';
 import ProductDetailScreen from './screens/ProductDetailScreen';
 import ArticleDetailScreen from './screens/ArticleDetailScreen';
 import WishlistScreen from './screens/WishlistScreen';
 import GamesScreen from './screens/GamesScreen';
 import { AnimatePresence, motion } from 'motion/react';
-import { posts as mockPosts, currentUser, articles as mockArticles, allAssets, sellers as mockSellers, topCollectors as mockCollectors } from './mockData';
+import { posts as mockPosts, currentUser, articles as mockArticles, allAssets, scanningAsset, sellers as mockSellers, topCollectors as mockCollectors } from './mockData';
 
 export default function App() {
   const [activeScreen, setActiveScreen] = useState<Screen>('feed');
@@ -221,7 +221,21 @@ export default function App() {
           />
         );
       case 'scanning':
-        return <VaultScreen />;
+        return (
+          <MuseumScreen 
+            onBack={() => {
+              if (previousScreen) {
+                setActiveScreen(previousScreen);
+              } else {
+                setActiveScreen('search');
+              }
+            }}
+            onMuseumClick={() => {
+              setSelectedProduct(scanningAsset);
+              setActiveScreen('product-detail');
+            }}
+          />
+        );
       case 'wishlist':
         return (
           <WishlistScreen 
@@ -292,7 +306,7 @@ export default function App() {
     }
   };
 
-  const isDetailView = activeScreen === 'post-detail' || activeScreen === 'product-detail' || activeScreen === 'article-detail';
+  const isDetailView = activeScreen === 'post-detail' || activeScreen === 'product-detail' || activeScreen === 'article-detail' || activeScreen === 'scanning';
 
   return (
     <div className="min-h-screen bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-50 font-body selection:bg-zinc-200">

@@ -276,7 +276,7 @@ export default function ProfileScreen({ user = currentUser, onProductClick, onPo
             {wishlistedPosts.length === 0 && wishlistedProducts.length === 0 && (
               <div className="py-20 text-center">
                 <Bookmark size={32} className="mx-auto text-zinc-300 mb-4" />
-                <p className="text-zinc-500 font-medium text-sm italic">Your vault is currently empty.</p>
+                <p className="text-zinc-500 font-medium text-sm italic">Your museum is currently empty.</p>
               </div>
             )}
           </motion.section>

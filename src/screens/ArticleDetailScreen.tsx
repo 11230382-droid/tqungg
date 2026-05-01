@@ -82,7 +82,7 @@ export default function ArticleDetailScreen({ article, onBack }: ArticleDetailSc
               </button>
               <button className="bg-white dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 px-8 py-4 rounded-2xl font-black uppercase tracking-widest text-xs flex items-center gap-3 active:scale-95 transition-all">
                 <Bookmark size={16} />
-                Save to Vault
+                Save to Museum
               </button>
            </div>
         </section>

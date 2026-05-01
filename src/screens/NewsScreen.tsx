@@ -116,9 +116,9 @@ export default function NewsScreen({ onArticleClick }: NewsScreenProps) {
           
           <div className="md:col-span-2 grid grid-cols-2 gap-4">
              <div className="relative group overflow-hidden rounded-lg bg-zinc-100 aspect-square">
-               <img src="https://picsum.photos/seed/m2/400/400" className="w-full h-full object-cover" alt="Vault" referrerPolicy="no-referrer" />
+               <img src="https://picsum.photos/seed/m2/400/400" className="w-full h-full object-cover" alt="Museum" referrerPolicy="no-referrer" />
                <div className="absolute inset-x-0 bottom-0 p-4 bg-gradient-to-t from-black/80 to-transparent">
-                  <h5 className="text-white text-[10px] font-black uppercase tracking-widest">M2 Machines Vault</h5>
+                  <h5 className="text-white text-[10px] font-black uppercase tracking-widest">M2 Machines Museum</h5>
                </div>
              </div>
              <div className="relative group overflow-hidden rounded-lg bg-zinc-100 aspect-square">

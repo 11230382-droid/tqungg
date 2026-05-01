@@ -1,6 +1,6 @@
 {
   "name": "COLLECSEUM",
-  "description": "A high-fidelity community platform and vault for rare collectibles, featuring real-time market data and scanning technology.",
+  "description": "A high-fidelity community platform and digital archive for rare collectibles, featuring real-time market data and scanning technology.",
   "requestFramePermissions": [
     "camera"
   ],

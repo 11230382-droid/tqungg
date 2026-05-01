@@ -3,15 +3,30 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Monitor, Verified, Palette, Factory, Landmark, History, TrendingUp } from 'lucide-react';
+import { Monitor, Verified, Palette, Factory, Landmark, History, TrendingUp, ChevronLeft, ShieldCheck, ArrowRight } from 'lucide-react';
 import { scanningAsset } from '../mockData';
 import { motion } from 'motion/react';
 
-export default function VaultScreen() {
+interface MuseumScreenProps {
+  onBack?: () => void;
+  onMuseumClick?: () => void;
+}
+
+export default function MuseumScreen({ onBack, onMuseumClick }: MuseumScreenProps) {
   return (
-    <div className="pt-16 pb-24 min-h-screen bg-zinc-50 dark:bg-zinc-950">
-      {/* Viewfinder Section */}
-      <section className="relative h-[397px] overflow-hidden bg-black flex items-center justify-center">
+    <div className="pt-0 pb-32 min-h-screen bg-zinc-50 dark:bg-zinc-950">
+      {/* Detail Header for Scanning */}
+      <div className="fixed top-0 left-0 right-0 z-50 h-16 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-md flex items-center justify-between px-4 border-b border-zinc-100 dark:border-zinc-800">
+        <button onClick={onBack} className="p-2 hover:bg-zinc-50 dark:hover:bg-zinc-900 rounded-full transition-colors">
+          <ChevronLeft size={24} />
+        </button>
+        <span className="font-headline font-black text-xs uppercase tracking-widest truncate max-w-[200px]">Live Recognition</span>
+        <div className="w-10"></div> {/* Spacer */}
+      </div>
+
+      <div className="pt-16">
+        {/* Viewfinder Section */}
+        <section className="relative h-[397px] overflow-hidden bg-black flex items-center justify-center">
         <img 
           className="absolute inset-0 w-full h-full object-cover opacity-80 mix-blend-lighten" 
           src={scanningAsset.image} 
@@ -91,54 +106,89 @@ export default function VaultScreen() {
               <p className="text-[10px] uppercase tracking-widest text-zinc-500 font-bold mb-1 truncate">Scarcity</p>
               <div className="flex items-baseline gap-1 overflow-hidden">
                 <span className="text-xl md:text-2xl font-black font-headline text-zinc-900 dark:text-zinc-50 truncate">{scanningAsset.scarcity}</span>
-                <span className="text-[10px] font-bold text-zinc-400 ml-1 shrink-0">9.4/10</span>
+                <span className="text-[10px] font-bold text-zinc-400 ml-1 shrink-0">PSA 10</span>
               </div>
             </div>
           </div>
 
+          {/* Description */}
+          <p className="text-zinc-600 dark:text-zinc-400 leading-relaxed text-sm mb-8 font-medium">
+            {scanningAsset.description}
+          </p>
+
+          {/* Specs Grid */}
+          <div className="grid grid-cols-2 gap-4 mb-8">
+            {Object.entries(scanningAsset.specs).map(([key, value]) => (
+              <div key={key} className="bg-zinc-50 dark:bg-zinc-950 p-4 rounded-2xl border border-zinc-100 dark:border-zinc-800">
+                <p className="text-[9px] font-black uppercase tracking-widest text-zinc-400 mb-1">{key.replace(/([A-Z])/g, ' $1')}</p>
+                <p className="font-headline font-bold text-[11px] text-zinc-900 dark:text-zinc-100 truncate">{value}</p>
+              </div>
+            ))}
+          </div>
+
           {/* Details List */}
-          <div className="space-y-4 mb-8">
+          <div className="space-y-4 mb-10">
+            <h3 className="font-headline font-black text-xs uppercase tracking-widest text-zinc-400 mb-2">Authenticity Breakdown</h3>
             <div className="flex items-center justify-between py-3 border-b border-zinc-50 dark:border-zinc-800">
               <div className="flex items-center gap-3">
                 <Palette size={18} className="text-zinc-400" />
                 <span className="text-sm font-medium text-zinc-600 dark:text-zinc-400">Authentic Holofoil Finish</span>
               </div>
-              <Verified size={14} className="text-zinc-400" />
+              <Verified size={14} className="text-green-500" />
             </div>
             <div className="flex items-center justify-between py-3 border-b border-zinc-50 dark:border-zinc-800">
               <div className="flex items-center gap-3">
                 <Factory size={18} className="text-zinc-400" />
                 <span className="text-sm font-medium text-zinc-600 dark:text-zinc-400">Mint 10 PSA Rating</span>
               </div>
-              <Verified size={14} className="text-zinc-400" />
+              <Verified size={14} className="text-green-500" />
             </div>
           </div>
 
           {/* Actions */}
-          <div className="space-y-3">
-            <button className="w-full bg-zinc-900 dark:bg-zinc-50 text-white dark:text-zinc-900 py-4 rounded-2xl font-headline font-bold flex items-center justify-center gap-2 hover:opacity-90 transition-all active:scale-95 duration-150">
+          <div className="flex flex-col gap-3">
+            <button 
+              onClick={onMuseumClick}
+              className="w-full bg-zinc-900 dark:bg-zinc-50 text-white dark:text-zinc-900 py-5 rounded-2xl font-headline font-bold flex items-center justify-center gap-2 hover:opacity-90 transition-all active:scale-95 duration-150"
+            >
               <Landmark size={20} />
               Add to Museum
             </button>
-            <button className="w-full bg-white dark:bg-zinc-800 border border-zinc-100 dark:border-zinc-700 text-zinc-900 dark:text-zinc-50 py-4 rounded-2xl font-headline font-bold flex items-center justify-center gap-2 hover:bg-zinc-50 transition-all active:scale-95 duration-150">
-              <History size={20} />
-              View History
+            <button className="w-full bg-white dark:bg-zinc-800 border border-zinc-100 dark:border-zinc-700 text-zinc-900 dark:text-zinc-50 py-5 rounded-2xl font-headline font-bold flex items-center justify-center gap-2 hover:bg-zinc-50 transition-all active:scale-95 duration-150">
+              <ArrowRight size={20} />
+              Market Listing
             </button>
           </div>
         </motion.div>
 
-        {/* Mini Stats */}
-        <div className="mt-6 flex gap-4 overflow-x-auto pb-4 no-scrollbar">
-          {['Sold Recently', 'Collectors', 'Growth'].map((label, idx) => (
-            <div key={label} className="min-w-[140px] bg-white/50 dark:bg-black/20 backdrop-blur-sm border border-white/20 p-4 rounded-2xl">
-              <p className="text-[9px] uppercase tracking-tighter text-zinc-500 font-black">{label}</p>
-              <p className="font-headline font-bold text-zinc-900 dark:text-zinc-50">
-                {idx === 0 ? '12 Units' : idx === 1 ? '242 Pending' : '+14.2%'}
-              </p>
-            </div>
-          ))}
-        </div>
+        {/* Origin & Ownership Section (Matching Product Detail) */}
+        <section className="mt-8 bg-white dark:bg-zinc-900 rounded-[2rem] p-8 border border-zinc-100 dark:border-zinc-800 shadow-sm">
+          <h2 className="font-headline font-black text-lg tracking-tight uppercase mb-8 flex items-center gap-3">
+             <ShieldCheck size={24} />
+             Ownership Archive
+          </h2>
+          <div className="space-y-6">
+             <div className="flex items-center justify-between p-4 bg-zinc-50 dark:bg-zinc-950 rounded-2xl border border-zinc-100 dark:border-zinc-800">
+                <div className="flex items-center gap-4">
+                   <div className="w-12 h-12 bg-white dark:bg-zinc-900 rounded-full flex items-center justify-center overflow-hidden border border-zinc-200">
+                      <img src="https://picsum.photos/seed/curator/100/100" alt="Curator" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+                   </div>
+                   <div>
+                      <p className="text-[10px] font-black uppercase tracking-widest text-zinc-400">Current Custodian</p>
+                      <p className="font-headline font-bold text-sm">Julian Vane (@julianvane)</p>
+                   </div>
+                </div>
+                <div className="text-[10px] font-black uppercase text-zinc-400">EST. 2022</div>
+             </div>
+
+             <button className="w-full mt-4 flex items-center justify-center gap-2 text-zinc-400 hover:text-zinc-900 font-bold uppercase tracking-widest text-[10px] transition-colors py-2">
+                <History size={16} />
+                View Full Chain of Custody
+             </button>
+          </div>
+        </section>
       </section>
+      </div>
     </div>
   );
 }

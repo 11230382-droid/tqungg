@@ -103,7 +103,7 @@ export default function ProductDetailScreen({ product, onBack, onWishlistToggle 
             <div className="flex flex-col md:flex-row gap-4">
                <button className="flex-1 bg-zinc-900 dark:bg-zinc-50 text-white dark:text-zinc-900 py-6 rounded-2xl font-black uppercase tracking-widest text-xs flex items-center justify-center gap-3 transition-all hover:opacity-90 active:scale-[0.98]">
                   <Landmark size={20} />
-                  Vault for Protection
+                  Add to Museum
                </button>
                <button className="flex-1 bg-white dark:bg-zinc-800 border border-zinc-100 dark:border-zinc-700 text-zinc-900 dark:text-zinc-50 py-6 rounded-2xl font-black uppercase tracking-widest text-xs flex items-center justify-center gap-3 transition-all hover:bg-zinc-50 active:scale-[0.98]">
                   <ArrowRight size={20} />

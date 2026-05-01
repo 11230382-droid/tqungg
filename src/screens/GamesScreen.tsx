@@ -122,7 +122,7 @@ export default function GamesScreen({ collectedItems }: GamesScreenProps) {
       <header className="mb-12 max-w-5xl mx-auto flex flex-col md:flex-row md:items-end justify-between gap-6">
         <div>
           <h1 className="text-5xl font-black font-headline tracking-tighter mb-2">PLAY ZONE</h1>
-          <p className="text-zinc-500 font-medium italic">Competitive gamification for your digital vault.</p>
+          <p className="text-zinc-500 font-medium italic">Competitive gamification for your digital museum.</p>
         </div>
         <div className="flex items-center gap-3 bg-zinc-100 dark:bg-zinc-800 p-2 rounded-2xl">
           <div className="bg-white dark:bg-zinc-900 px-4 py-2 rounded-xl shadow-sm">
