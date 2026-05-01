@@ -6,7 +6,7 @@ export const currentUser: User = {
   username: 'julianvane',
   avatar: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAG4uitfuqu3cF2sSBdWC5ZUfVRByGsGpDbpXTOfRzZKeoV6QzvC1wLc8RhmXAW6CXfceQKGpfp_YRfukbie-QtXfviUMVprb3u8_2xkOFiQUVzxjMGZk_eWd15Mkl8DcZlMAgYf0nX4dUID5JmCfTdLcAs3jp_x44yGxr2hVL6v1jprtoTcEaPsI-ka0KawZdm0W3odB6y0uFmqyCY0QMfUPrp7Gj7nQec_oCo592DQy9wjcMjRR6S_YKeeaUEc7MdWxaq22piZO8',
   role: 'Prime Collector',
-  location: 'New York, NY',
+  location: 'Hanoi, HN',
   followers: '1.2k',
   following: '842',
   itemCount: '1,248',
@@ -263,21 +263,21 @@ export const categories: Category[] = [
 
 export const mainAsset: Asset = {
   id: 'a1',
-  name: 'Shadow Specter First Edition',
+  name: '998 Promo Pikachu Illustrator',
   series: 'Grail Asset',
-  price: '$12,450.00',
-  change: '+12.4%',
-  image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuA0tUVqHNjLZd_hCwNEw6F8Vh7H21_rB-0xrKG_rY000I_5SsYcSjzp1oO-seTUWVCJai1JKpP3bhq0TltcNPR-SpKbj-ydOUZaHINEQSHxS4ZrwCkWk2qMFnW-dMaadLpubbX3ArE0FavjK-lLuVk_uRQOje3uEk-WhTd5zG5wJL2azzYHQwY6PIPi9gTOsL1nHTdY88IJc8RVXgFDWU2fW_VvkQKn3awTa6s_hGGM14_oxlv6N8Djsd3KXA3ar41XiTTpqimnDmM',
-  description: 'A legendary relic from the 1998 inaugural release. Pristine condition with a grade of 10. Minimal surfacing wear and perfect centering makes this a definitive cornerstone for any elite vault.',
+  price: '$480,000.00',
+  change: '+45.8%',
+  image: 'https://image-cdn.hypb.st/https%3A%2F%2Fhypebeast.com%2Fimage%2F2023%2F03%2F480000-usd-pokemon-tcg-illustrator-pikachu-zero-auction-bids-info-tw.jpg?w=960&cbr=1&q=90&fit=max',
+  description: 'The Holy Grail of Pokémon cards. Originally awarded to winners of the 1997 CoroCoro Comic Illustration Contest, this is one of the rarest and most legendary collectibles in existence.',
   specs: {
-    releaseDate: 'OCT 12, 1998',
-    colorway: 'Void Obsidian / Holo',
-    retailPrice: '$3.99 (MSRP)',
-    stockNumber: '#001-FF-SPEC'
+    releaseDate: 'JAN 1998',
+    colorway: 'Promo / Holofoil',
+    retailPrice: 'N/A (Award)',
+    stockNumber: '#CORO-PIKA-ILLUST'
   },
-  scarcity: 'RARE',
+  scarcity: 'LEGENDARY',
   category: 'Card',
-  matchPercentage: 98.4
+  matchPercentage: 99.9
 };
 
 export const scanningAsset: Asset = {
