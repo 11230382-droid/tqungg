@@ -84,8 +84,8 @@ export default function SearchScreen({ onScanTrigger }: { onScanTrigger: () => v
                   <img src="https://picsum.photos/seed/avatar2/100/100" alt="Avatar" referrerPolicy="no-referrer" />
                 </div>
                 <div>
-                  <h4 className="text-sm font-headline font-bold leading-none">CollectorElite_88</h4>
-                  <p className="text-[10px] text-zinc-500 mt-1 uppercase tracking-wider">2 hours ago • Rare Finds</p>
+                  <h4 className="text-sm font-headline font-bold leading-none truncate">CollectorElite_88</h4>
+                  <p className="text-[10px] text-zinc-500 mt-1 uppercase tracking-wider truncate">2 hours ago • Rare Finds</p>
                 </div>
               </div>
               <h3 className="font-headline font-extrabold text-xl mb-2 text-zinc-900 dark:text-zinc-100">Unboxing the 25th Anniversary Platinum Set</h3>

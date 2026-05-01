@@ -41,10 +41,10 @@ export default function VaultScreen() {
             </div>
           </div>
           
-          <div className="bg-black/60 backdrop-blur-xl px-6 py-4 rounded-2xl border border-white/10 self-center">
+          <div className="bg-black/60 backdrop-blur-xl px-4 py-3 rounded-2xl border border-white/10 self-center max-w-[80%]">
             <div className="flex items-center gap-3">
-              <span className="w-2 h-2 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,1)]"></span>
-              <p className="font-headline font-bold text-white tracking-tight uppercase text-[10px]">Target Locked: {scanningAsset.name.toUpperCase()}</p>
+              <span className="w-2 h-2 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,1)] shrink-0"></span>
+              <p className="font-headline font-bold text-white tracking-tight uppercase text-[9px] truncate">Target Locked: {scanningAsset.name.toUpperCase()}</p>
             </div>
           </div>
         </div>
@@ -70,28 +70,28 @@ export default function VaultScreen() {
                 <Verified size={14} className="text-zinc-900 dark:text-zinc-50" fill="currentColor" fillOpacity={0.2} />
                 <span className="text-[10px] uppercase tracking-widest font-bold text-zinc-900 dark:text-zinc-50">Verified Match</span>
               </div>
-              <h2 className="font-headline text-2xl font-bold text-zinc-900 dark:text-zinc-50 leading-tight tracking-tight">{scanningAsset.name}</h2>
-              <p className="text-zinc-500 text-sm font-medium">{scanningAsset.series}</p>
+              <h2 className="font-headline text-xl md:text-2xl font-bold text-zinc-900 dark:text-zinc-50 leading-tight tracking-tight break-words line-clamp-2">{scanningAsset.name}</h2>
+              <p className="text-zinc-500 text-sm font-medium truncate">{scanningAsset.series}</p>
             </div>
-            <div className="bg-zinc-100 dark:bg-zinc-800 px-3 py-1 rounded-full">
+            <div className="bg-zinc-100 dark:bg-zinc-800 px-3 py-1 rounded-full shrink-0">
               <span className="font-headline font-black text-zinc-900 dark:text-zinc-50 text-[10px]">TIER 1</span>
             </div>
           </div>
 
           {/* Bento Info Grid */}
           <div className="grid grid-cols-2 gap-4 mb-8">
-            <div className="bg-zinc-50 dark:bg-zinc-950 border border-zinc-100 dark:border-zinc-800 p-4 rounded-2xl">
-              <p className="text-[10px] uppercase tracking-widest text-zinc-500 font-bold mb-1">Market Value</p>
-              <div className="flex items-baseline gap-1">
-                <span className="text-2xl font-black font-headline text-zinc-900 dark:text-zinc-50">{scanningAsset.price}</span>
-                <TrendingUp size={14} className="text-green-600" />
+            <div className="bg-zinc-50 dark:bg-zinc-950 border border-zinc-100 dark:border-zinc-800 p-4 rounded-2xl min-w-0 overflow-hidden">
+              <p className="text-[10px] uppercase tracking-widest text-zinc-500 font-bold mb-1 truncate">Market Value</p>
+              <div className="flex items-baseline gap-1 overflow-hidden">
+                <span className="text-xl md:text-2xl font-black font-headline text-zinc-900 dark:text-zinc-50 truncate">{scanningAsset.price}</span>
+                <TrendingUp size={14} className="text-green-600 shrink-0" />
               </div>
             </div>
-            <div className="bg-zinc-50 dark:bg-zinc-950 border border-zinc-100 dark:border-zinc-800 p-4 rounded-2xl">
-              <p className="text-[10px] uppercase tracking-widest text-zinc-500 font-bold mb-1">Scarcity</p>
-              <div className="flex items-baseline gap-1">
-                <span className="text-2xl font-black font-headline text-zinc-900 dark:text-zinc-50">{scanningAsset.scarcity}</span>
-                <span className="text-[10px] font-bold text-zinc-400 ml-1">9.4/10</span>
+            <div className="bg-zinc-50 dark:bg-zinc-950 border border-zinc-100 dark:border-zinc-800 p-4 rounded-2xl min-w-0 overflow-hidden">
+              <p className="text-[10px] uppercase tracking-widest text-zinc-500 font-bold mb-1 truncate">Scarcity</p>
+              <div className="flex items-baseline gap-1 overflow-hidden">
+                <span className="text-xl md:text-2xl font-black font-headline text-zinc-900 dark:text-zinc-50 truncate">{scanningAsset.scarcity}</span>
+                <span className="text-[10px] font-bold text-zinc-400 ml-1 shrink-0">9.4/10</span>
               </div>
             </div>
           </div>
@@ -101,14 +101,14 @@ export default function VaultScreen() {
             <div className="flex items-center justify-between py-3 border-b border-zinc-50 dark:border-zinc-800">
               <div className="flex items-center gap-3">
                 <Palette size={18} className="text-zinc-400" />
-                <span className="text-sm font-medium text-zinc-600 dark:text-zinc-400">Original Spectraflame Paint</span>
+                <span className="text-sm font-medium text-zinc-600 dark:text-zinc-400">Authentic Holofoil Finish</span>
               </div>
               <Verified size={14} className="text-zinc-400" />
             </div>
             <div className="flex items-center justify-between py-3 border-b border-zinc-50 dark:border-zinc-800">
               <div className="flex items-center gap-3">
                 <Factory size={18} className="text-zinc-400" />
-                <span className="text-sm font-medium text-zinc-600 dark:text-zinc-400">Hong Kong Casting</span>
+                <span className="text-sm font-medium text-zinc-600 dark:text-zinc-400">Mint 10 PSA Rating</span>
               </div>
               <Verified size={14} className="text-zinc-400" />
             </div>

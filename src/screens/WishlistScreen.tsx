@@ -85,8 +85,8 @@ export default function WishlistScreen({
                       <div className="w-24 h-24 bg-zinc-50 dark:bg-zinc-950 rounded-2xl p-2 shrink-0">
                          <img src={product.image} alt={product.name} className="w-full h-full object-contain" referrerPolicy="no-referrer" />
                       </div>
-                      <div className="flex flex-col justify-center overflow-hidden">
-                        <span className="text-[9px] font-black uppercase tracking-widest text-zinc-400 mb-1">{product.series}</span>
+                      <div className="flex flex-col justify-center overflow-hidden min-w-0">
+                        <span className="text-[9px] font-black uppercase tracking-widest text-zinc-400 mb-1 truncate">{product.series}</span>
                         <h4 className="font-headline font-black text-lg uppercase leading-tight truncate">{product.name}</h4>
                         <div className="mt-2 flex items-center gap-4">
                            <span className="font-black text-zinc-900 dark:text-zinc-50">{product.price}</span>
@@ -129,7 +129,7 @@ export default function WishlistScreen({
                       <img src={post.image} alt={post.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" referrerPolicy="no-referrer" />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex flex-col justify-end p-4">
                         <h4 className="text-white font-headline font-black text-xs uppercase tracking-tight truncate">{post.title}</h4>
-                        <p className="text-white/60 text-[9px] font-medium uppercase tracking-widest mt-1">@{post.user.username}</p>
+                        <p className="text-white/60 text-[9px] font-medium uppercase tracking-widest mt-1 truncate">@{post.user.username}</p>
                       </div>
                     </motion.div>
                   ))}

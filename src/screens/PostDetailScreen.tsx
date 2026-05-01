@@ -38,9 +38,9 @@ export default function PostDetailScreen({ post, currentUser, onBack, onLikeTogg
         <button onClick={onBack} className="p-2 hover:bg-zinc-50 dark:hover:bg-zinc-900 rounded-full transition-colors">
           <ChevronLeft size={24} />
         </button>
-        <div className="flex items-center gap-3">
-           <img src={post.user.avatar} alt={post.user.username} className="w-8 h-8 rounded-full object-cover" referrerPolicy="no-referrer" />
-           <span className="font-headline font-bold text-sm tracking-tight">{post.user.username}</span>
+        <div className="flex items-center gap-3 overflow-hidden max-w-[200px]">
+           <img src={post.user.avatar} alt={post.user.username} className="w-8 h-8 rounded-full object-cover shrink-0" referrerPolicy="no-referrer" />
+           <span className="font-headline font-bold text-sm tracking-tight truncate">{post.user.username}</span>
         </div>
         <button className="p-2">
           <MoreHorizontal size={20} />
@@ -110,7 +110,7 @@ export default function PostDetailScreen({ post, currentUser, onBack, onLikeTogg
           </div>
 
           <div className="space-y-4">
-            <h1 className="text-2xl font-black font-headline tracking-tighter uppercase leading-tight">{post.title}</h1>
+            <h1 className="text-2xl font-black font-headline tracking-tighter uppercase leading-tight break-words">{post.title}</h1>
             <p className="text-zinc-700 dark:text-zinc-300 leading-relaxed font-medium">
               {post.caption}
             </p>
@@ -132,9 +132,9 @@ export default function PostDetailScreen({ post, currentUser, onBack, onLikeTogg
                 <div key={comment.id} className="flex gap-4">
                   <img src={comment.user.avatar || 'https://picsum.photos/seed/user/100/100'} alt={comment.user.username} className="w-10 h-10 rounded-full object-cover shrink-0" referrerPolicy="no-referrer" />
                   <div className="flex-1">
-                    <div className="flex justify-between items-baseline mb-1">
-                      <span className="font-headline font-bold text-sm tracking-tight">{comment.user.username}</span>
-                      <span className="text-[10px] text-zinc-400 font-bold uppercase">{comment.timestamp}</span>
+                    <div className="flex justify-between items-baseline mb-1 gap-2">
+                      <span className="font-headline font-bold text-sm tracking-tight truncate flex-1">{comment.user.username}</span>
+                      <span className="text-[10px] text-zinc-400 font-bold uppercase shrink-0">{comment.timestamp}</span>
                     </div>
                     <p className="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
                       {comment.text}

@@ -154,7 +154,7 @@ function PostCard({ post, index, isWishlisted, onClick, onWishlistToggle }: Post
               <div className="w-6 h-6 rounded-full bg-zinc-900 border border-zinc-700 flex items-center justify-center text-[8px] text-white font-bold">
                 DR
               </div>
-              <p className="text-[11px] font-bold font-headline">{post.user.username}</p>
+              <p className="text-[11px] font-bold font-headline truncate">{post.user.username}</p>
             </div>
             <p className="text-xs font-medium text-zinc-700 dark:text-zinc-300 line-clamp-2">{post.caption}</p>
             <div className="mt-3 flex items-center gap-3 text-zinc-400">
@@ -179,7 +179,7 @@ function PostCard({ post, index, isWishlisted, onClick, onWishlistToggle }: Post
                   referrerPolicy="no-referrer"
                 />
                 <div>
-                  <p className="text-sm font-bold font-headline leading-none">{post.user.username}</p>
+                  <p className="text-sm font-bold font-headline leading-none truncate">{post.user.username}</p>
                   <p className="text-[10px] text-zinc-500 mt-1">{post.timestamp}</p>
                 </div>
               </div>

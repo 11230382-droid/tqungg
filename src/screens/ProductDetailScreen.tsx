@@ -69,20 +69,20 @@ export default function ProductDetailScreen({ product, onBack, onWishlistToggle 
           </div>
 
           <div className="p-8 md:p-10 border-t border-zinc-100 dark:border-zinc-800">
-            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8 text-center md:text-left">
-              <div>
-                <span className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400 mb-2 block">{product.series}</span>
-                <h1 className="text-3xl md:text-5xl font-black font-headline tracking-tighter uppercase leading-[0.9]">{product.name}</h1>
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8 text-center md:text-left overflow-hidden">
+              <div className="flex-1 min-w-0 px-2">
+                <span className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400 mb-2 block truncate">{product.series}</span>
+                <h1 className="text-3xl md:text-5xl font-black font-headline tracking-tighter uppercase leading-tight break-words lg:line-clamp-2">{product.name}</h1>
               </div>
-              <div className="flex justify-center md:justify-start gap-4 shrink-0">
-                 <div className="text-center">
-                    <p className="text-[11px] font-bold text-zinc-400 uppercase tracking-widest mb-1">Scarcity</p>
-                    <p className="font-headline font-black text-xl">{product.scarcity}</p>
+              <div className="flex justify-center md:justify-start gap-4 shrink-0 overflow-hidden">
+                 <div className="text-center min-w-0">
+                    <p className="text-[11px] font-bold text-zinc-400 uppercase tracking-widest mb-1 truncate">Scarcity</p>
+                    <p className="font-headline font-black text-xl truncate px-1">{product.scarcity}</p>
                  </div>
                  <div className="w-[1px] h-10 bg-zinc-100 dark:bg-zinc-800 self-center"></div>
-                 <div className="text-center">
-                    <p className="text-[11px] font-bold text-zinc-400 uppercase tracking-widest mb-1">Condition</p>
-                    <p className="font-headline font-black text-xl">MINT 10</p>
+                 <div className="text-center min-w-0">
+                    <p className="text-[11px] font-bold text-zinc-400 uppercase tracking-widest mb-1 truncate">Condition</p>
+                    <p className="font-headline font-black text-xl truncate px-1">MINT 10</p>
                  </div>
               </div>
             </div>

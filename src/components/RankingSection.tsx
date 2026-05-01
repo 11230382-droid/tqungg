@@ -74,9 +74,9 @@ export default function RankingSection({ collectors, sellers, onCollectorClick, 
                       referrerPolicy="no-referrer"
                     />
                   </div>
-                  <div className="flex-1">
-                    <p className="text-sm font-bold text-zinc-900 dark:text-zinc-50 font-headline">@{user.username}</p>
-                    <p className="text-[10px] text-zinc-500 font-medium uppercase tracking-wider">{user.role}</p>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-bold text-zinc-900 dark:text-zinc-50 font-headline truncate">@{user.username}</p>
+                    <p className="text-[10px] text-zinc-500 font-medium uppercase tracking-wider truncate">{user.role}</p>
                   </div>
                   <div className="text-right">
                     <div className="flex items-center gap-1 justify-end text-zinc-900 dark:text-zinc-50 font-black">
@@ -105,9 +105,9 @@ export default function RankingSection({ collectors, sellers, onCollectorClick, 
                       referrerPolicy="no-referrer"
                     />
                   </div>
-                  <div className="flex-1">
-                    <p className="text-sm font-bold text-zinc-900 dark:text-zinc-50 font-headline">{seller.name}</p>
-                    <p className="text-[10px] text-zinc-500 font-medium uppercase tracking-wider">{seller.specialty}</p>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-bold text-zinc-900 dark:text-zinc-50 font-headline truncate">{seller.name}</p>
+                    <p className="text-[10px] text-zinc-500 font-medium uppercase tracking-wider truncate">{seller.specialty}</p>
                   </div>
                   <div className="text-right">
                     <div className="flex items-center gap-1 justify-end text-amber-500 font-black">

@@ -51,8 +51,8 @@ export default function ProfileScreen({ user = currentUser, onProductClick, onPo
           )}
         </div>
         <div className="mt-4 text-center">
-          <h1 className="text-2xl font-extrabold tracking-tight text-zinc-900 dark:text-zinc-50">{user.name}</h1>
-          <p className="text-zinc-500 text-sm font-medium mt-1 uppercase tracking-widest leading-none">{user.role || 'Collector'} • {user.location || 'Unknown'}</p>
+          <h1 className="text-2xl font-extrabold tracking-tight text-zinc-900 dark:text-zinc-50 truncate w-full px-4">{user.name}</h1>
+          <p className="text-zinc-500 text-sm font-medium mt-1 uppercase tracking-widest leading-none truncate w-full px-4">{user.role || 'Collector'} • {user.location || 'Unknown'}</p>
           {user.xp && (
             <div className="mt-3 inline-flex items-center gap-2 px-3 py-1 bg-zinc-100 dark:bg-zinc-800 rounded-full">
               <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
@@ -197,8 +197,8 @@ export default function ProfileScreen({ user = currentUser, onProductClick, onPo
                     </div>
                   </div>
                   <div>
-                    <h4 className="font-bold text-zinc-900 dark:text-zinc-50 tracking-tight text-lg leading-tight">{item.name}</h4>
-                    <p className="text-[10px] text-zinc-500 font-black uppercase tracking-widest mt-1">{item.series}</p>
+                    <h4 className="font-bold text-zinc-900 dark:text-zinc-50 tracking-tight text-lg leading-tight truncate">{item.name}</h4>
+                    <p className="text-[10px] text-zinc-500 font-black uppercase tracking-widest mt-1 truncate">{item.series}</p>
                   </div>
                 </div>
               ))}

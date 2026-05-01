@@ -273,9 +273,9 @@ export default function GamesScreen({ collectedItems }: GamesScreenProps) {
                     <div className="w-10 h-10 rounded-full overflow-hidden bg-zinc-200">
                        <img src={entry.user.avatar} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
                     </div>
-                    <div>
-                       <p className="font-bold text-sm">{entry.user.name}</p>
-                       <p className="text-[10px] font-medium text-zinc-400 uppercase tracking-widest">{entry.timestamp}</p>
+                    <div className="min-w-0">
+                       <p className="font-bold text-sm truncate">{entry.user.name}</p>
+                       <p className="text-[10px] font-medium text-zinc-400 uppercase tracking-widest truncate">{entry.timestamp}</p>
                     </div>
                  </div>
 
