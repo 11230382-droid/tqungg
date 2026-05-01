@@ -15,25 +15,7 @@ interface ArticleDetailScreenProps {
 
 export default function ArticleDetailScreen({ article, onBack }: ArticleDetailScreenProps) {
   return (
-    <div className="pt-16 pb-32 min-h-screen bg-white dark:bg-zinc-950">
-      {/* Header */}
-      <div className="fixed top-0 left-0 right-0 z-50 h-16 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-md flex items-center justify-between px-4 border-b border-zinc-100 dark:border-zinc-800">
-        <button onClick={onBack} className="p-2 hover:bg-zinc-50 dark:hover:bg-zinc-900 rounded-full transition-colors">
-          <ChevronLeft size={24} />
-        </button>
-        <span className="font-headline font-black text-[10px] uppercase tracking-widest text-zinc-400 truncate max-w-[200px]">
-          {article.publisher}
-        </span>
-        <div className="flex items-center gap-2">
-          <button className="p-2">
-            <Bookmark size={20} />
-          </button>
-          <button className="p-2">
-            <Share2 size={20} />
-          </button>
-        </div>
-      </div>
-
+    <div className="pt-24 pb-32 min-h-screen bg-white dark:bg-zinc-950">
       <article className="max-w-3xl mx-auto">
         {/* Hero Image */}
         <div className="aspect-video w-full overflow-hidden">

@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import * as React from 'react';
 import { Monitor, Verified, Palette, Factory, Landmark, History, TrendingUp, ChevronLeft, ShieldCheck, ArrowRight } from 'lucide-react';
 import { scanningAsset } from '../mockData';
 import { motion } from 'motion/react';
@@ -11,21 +12,28 @@ interface MuseumScreenProps {
   onBack?: () => void;
   onMuseumClick?: () => void;
   isInMuseum?: boolean;
+  onResultInView?: (inView: boolean) => void;
 }
 
-export default function MuseumScreen({ onBack, onMuseumClick, isInMuseum }: MuseumScreenProps) {
+export default function MuseumScreen({ onBack, onMuseumClick, isInMuseum, onResultInView }: MuseumScreenProps) {
+  const resultRef = React.useRef<HTMLDivElement>(null);
+
+  React.useEffect(() => {
+    const handleScroll = () => {
+      if (resultRef.current && onResultInView) {
+        const rect = resultRef.current.getBoundingClientRect();
+        // If the top of the result section is above the threshold (e.g. 80px from top)
+        onResultInView(rect.top < 100);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [onResultInView]);
+
   return (
     <div className="pt-0 pb-32 min-h-screen bg-zinc-50 dark:bg-zinc-950">
-      {/* Detail Header for Scanning */}
-      <div className="fixed top-0 left-0 right-0 z-50 h-16 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-md flex items-center justify-between px-4 border-b border-zinc-100 dark:border-zinc-800">
-        <button onClick={onBack} className="p-2 hover:bg-zinc-50 dark:hover:bg-zinc-900 rounded-full transition-colors">
-          <ChevronLeft size={24} />
-        </button>
-        <span className="font-headline font-black text-xs uppercase tracking-widest truncate max-w-[200px]">Live Recognition</span>
-        <div className="w-10"></div> {/* Spacer */}
-      </div>
-
-      <div className="pt-16">
+      <div className="pt-0 md:pt-4">
         {/* Viewfinder Section */}
         <section className="relative h-[397px] overflow-hidden bg-black flex items-center justify-center">
         <img 
@@ -74,7 +82,7 @@ export default function MuseumScreen({ onBack, onMuseumClick, isInMuseum }: Muse
       </section>
 
       {/* Result Content */}
-      <section className="px-4 -mt-8 relative z-20 max-w-md mx-auto">
+      <section ref={resultRef} className="px-4 -mt-8 relative z-20 max-w-md mx-auto">
         <motion.div 
           initial={{ y: 50, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}

@@ -6,8 +6,8 @@
 import React from 'react';
 import { MoreHorizontal, Heart, MessageCircle, Share2, Plus, Bookmark } from 'lucide-react';
 import { Post, User, Seller } from '../types';
-import { motion } from 'motion/react';
-import RankingSection from '../components/RankingSection';
+import { motion, AnimatePresence } from 'motion/react';
+import { collectibleCategories } from '../mockData';
 
 interface FeedScreenProps {
   posts: Post[];
@@ -18,6 +18,10 @@ interface FeedScreenProps {
   onSellerClick: (seller: Seller) => void;
   onWishlistToggle?: (postId: string) => void;
   wishlist?: string[];
+  activeCategory?: string;
+  isCategoryMenuOpen?: boolean;
+  onCategorySelect?: (category: string | null) => void;
+  onCloseCategoryMenu?: () => void;
 }
 
 export default function FeedScreen({ 
@@ -28,71 +32,189 @@ export default function FeedScreen({
   onCollectorClick, 
   onSellerClick,
   onWishlistToggle, 
-  wishlist = [] 
+  wishlist = [],
+  activeCategory,
+  isCategoryMenuOpen,
+  onCategorySelect,
+  onCloseCategoryMenu
 }: FeedScreenProps) {
+  const [displayCount, setDisplayCount] = React.useState(activeCategory ? 20 : 6);
+  const [isLoadingMore, setIsLoadingMore] = React.useState(false);
+
+  const filteredPosts = activeCategory 
+    ? posts.filter(p => p.category === activeCategory)
+    : posts;
+
+  const displayedPosts = filteredPosts.slice(0, displayCount);
+
+  // Simple infinite scroll logic
+  React.useEffect(() => {
+    const handleScroll = () => {
+      // Sensitivity threshold for Community Feed vs Category Feed
+      const threshold = activeCategory ? 800 : 500;
+      
+      if (window.innerHeight + window.scrollY >= document.body.offsetHeight - threshold && !isLoadingMore && displayCount < filteredPosts.length) {
+        setIsLoadingMore(true);
+        // Simulate loading delay
+        setTimeout(() => {
+          const increment = activeCategory ? 10 : 4;
+          setDisplayCount(prev => Math.min(prev + increment, filteredPosts.length));
+          setIsLoadingMore(false);
+        }, 600);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [displayCount, filteredPosts.length, isLoadingMore, activeCategory]);
+
+  // Reset display count when category changes
+  React.useEffect(() => {
+    setDisplayCount(activeCategory ? 20 : 6);
+  }, [activeCategory]);
+
   return (
     <div className="pt-20 px-4 md:px-6 max-w-5xl mx-auto pb-32">
-      <section className="mb-8">
-        <h1 className="font-headline font-black text-4xl tracking-tighter mb-2">Community Feed</h1>
-        <p className="text-zinc-500 font-medium">Trending collections from the community today.</p>
+      <section className="mb-8 flex justify-between items-end">
+        <div>
+           <h1 className="font-headline font-black text-4xl tracking-tighter mb-2">
+             {activeCategory ? activeCategory.toUpperCase() : 'COMMUNITY FEED'}
+           </h1>
+           <p className="text-zinc-500 font-medium">
+             {activeCategory ? `Exploring the best of ${activeCategory}.` : 'Trending collections from the community today.'}
+           </p>
+        </div>
+        {activeCategory && (
+          <button 
+            onClick={() => onCategorySelect?.(null)}
+            className="text-[10px] font-black uppercase tracking-widest text-zinc-400 hover:text-zinc-900 transition-colors"
+          >
+            Clear Filter
+          </button>
+        )}
       </section>
 
       {/* Live Discussion Hub */}
-      <section className="mb-10">
-        <div className="flex justify-between items-center mb-4">
-           <h2 className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-900 dark:text-zinc-50">Live Discussion Hub</h2>
-           <div className="flex items-center gap-1.5">
-              <div className="w-1.5 h-1.5 bg-red-500 rounded-full animate-pulse"></div>
-              <span className="text-[10px] font-black uppercase text-red-500">1.2k Active</span>
-           </div>
-        </div>
-        <div className="flex gap-4 overflow-x-auto pb-2 no-scrollbar">
-           {[
-             { name: 'Marcus', img: 'https://picsum.photos/seed/u1/100/100', topic: 'Grail Hunt' },
-             { name: 'Sarah', img: 'https://picsum.photos/seed/u2/100/100', topic: 'Mint Check' },
-             { name: 'Vex', img: 'https://picsum.photos/seed/u3/100/100', topic: 'Market Dip' },
-             { name: 'Kira', img: 'https://picsum.photos/seed/u4/100/100', topic: 'Release' },
-             { name: 'Jace', img: 'https://picsum.photos/seed/u5/100/100', topic: 'Auction' }
-           ].map((live, i) => (
-             <div key={i} className="flex-shrink-0 group cursor-pointer">
-                <div className="relative">
-                  <div className="w-16 h-16 rounded-2xl overflow-hidden p-0.5 bg-gradient-to-tr from-red-500 to-orange-500">
-                    <div className="w-full h-full rounded-[14px] overflow-hidden border-2 border-white dark:border-zinc-950">
-                      <img src={live.img} className="w-full h-full object-cover" alt="User" referrerPolicy="no-referrer" />
-                    </div>
-                  </div>
-                  <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 bg-red-500 text-white text-[7px] font-black px-1.5 py-0.5 rounded uppercase tracking-tighter shadow-lg">Live</div>
-                </div>
-                <p className="text-center text-[9px] font-bold mt-2 text-zinc-900 dark:text-zinc-50 truncate w-16">{live.name}</p>
+      {!activeCategory && (
+        <section className="mb-10">
+          <div className="flex justify-between items-center mb-4">
+             <h2 className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-900 dark:text-zinc-50">Live Discussion Hub</h2>
+             <div className="flex items-center gap-1.5">
+                <div className="w-1.5 h-1.5 bg-red-500 rounded-full animate-pulse"></div>
+                <span className="text-[10px] font-black uppercase text-red-500">1.2k Active</span>
              </div>
-           ))}
-        </div>
-      </section>
+          </div>
+          <div className="flex gap-4 overflow-x-auto pb-2 no-scrollbar">
+             {[
+               { name: 'Marcus', img: 'https://picsum.photos/seed/u1/100/100', topic: 'Grail Hunt' },
+               { name: 'Sarah', img: 'https://picsum.photos/seed/u2/100/100', topic: 'Mint Check' },
+               { name: 'Vex', img: 'https://picsum.photos/seed/u3/100/100', topic: 'Market Dip' },
+               { name: 'Kira', img: 'https://picsum.photos/seed/u4/100/100', topic: 'Release' },
+               { name: 'Jace', img: 'https://picsum.photos/seed/u5/100/100', topic: 'Auction' }
+             ].map((live, i) => (
+               <div key={i} className="flex-shrink-0 group cursor-pointer">
+                  <div className="relative">
+                    <div className="w-16 h-16 rounded-2xl overflow-hidden p-0.5 bg-gradient-to-tr from-red-500 to-orange-500">
+                      <div className="w-full h-full rounded-[14px] overflow-hidden border-2 border-white dark:border-zinc-950">
+                        <img src={live.img} className="w-full h-full object-cover" alt="User" referrerPolicy="no-referrer" />
+                      </div>
+                    </div>
+                    <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 bg-red-500 text-white text-[7px] font-black px-1.5 py-0.5 rounded uppercase tracking-tighter shadow-lg">Live</div>
+                  </div>
+                  <p className="text-center text-[9px] font-bold mt-2 text-zinc-900 dark:text-zinc-50 truncate w-16">{live.name}</p>
+               </div>
+             ))}
+          </div>
+        </section>
+      )}
 
       <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 mb-10">
-        {posts.map((post, index) => (
-          <PostCard 
-            key={post.id} 
-            post={post} 
-            index={index} 
-            isWishlisted={wishlist.includes(post.id)}
-            onClick={() => onPostClick(post)} 
-            onWishlistToggle={onWishlistToggle}
-          />
-        ))}
+        <AnimatePresence mode="popLayout">
+          {displayedPosts.map((post, index) => (
+            <PostCard 
+              key={post.id} 
+              post={post} 
+              index={index} 
+              isWishlisted={wishlist.includes(post.id)}
+              onClick={() => onPostClick(post)} 
+              onWishlistToggle={onWishlistToggle}
+            />
+          ))}
+        </AnimatePresence>
+        {filteredPosts.length === 0 && (
+          <div className="col-span-full py-20 text-center">
+            <p className="text-zinc-400 font-medium italic">No posts found for this category yet.</p>
+          </div>
+        )}
       </div>
 
-      {/* Ranking Section */}
-      <RankingSection 
-        collectors={collectors} 
-        sellers={sellers} 
-        onCollectorClick={onCollectorClick}
-        onSellerClick={onSellerClick}
-      />
+      {isLoadingMore && (
+        <div className="flex justify-center py-10">
+          <div className="w-6 h-6 border-2 border-zinc-200 border-t-zinc-900 rounded-full animate-spin"></div>
+        </div>
+      )}
 
       <button className="fixed right-6 bottom-28 w-14 h-14 bg-zinc-900 dark:bg-zinc-50 text-white dark:text-zinc-900 rounded-full shadow-2xl flex items-center justify-center active:scale-90 transition-transform z-40">
         <Plus size={28} />
       </button>
+
+      {/* Category Selection Overlay */}
+      <AnimatePresence>
+        {isCategoryMenuOpen && (
+          <>
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={onCloseCategoryMenu}
+              className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[60]"
+            />
+            <motion.div
+              initial={{ x: '-100%' }}
+              animate={{ x: 0 }}
+              exit={{ x: '-100%' }}
+              transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+              className="fixed top-0 left-0 bottom-0 w-[85%] max-w-sm bg-white dark:bg-zinc-950 z-[70] shadow-2xl flex flex-col pt-20"
+            >
+              <div className="px-8 mb-8">
+                <h2 className="font-headline font-black text-2xl tracking-tight uppercase">Categories</h2>
+                <p className="text-zinc-500 text-sm font-medium">Vietnamese Collector Interest</p>
+              </div>
+              <div className="flex-1 overflow-y-auto px-4 pb-10">
+                <div className="grid grid-cols-1 gap-2">
+                  {collectibleCategories.map((cat) => (
+                    <button
+                      key={cat.id}
+                      onClick={() => {
+                        onCategorySelect?.(cat.name);
+                        onCloseCategoryMenu?.();
+                      }}
+                      className={`flex items-center gap-4 p-3 rounded-2xl transition-all active:scale-[0.98] ${activeCategory === cat.name ? 'bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800' : 'hover:bg-zinc-50 dark:hover:bg-zinc-900'}`}
+                    >
+                      <div className="w-12 h-12 rounded-full overflow-hidden flex-shrink-0 bg-zinc-200 border border-zinc-100 dark:border-zinc-800">
+                        <img src={cat.icon} alt={cat.name} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+                      </div>
+                      <span className="font-headline font-bold text-sm tracking-tight text-zinc-900 dark:text-zinc-50">{cat.name}</span>
+                    </button>
+                  ))}
+                  <button
+                      onClick={() => {
+                        onCategorySelect?.(null);
+                        onCloseCategoryMenu?.();
+                      }}
+                      className={`flex items-center gap-4 p-3 rounded-2xl transition-all active:scale-[0.98] ${!activeCategory ? 'bg-zinc-100 dark:bg-zinc-900' : 'hover:bg-zinc-50 dark:hover:bg-zinc-900'}`}
+                    >
+                      <div className="w-12 h-12 rounded-full overflow-hidden flex-shrink-0 bg-zinc-200 border border-zinc-100 dark:border-zinc-800 flex items-center justify-center">
+                        <Plus size={20} className="text-zinc-500" />
+                      </div>
+                      <span className="font-headline font-bold text-sm tracking-tight text-zinc-900 dark:text-zinc-50">All Collections</span>
+                    </button>
+                </div>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

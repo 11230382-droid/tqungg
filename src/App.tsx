@@ -20,6 +20,7 @@ import WishlistScreen from './screens/WishlistScreen';
 import GamesScreen from './screens/GamesScreen';
 import { AnimatePresence, motion } from 'motion/react';
 import { posts as mockPosts, currentUser, articles as mockArticles, allAssets, scanningAsset, sellers as mockSellers, topCollectors as mockCollectors } from './mockData';
+import { Bookmark, Share2, MoreHorizontal } from 'lucide-react';
 
 export default function App() {
   const [activeScreen, setActiveScreen] = useState<Screen>('feed');
@@ -34,6 +35,8 @@ export default function App() {
   const [previousScreen, setPreviousScreen] = useState<Screen>('feed');
   const [wishlist, setWishlist] = useState<{ posts: string[], products: string[] }>({ posts: [], products: [] });
   const [museumItemIds, setMuseumItemIds] = useState<string[]>([]);
+  const [activeCategory, setActiveCategory] = useState<string | null>(null);
+  const [isCategoryMenuOpen, setIsCategoryMenuOpen] = useState(false);
 
   // Initialize data
   useEffect(() => {
@@ -68,6 +71,14 @@ export default function App() {
       return c;
     }));
   }, [wishlist.products.length]);
+
+  const [isScanningResultInView, setIsScanningResultInView] = useState(false);
+
+  useEffect(() => {
+    if (activeScreen !== 'scanning') {
+      setIsScanningResultInView(false);
+    }
+  }, [activeScreen]);
 
   const handlePostClick = (post: Post) => {
     setPreviousScreen(activeScreen);
@@ -210,6 +221,10 @@ export default function App() {
             onSellerClick={handleSellerClick}
             onWishlistToggle={togglePostWishlist}
             wishlist={wishlist.posts}
+            activeCategory={activeCategory || undefined}
+            isCategoryMenuOpen={isCategoryMenuOpen}
+            onCategorySelect={(cat) => setActiveCategory(cat)}
+            onCloseCategoryMenu={() => setIsCategoryMenuOpen(false)}
           />
         );
       case 'news':
@@ -219,7 +234,14 @@ export default function App() {
       case 'search':
         return <SearchScreen onScanTrigger={() => setActiveScreen('scanning')} />;
       case 'rewards':
-        return <RewardsScreen />;
+        return (
+          <RewardsScreen 
+            collectors={collectors}
+            sellers={sellers}
+            onCollectorClick={handleCollectorClick}
+            onSellerClick={handleSellerClick}
+          />
+        );
       case 'profile':
         return (
           <ProfileScreen 
@@ -248,6 +270,7 @@ export default function App() {
               setActiveScreen('product-detail');
             }}
             isInMuseum={museumItemIds.includes(scanningAsset.id)}
+            onResultInView={setIsScanningResultInView}
           />
         );
       case 'wishlist':
@@ -323,20 +346,77 @@ export default function App() {
     }
   };
 
-  const isDetailView = activeScreen === 'post-detail' || activeScreen === 'product-detail' || activeScreen === 'article-detail' || activeScreen === 'scanning';
+  const getTitle = () => {
+    if (activeScreen === 'scanning' && !isScanningResultInView) {
+      return "LIVE RECOGNITION";
+    }
+    return "COLLECSEUM";
+  };
+
+  const getHeaderActions = () => {
+    if (activeScreen === 'post-detail' && selectedPost) {
+      return (
+        <div className="flex items-center gap-2">
+          <button 
+             onClick={() => togglePostWishlist(selectedPost.id)}
+             className={`p-2 transition-all ${wishlist.posts.includes(selectedPost.id) ? 'text-zinc-900 dark:text-zinc-50 scale-110' : 'text-zinc-400'}`}
+          >
+            <Bookmark size={20} fill={wishlist.posts.includes(selectedPost.id) ? 'currentColor' : 'none'} />
+          </button>
+          <button className="p-2 text-zinc-900 dark:text-zinc-50">
+            <MoreHorizontal size={20} />
+          </button>
+        </div>
+      );
+    }
+    if (activeScreen === 'product-detail' && selectedProduct) {
+      return (
+        <div className="flex items-center gap-2">
+          <button 
+            onClick={() => toggleProductWishlist(selectedProduct.id)}
+            className={`p-2 transition-all ${wishlist.products.includes(selectedProduct.id) ? 'text-zinc-900 dark:text-zinc-50 scale-110' : 'text-zinc-400'}`}
+          >
+            <Bookmark size={20} fill={wishlist.products.includes(selectedProduct.id) ? 'currentColor' : 'none'} />
+          </button>
+          <button className="p-2 text-zinc-900 dark:text-zinc-50">
+            <Share2 size={20} />
+          </button>
+          <button className="p-2 text-zinc-900 dark:text-zinc-50">
+            <MoreHorizontal size={20} />
+          </button>
+        </div>
+      );
+    }
+    if (activeScreen === 'article-detail') {
+      return (
+        <div className="flex items-center gap-2">
+          <button className="p-2 text-zinc-900 dark:text-zinc-50">
+            <Bookmark size={20} />
+          </button>
+          <button className="p-2 text-zinc-900 dark:text-zinc-50">
+            <Share2 size={20} />
+          </button>
+        </div>
+      );
+    }
+    return undefined;
+  };
+
+  const showBottomNav = activeScreen !== 'post-detail' && activeScreen !== 'product-detail' && activeScreen !== 'scanning' && activeScreen !== 'wishlist';
 
   return (
     <div className="min-h-screen bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-50 font-body selection:bg-zinc-200">
-      {!isDetailView && (
-        <TopAppBar 
-          title="COLLECSEUM" 
-          onSearchClick={() => {
-            setPreviousScreen(activeScreen);
-            setActiveScreen('search');
-          }}
-          notificationCount={2}
-        />
-      )}
+      <TopAppBar 
+        title={getTitle()} 
+        onSearchClick={() => {
+          setPreviousScreen(activeScreen);
+          setActiveScreen('search');
+        }}
+        onBackClick={activeScreen !== 'feed' ? handleBack : (activeCategory ? () => setActiveCategory(null) : undefined)}
+        onMenuClick={activeScreen === 'feed' && !activeCategory ? () => setIsCategoryMenuOpen(prev => !prev) : undefined}
+        rightContent={getHeaderActions()}
+        notificationCount={2}
+      />
       
       <main className="min-h-screen">
         <AnimatePresence mode="wait">
@@ -352,7 +432,7 @@ export default function App() {
         </AnimatePresence>
       </main>
 
-      {!isDetailView && (
+      {showBottomNav && (
         <BottomNavBar 
           activeScreen={activeScreen} 
           onScreenChange={(screen) => {

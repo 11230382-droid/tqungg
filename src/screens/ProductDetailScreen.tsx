@@ -17,29 +17,7 @@ interface ProductDetailScreenProps {
 
 export default function ProductDetailScreen({ product, onBack, onWishlistToggle, onMuseumClick, isInMuseum }: ProductDetailScreenProps) {
   return (
-    <div className="pt-16 pb-32 min-h-screen bg-zinc-50 dark:bg-zinc-950">
-      {/* Detail Header */}
-      <div className="fixed top-0 left-0 right-0 z-50 h-16 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-md flex items-center justify-between px-4 border-b border-zinc-100 dark:border-zinc-800">
-        <button onClick={onBack} className="p-2 hover:bg-zinc-50 dark:hover:bg-zinc-900 rounded-full transition-colors">
-          <ChevronLeft size={24} />
-        </button>
-        <span className="font-headline font-black text-xs uppercase tracking-widest truncate max-w-[200px]">Museum Grade Archive</span>
-        <div className="flex items-center gap-2">
-          <button 
-            onClick={() => onWishlistToggle?.(product.id)}
-            className={`p-2 transition-all ${product.isWishlisted ? 'text-zinc-900 dark:text-zinc-50 scale-110' : 'text-zinc-400'}`}
-          >
-            <Bookmark size={22} fill={product.isWishlisted ? 'currentColor' : 'none'} />
-          </button>
-          <button className="p-2">
-            <Share2 size={20} />
-          </button>
-          <button className="p-2">
-            <MoreHorizontal size={20} />
-          </button>
-        </div>
-      </div>
-
+    <div className="pt-24 pb-32 min-h-screen bg-zinc-50 dark:bg-zinc-950">
       <div className="max-w-4xl mx-auto px-4 md:px-6">
         {/* Product Display Card */}
         <section className="mt-8 mb-10 overflow-hidden rounded-[2.5rem] bg-white dark:bg-zinc-900 shadow-2xl shadow-zinc-200 dark:shadow-none border border-zinc-100 dark:border-zinc-800">

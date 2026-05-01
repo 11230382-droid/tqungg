@@ -32,21 +32,7 @@ export default function PostDetailScreen({ post, currentUser, onBack, onLikeTogg
   const displayImages = post.images && post.images.length > 0 ? post.images : [post.image];
 
   return (
-    <div className="pt-16 pb-32 min-h-screen bg-white dark:bg-zinc-950">
-      {/* Custom Header for Detail View */}
-      <div className="fixed top-0 left-0 right-0 z-50 h-16 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-md flex items-center justify-between px-4 border-b border-zinc-100 dark:border-zinc-800">
-        <button onClick={onBack} className="p-2 hover:bg-zinc-50 dark:hover:bg-zinc-900 rounded-full transition-colors">
-          <ChevronLeft size={24} />
-        </button>
-        <div className="flex items-center gap-3 overflow-hidden max-w-[200px]">
-           <img src={post.user.avatar} alt={post.user.username} className="w-8 h-8 rounded-full object-cover shrink-0" referrerPolicy="no-referrer" />
-           <span className="font-headline font-bold text-sm tracking-tight truncate">{post.user.username}</span>
-        </div>
-        <button className="p-2">
-          <MoreHorizontal size={20} />
-        </button>
-      </div>
-
+    <div className="pt-24 pb-32 min-h-screen bg-white dark:bg-zinc-950">
       <div className="max-w-4xl mx-auto">
         {/* Image Carousel / Display */}
         <section className="relative aspect-square md:aspect-video overflow-hidden bg-zinc-100 dark:bg-zinc-900">

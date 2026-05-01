@@ -44,6 +44,7 @@ export interface Post {
   likedByCurrentUser?: boolean;
   comments: Comment[];
   estimatedValue?: string;
+  category?: string;
   tags?: string[];
   isPremium?: boolean;
   isWishlisted?: boolean;

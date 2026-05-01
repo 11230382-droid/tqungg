@@ -6,8 +6,22 @@
 import { CheckCircle2, TrendingUp, Verified, Lock, Scan, History } from 'lucide-react';
 import { badges, challenges } from '../mockData';
 import { motion } from 'motion/react';
+import { User, Seller } from '../types';
+import RankingSection from '../components/RankingSection';
 
-export default function RewardsScreen() {
+interface RewardsScreenProps {
+  collectors: User[];
+  sellers: Seller[];
+  onCollectorClick: (user: User) => void;
+  onSellerClick: (seller: Seller) => void;
+}
+
+export default function RewardsScreen({ 
+  collectors, 
+  sellers, 
+  onCollectorClick, 
+  onSellerClick 
+}: RewardsScreenProps) {
   return (
     <div className="pt-24 pb-32 px-6 max-w-4xl mx-auto space-y-10">
       {/* Hero Streak Section */}
@@ -151,6 +165,20 @@ export default function RewardsScreen() {
             </div>
           ))}
         </div>
+      </section>
+
+      {/* Leaderboard Section */}
+      <section className="pt-6 border-t border-zinc-100 dark:border-zinc-800">
+        <div className="mb-6">
+          <h2 className="font-headline font-black text-xl tracking-tight text-zinc-900 dark:text-zinc-50">Global Rankings</h2>
+          <p className="text-zinc-500 text-sm font-medium">Top performers in the Collecseum ecosystem.</p>
+        </div>
+        <RankingSection 
+          collectors={collectors} 
+          sellers={sellers} 
+          onCollectorClick={onCollectorClick}
+          onSellerClick={onSellerClick}
+        />
       </section>
     </div>
   );
