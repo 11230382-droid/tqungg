@@ -3,22 +3,90 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import * as React from 'react';
 import { NewsArticle } from '../types';
-import { articles, auctions } from '../mockData';
-import { motion } from 'motion/react';
+import { articles } from '../mockData';
+import { motion, AnimatePresence } from 'motion/react';
 
 interface NewsScreenProps {
   onArticleClick?: (article: NewsArticle) => void;
 }
 
+const NEWS_CATEGORIES = [
+  'All',
+  'Market Trends',
+  'New Releases',
+  'Auctions',
+  'Collector Stories',
+  'Events'
+];
+
 export default function NewsScreen({ onArticleClick }: NewsScreenProps) {
+  const [selectedCategory, setSelectedCategory] = React.useState('All');
+  const [displayCount, setDisplayCount] = React.useState(6);
+  const [isLoadingMore, setIsLoadingMore] = React.useState(false);
+
   const heroArticle = articles.find(a => a.isHero);
-  const otherArticles = articles.filter(a => !a.isHero);
+  
+  const filteredArticles = React.useMemo(() => {
+    let list = articles;
+    if (selectedCategory !== 'All') {
+      list = articles.filter(a => a.category === selectedCategory);
+    }
+    // Filter out hero article from the feed lists to avoid duplication if it's in the category
+    return list.filter(a => a.id !== heroArticle?.id);
+  }, [selectedCategory, heroArticle]);
+
+  const displayedArticles = filteredArticles.slice(0, displayCount);
+
+  // Infinite scroll logic
+  React.useEffect(() => {
+    const handleScroll = () => {
+      if (
+        window.innerHeight + window.scrollY >= document.body.offsetHeight - 500 && 
+        !isLoadingMore && 
+        displayCount < filteredArticles.length
+      ) {
+        setIsLoadingMore(true);
+        setTimeout(() => {
+          setDisplayCount(prev => Math.min(prev + 4, filteredArticles.length));
+          setIsLoadingMore(false);
+        }, 800);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [displayCount, filteredArticles.length, isLoadingMore]);
+
+  // Reset pagination when category changes
+  React.useEffect(() => {
+    setDisplayCount(6);
+  }, [selectedCategory]);
 
   return (
-    <div className="pt-20 pb-32 px-4 max-w-7xl mx-auto space-y-16">
-      {/* Hero Editorial */}
-      {heroArticle && (
+    <div className="pt-20 pb-32 px-4 max-w-7xl mx-auto space-y-12">
+      {/* Category Filter */}
+      <section className="sticky top-16 z-30 -mx-4 px-4 py-4 bg-white/95 dark:bg-zinc-950/95 backdrop-blur-md border-b border-zinc-100 dark:border-zinc-800">
+        <div className="flex gap-2 overflow-x-auto no-scrollbar pb-1">
+          {NEWS_CATEGORIES.map((cat) => (
+            <button
+              key={cat}
+              onClick={() => setSelectedCategory(cat)}
+              className={`px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-widest transition-all whitespace-nowrap
+                ${selectedCategory === cat 
+                  ? 'bg-zinc-900 text-white dark:bg-white dark:text-zinc-900 border-zinc-900 dark:border-white shadow-lg' 
+                  : 'bg-zinc-100 text-zinc-500 dark:bg-zinc-900 dark:text-zinc-400 border-transparent hover:bg-zinc-200 dark:hover:bg-zinc-800'
+                } border`}
+            >
+              {cat}
+            </button>
+          ))}
+        </div>
+      </section>
+
+      {/* Hero Editorial (Only shown in 'All' or if it matches category) */}
+      {(selectedCategory === 'All' || heroArticle?.category === selectedCategory) && heroArticle && (
         <section onClick={() => onArticleClick?.(heroArticle)}>
           <motion.div 
             initial={{ opacity: 0, scale: 0.98 }}
@@ -48,87 +116,69 @@ export default function NewsScreen({ onArticleClick }: NewsScreenProps) {
         </section>
       )}
 
-      {/* Manufacturer Updates */}
+      {/* Articles Feed */}
       <section>
         <div className="flex items-end justify-between mb-8">
           <div>
-            <h3 className="text-3xl font-black tracking-tighter font-headline uppercase">Manufacturer Updates</h3>
-            <p className="text-zinc-500 text-sm">Direct dispatches from the design floor.</p>
+            <h3 className="text-3xl font-black tracking-tighter font-headline uppercase">
+              {selectedCategory === 'All' ? 'Latest Stories' : `${selectedCategory}`}
+            </h3>
+            <p className="text-zinc-500 text-sm">Dispatches from the global collector community.</p>
           </div>
-          <button className="text-[10px] font-black uppercase tracking-widest border-b-2 border-zinc-900 pb-1">
-            View All
-          </button>
         </div>
+        
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {otherArticles.map((article, index) => (
-            <motion.div 
-              key={article.id}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.1 }}
-              className="group cursor-pointer"
-              onClick={() => onArticleClick?.(article)}
-            >
-              <div className="aspect-[4/5] overflow-hidden rounded-lg mb-4 bg-zinc-100 dark:bg-zinc-800">
-                <img 
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" 
-                  src={article.image} 
-                  alt={article.title}
-                  referrerPolicy="no-referrer"
-                />
-              </div>
-              <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest block mb-2">{article.publisher}</span>
-              <h4 className="text-xl font-bold font-headline leading-tight group-hover:underline underline-offset-4 decoration-2">
-                {article.title}
-              </h4>
-            </motion.div>
-          ))}
+          <AnimatePresence mode="popLayout">
+            {displayedArticles.map((article, index) => (
+              <motion.div 
+                key={article.id}
+                layout
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                transition={{ duration: 0.4, delay: index * 0.05 }}
+                className="group cursor-pointer"
+                onClick={() => onArticleClick?.(article)}
+              >
+                <div className="aspect-[4/5] overflow-hidden rounded-lg mb-4 bg-zinc-100 dark:bg-zinc-800">
+                  <img 
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" 
+                    src={article.image} 
+                    alt={article.title}
+                    referrerPolicy="no-referrer"
+                  />
+                </div>
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">{article.publisher}</span>
+                  <span className="text-[9px] font-black px-2 py-0.5 bg-zinc-100 dark:bg-zinc-900 rounded uppercase tracking-tighter">{article.category}</span>
+                </div>
+                <h4 className="text-xl font-bold font-headline leading-tight group-hover:underline underline-offset-4 decoration-2">
+                  {article.title}
+                </h4>
+              </motion.div>
+            ))}
+          </AnimatePresence>
         </div>
-      </section>
 
-      {/* Live Auctions */}
-      <section>
-        <h3 className="text-3xl font-black tracking-tighter font-headline uppercase mb-8">Live Auctions</h3>
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 h-auto">
-          {auctions.map((auction) => (
-            <div key={auction.id} className="md:col-span-2 relative group overflow-hidden rounded-lg bg-zinc-900 aspect-video md:aspect-auto">
-              <img 
-                className="w-full h-full object-cover opacity-70 group-hover:scale-105 transition-transform duration-700" 
-                src={auction.image} 
-                alt={auction.title}
-                referrerPolicy="no-referrer"
-              />
-              <div className="absolute inset-0 p-6 flex flex-col justify-end text-white">
-                <div className="flex items-center space-x-2 mb-2">
-                  <span className="w-2 h-2 bg-red-600 rounded-full animate-pulse"></span>
-                  <span className="text-[10px] font-black uppercase tracking-widest">Ending Soon</span>
-                </div>
-                <h4 className="text-2xl font-black font-headline uppercase leading-none mb-2">{auction.title}</h4>
-                <p className="text-zinc-400 text-sm mb-4">Current Bid: {auction.currentBid}</p>
-                <div className="flex space-x-4">
-                  <button className="bg-white text-black px-4 py-2 text-[10px] font-black uppercase tracking-widest">
-                    Bid Now
-                  </button>
-                </div>
-              </div>
-            </div>
-          ))}
-          
-          <div className="md:col-span-2 grid grid-cols-2 gap-4">
-             <div className="relative group overflow-hidden rounded-lg bg-zinc-100 aspect-square">
-               <img src="https://picsum.photos/seed/m2/400/400" className="w-full h-full object-cover" alt="Museum" referrerPolicy="no-referrer" />
-               <div className="absolute inset-x-0 bottom-0 p-4 bg-gradient-to-t from-black/80 to-transparent">
-                  <h5 className="text-white text-[10px] font-black uppercase tracking-widest">M2 Machines Museum</h5>
-               </div>
-             </div>
-             <div className="relative group overflow-hidden rounded-lg bg-zinc-100 aspect-square">
-               <img src="https://picsum.photos/seed/exotics/400/400" className="w-full h-full object-cover" alt="Exotics" referrerPolicy="no-referrer" />
-               <div className="absolute inset-x-0 bottom-0 p-4 bg-gradient-to-t from-black/80 to-transparent">
-                  <h5 className="text-white text-[10px] font-black uppercase tracking-widest">European Exotics Lot</h5>
-               </div>
-             </div>
+        {/* Loading Indicator */}
+        {isLoadingMore && (
+          <div className="flex justify-center py-12">
+            <div className="w-8 h-8 border-2 border-zinc-900 dark:border-white border-t-transparent dark:border-t-transparent rounded-full animate-spin"></div>
           </div>
-        </div>
+        )}
+
+        {/* Empty State */}
+        {filteredArticles.length === 0 && !isLoadingMore && (
+          <div className="text-center py-24 bg-zinc-50 dark:bg-zinc-900/50 rounded-2xl border border-dashed border-zinc-200 dark:border-zinc-800">
+            <p className="text-zinc-400 font-medium tracking-tight">No articles found in this category.</p>
+            <button 
+              onClick={() => setSelectedCategory('All')}
+              className="mt-4 text-xs font-black uppercase tracking-widest underline underline-offset-4"
+            >
+              Back to all stories
+            </button>
+          </div>
+        )}
       </section>
     </div>
   );

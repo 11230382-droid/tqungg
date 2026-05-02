@@ -238,11 +238,11 @@ export const posts: Post[] = [
     user: currentUser,
     image: 'https://images.unsplash.com/photo-1552346154-21d32810aba3?auto=format&fit=crop&q=80&w=800',
     title: 'Deadstock Archive',
-    caption: 'Just cataloged my deadstock archive from 2012. Some legends in here.',
+    caption: 'Just cataloged my archive from 2012. Some legends in here.',
     timestamp: '1 month ago',
     likes: 2400,
     comments: [],
-    category: 'Sneakers (collectible)',
+    category: 'Action Figures',
     type: 'large'
   },
   {
@@ -297,12 +297,12 @@ export const posts: Post[] = [
     id: 'p15',
     user: topCollectors[1],
     image: 'https://images.unsplash.com/photo-1552346154-21d32810aba3?auto=format&fit=crop&q=80&w=800',
-    title: 'Grail Sneaker Pickups',
+    title: 'Grail Item Pickups',
     caption: 'Finally added these to the rotation. The material quality is 10/10.',
     timestamp: '4 days ago',
     likes: 5100,
     comments: [],
-    category: 'Sneakers (collectible)',
+    category: 'Toys',
     type: 'large'
   },
   {
@@ -422,7 +422,7 @@ export const posts: Post[] = [
     timestamp: '3 weeks ago',
     likes: 1800,
     comments: [],
-    category: 'Sneakers (collectible)',
+    category: 'Action Figures',
     type: 'square'
   },
   {
@@ -566,7 +566,7 @@ export const posts: Post[] = [
     timestamp: '3 days ago',
     likes: 5600,
     comments: [],
-    category: 'Sneakers (collectible)',
+    category: 'Action Figures',
     type: 'large'
   },
   {
@@ -651,9 +651,8 @@ export const collectibleCategories = [
   { id: 'cat5', name: 'Antique', icon: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRXl1nKOuT2XnF7_nX4lSHf3Q-hqaLxyzSEdA&s' },
   { id: 'cat6', name: 'Books', icon: 'https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&q=80&w=400' },
   { id: 'cat7', name: 'Sport Cards', icon: 'https://cms.cdn4vest.com/images/investing-in-sports-cards.width-1028.jpg' },
-  { id: 'cat9', name: 'Comics & Manga', icon: 'https://galvestonislandguide.com/wp-content/uploads/2017/01/Lone-Star-Heroes-galveston-tx-comic-books.jpg' },
-  { id: 'cat10', name: 'Sneakers (collectible)', icon: 'https://images.unsplash.com/photo-1552346154-21d32810aba3?auto=format&fit=crop&q=80&w=400' },
-  { id: 'cat11', name: 'K-Pop Merchandise', icon: 'https://bandwagon-gig-finder.s3.amazonaws.com/system/tinymce/image/file/1519/content_mceu_2875599941607564718033.jpg' },
+  { id: 'cat8', name: 'Comics & Manga', icon: 'https://galvestonislandguide.com/wp-content/uploads/2017/01/Lone-Star-Heroes-galveston-tx-comic-books.jpg' },
+  { id: 'cat9', name: 'K-Pop Merchandise', icon: 'https://bandwagon-gig-finder.s3.amazonaws.com/system/tinymce/image/file/1519/content_mceu_2875599941607564718033.jpg' },
 ];
 
 export const articles: NewsArticle[] = [
@@ -665,6 +664,7 @@ export const articles: NewsArticle[] = [
     publisher: 'Mattel Creations',
     timestamp: 'Official Drop',
     isHero: true,
+    category: 'New Releases',
     content: `
       # The 2024 F1 Championship Box Set: A Masterpiece in 1:64
       
@@ -686,7 +686,7 @@ export const articles: NewsArticle[] = [
     image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBO7TSrlBDA6j1mw_SMIjV-kKCESbvQG5DIFpS0NsoRawUc21HPiSC5YjLT3DauLh9i3cO5VV8r5MoJgl7JC4pHBqo7m4FaKVVod1xPF00sLYH73lU2zB88-TvsNCINH0UAwcPonkyXdaFAYAdnmrM9v1gZ8aTfzPK955jeKWTq9WyXWIrjb5DIY2s0ciPa7lbSHAV86K_vhJaehb10Y0jH3mjVIxMEbXsIXsceh2eWfG34fDzfWy09C8Uj3ZEMeaN6kX87TkBGwJ0',
     publisher: 'Mattel Creations',
     timestamp: '2 hours ago',
-    category: 'Analysis',
+    category: 'Market Trends',
     content: `
       # Why the '67 Camaro Remains the King of Die-Cast
       
@@ -706,6 +706,7 @@ export const articles: NewsArticle[] = [
     image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAqJsMESFT1YCTHLlL-A0Tqe45Rg7_D-M4nzyUSuOijYvmf3RXvDiVB-gWmrdu9GwT-YEIlSgcRoDpTadV2TFQNR-APF33dVcWWxdDIAgZ_j8uMlBvldLXOIkRCON90HvWedXfe0M-YuANznCF5DAlyXYU631XeSS1Kf-Jgq3LNnMVUc3TkimXjNGZ3JU9EpQrZyv5r2071C3-rHiC32LH-OsAtNE_7lhd1Y5UdKIX6eZ7Hj7nvM5zOaz2ZUNgObLk1_ZR575U8jy0',
     publisher: 'Porsche Design',
     timestamp: '4 hours ago',
+    category: 'Collector Stories',
     content: `
       # The Making of the Limited 1:18 scale 911 S/T
       
@@ -713,6 +714,71 @@ export const articles: NewsArticle[] = [
       
       ## 800 Individual Components
       Each model is hand-assembled from over 800 individual parts. The interior features real leather upholstery, and the engine bay is a perfect miniature of the high-revving naturally aspirated flat-six.
+    `
+  },
+  {
+    id: 'a4',
+    title: 'Sotheby\'s Record Breaking Auction',
+    description: 'A collection of rare action figures fetches millions at a single evening auction.',
+    image: 'https://images.unsplash.com/photo-1540759786422-c60d5ecd57ad?auto=format&fit=crop&q=80&w=800',
+    publisher: 'Auction Weekly',
+    timestamp: '1 day ago',
+    category: 'Auctions',
+    content: `
+      # Sotheby's Record Breaking Auction
+      The collectible market continues to soar as a private collection of rare star wars prototypes sold for a combined $4.2 million yesterday.
+    `
+  },
+  {
+    id: 'a5',
+    title: 'Upcoming Collector Expo 2026',
+    description: 'Everything you need to know about the largest gathering of toy collectors in Asia.',
+    image: 'https://images.unsplash.com/photo-1531297484001-80022131f5a1?auto=format&fit=crop&q=80&w=800',
+    publisher: 'Events Horizon',
+    timestamp: '3 days ago',
+    category: 'Events',
+    content: `
+      # Upcoming Collector Expo 2026
+      Get ready for three days of trading, panels, and exclusive reveals. Hosted in the heart of Tokyo.
+    `
+  },
+  {
+    id: 'a6',
+    title: 'Vintage Manga Market Analysis',
+    description: 'Prices for first edition 90s manga are seeing a sharp 20% increase this quarter.',
+    image: 'https://images.unsplash.com/photo-1612033448550-9d6f9c17f07d?auto=format&fit=crop&q=80&w=800',
+    publisher: 'Market Watch',
+    timestamp: '4 days ago',
+    category: 'Market Trends',
+    content: `
+      # Vintage Manga Market Analysis
+      The data shows a consistent upward trend for pristine copies of cult classics.
+    `
+  },
+  {
+    id: 'a7',
+    title: 'The Rise of Designer Toys',
+    description: 'A deep dive into why KAWS and Bearbrick define modern luxury collecting.',
+    image: 'https://images.unsplash.com/photo-1558877385-81a1c7e67d72?auto=format&fit=crop&q=80&w=800',
+    publisher: 'Culture Pulse',
+    timestamp: '1 week ago',
+    category: 'Collector Stories',
+    content: `
+      # The Rise of Designer Toys
+      How vinyl figures transitioned from niche hobbies to centerpieces of contemporary art collections.
+    `
+  },
+  {
+    id: 'a8',
+    title: 'Hot Wheels Elite 64 New Reveal',
+    description: 'The upcoming Lamborghini LB-Works Huracán is poised to be a sell-out.',
+    image: 'https://images.unsplash.com/photo-1594909122845-11baa439b7bf?auto=format&fit=crop&q=80&w=800',
+    publisher: 'Diecast Daily',
+    timestamp: '1 week ago',
+    category: 'New Releases',
+    content: `
+      # Hot Wheels Elite 64 New Reveal
+      High-end detail meets the iconic Orange Track brand once again.
     `
   }
 ];
@@ -729,10 +795,15 @@ export const auctions: Auction[] = [
 ];
 
 export const categories: Category[] = [
-  { id: 'c1', name: 'Action Figures', image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBEjpZWHkgxQG12-KyD49y79-Mtc9lhLsgxaigYEMJHAlZAMPoj8lELsLQRJyJMVS1HvKrLoqlZGoFL6JSjMgAXE6aCmfOnMJhPn9QVpTtGdx2eJeptblf7l96TEBKIq5f2H_w8siVKFkeTgqPOOKY2nnebHseNGyGChFhmOS7sIbX7XpXbNASbKyn7amF4eG9fhOeB8UgC_iSK0fbUffaCefBM4Etx0UgN5q9-pbpMJzvjYH4nPanL4-i4kE6qNI0F3M5DJQii8tI' },
-  { id: 'c2', name: 'Toys', image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBSRMd0ezZhrFWCi6Ty7SW_ofEIhMAvGeumIK40lOYHgMgZ51JrSyXk4YYiFnnGcrD8eBfz-RP-weISuKvhWudnMPai_xNH-DDA1ORwPvrzxJH5UYhsT3JMIWhwYib97VnyBQ3GjysRlTXVR-aqV-V09YwcCDtqECaUshyrvIwNt712nfQBGhGhBcUozUO9Z74nmUjmAYU1000EF01dWV-gkDifE_jhBuS_38243IPwENawF2iOzm0t6FjsOg6WQ57asLb5RpR2uDc' },
-  { id: 'c3', name: 'Idol Merch', image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuC2_yShY4jADbMFqOP8C7YDGSFoa4cr18qejYzjCU-EpPC-8Rc6sFdm2Q7sWnqj9LKyOoILRKPVORRUV0J8pHrnR4r7mHl_RbECZmo8cjJhnnc9PIwkrHyOvdQlQlsKeSEEwpHwsW6Ysu4oHFseYzgQoHvOLMR_SaW9gUUPMIKn5Id40MlSasukL2muCPcKUiGEb33VsIObdKUwxhEgNo8kf2mr72jpw6OigFl5HvSY33CPPIXjHIgrIuQbszIW7NjKT4ZxsTlnjZg' },
-  { id: 'c4', name: 'Trading Cards', image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCWEN0qx-IafOmA2G3LdvFCO5FbC7tWU3fs4t_jYUSNhLkfkc4rJvM-jC-D-zxIrlDYhRqTPSvWsVdgcOt-XHJN10ZI-4zr8bO49XIUJx1bfB1urDFjOivrroRXZk6bQJyy-Yh-J1Ky6_GwOz_XkBx8RFY8Wb82tInJvh4NejDYHct90iQjE51ODOS32SbMmANDTwjyfS0Bz3swFq4e_pzPMZ-5pQMGs-VNSwTVTpX3F8GJeSkfHgZMafm4nDN6KmKYEumH3Xs-cvk' }
+  { id: 'c1', name: 'Action Figures', image: 'https://vader-prod.s3.amazonaws.com/1643639144-spiderman-1643639136.jpg' },
+  { id: 'c2', name: 'Pokémon Cards', image: 'https://www.dexerto.com/cdn-image/wp-content/uploads/2024/05/13/Pokemon-TCG-Twilight-Masquerade-Most-expensive-cards.jpg?width=1200&quality=60&format=auto' },
+  { id: 'c3', name: 'Hot Wheels', image: 'https://dochoitreem.com/wp-content/uploads/2015/03/xe-hot-wheels-co-ban-C4982-1-500x480.png' },
+  { id: 'c4', name: 'Toys', image: 'https://www.heritagestatic.com/c/i/articles/pr/kaws.jpg' },
+  { id: 'c5', name: 'Antique', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRXl1nKOuT2XnF7_nX4lSHf3Q-hqaLxyzSEdA&s' },
+  { id: 'c6', name: 'Books', image: 'https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&q=80&w=400' },
+  { id: 'c7', name: 'Sport Cards', image: 'https://cms.cdn4vest.com/images/investing-in-sports-cards.width-1028.jpg' },
+  { id: 'c8', name: 'Comics & Manga', image: 'https://galvestonislandguide.com/wp-content/uploads/2017/01/Lone-Star-Heroes-galveston-tx-comic-books.jpg' },
+  { id: 'c9', name: 'K-Pop Merchandise', image: 'https://bandwagon-gig-finder.s3.amazonaws.com/system/tinymce/image/file/1519/content_mceu_2875599941607564718033.jpg' }
 ];
 
 export const mainAsset: Asset = {
