@@ -100,12 +100,12 @@ export default function ProfileScreen({ user = currentUser, onProductClick, onPo
         </div>
         <div className="flex gap-4 overflow-x-auto pb-4 no-scrollbar">
           {[
-             { time: '2m ago', img: 'https://picsum.photos/seed/scan_gundam_parts/200/200' },
-             { time: '1h ago', img: 'https://picsum.photos/seed/scan_diecast_chassis/200/200' },
-             { time: '4h ago', img: 'https://picsum.photos/seed/scan_card_hologram/200/200' }
+             { time: '2m ago', img: allAssets[0]?.image },
+             { time: '1h ago', img: allAssets[2]?.image },
+             { time: '4h ago', img: allAssets[3]?.image }
           ].map((scan, i) => (
             <div key={i} className="flex-shrink-0 flex flex-col items-center gap-2">
-              <div className="w-16 h-16 rounded-xl overflow-hidden ring-2 ring-zinc-50 dark:ring-zinc-800 ring-offset-2">
+              <div className="w-16 h-16 rounded-xl overflow-hidden border-2 border-zinc-100 dark:border-zinc-800 relative bg-zinc-50 dark:bg-zinc-900">
                 <img src={scan.img} className="w-full h-full object-cover" alt="Scan" referrerPolicy="no-referrer" />
               </div>
               <span className="text-[9px] font-black text-zinc-400 uppercase tracking-tighter">{scan.time}</span>
