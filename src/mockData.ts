@@ -853,7 +853,7 @@ const figureAsset: Asset = {
   series: 'Neo-Future Legends',
   price: '$450.00',
   change: '+8.5%',
-  image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT_qhlL_VGdxKtsEyDQDeMIBSAcYQk54M6hzQ&s',
+  image: 'https://cmdstore.com/cdn/shop/files/transformers-studio-series-leade-class-exclusive-battle-damaged-optimus-prime-5010996350695-2_1200x1200.jpg?v=1773076623',
   description: 'Hyper-articulated commander unit with interchangeable plasma blades.',
   specs: {
     releaseDate: '2023',
