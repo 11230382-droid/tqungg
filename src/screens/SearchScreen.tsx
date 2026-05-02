@@ -89,7 +89,7 @@ export default function SearchScreen({ onScanTrigger }: { onScanTrigger: () => v
       {/* Category Grid Tiles - COMPACT */}
       <section className="space-y-4">
         <div className="flex justify-between items-end">
-          <h2 className="font-headline font-bold text-xs text-zinc-400 uppercase tracking-widest">Global Categories</h2>
+          <h2 className="font-headline font-bold text-xs text-zinc-400 uppercase tracking-widest">Categories</h2>
           <button className="text-[10px] font-bold text-zinc-500 uppercase hover:underline">View All</button>
         </div>
         <div className="grid grid-cols-4 md:grid-cols-9 gap-3">
