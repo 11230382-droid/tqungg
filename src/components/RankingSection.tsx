@@ -7,6 +7,53 @@ import React, { useState } from 'react';
 import { Trophy, Star, Users, Store, ArrowRight, TrendingUp } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { User, Seller } from '../types';
+import SafeImage from './ui/SafeImage';
+
+interface RankItemProps {
+  index: number;
+  name: string;
+  subtitle: string;
+  img: string;
+  value: string | undefined;
+  valueLabel: string;
+  onClick: () => void;
+  isXP?: boolean;
+}
+
+function RankItem({ index, name, subtitle, img, value, valueLabel, onClick, isXP }: RankItemProps) {
+  const [hasError, setHasError] = useState(false);
+  if (hasError) return null;
+  return (
+    <div 
+      onClick={onClick}
+      className="flex items-center gap-4 p-3 rounded-xl hover:bg-zinc-50 dark:hover:bg-zinc-800/50 cursor-pointer transition-colors group"
+    >
+      <div className="w-6 text-center font-black text-zinc-300 dark:text-zinc-700 italic text-xl">
+        #{index + 1}
+      </div>
+      <div className="w-10 h-10 rounded-full border border-zinc-100 dark:border-zinc-800 overflow-hidden">
+        <SafeImage 
+          src={img} 
+          alt={name} 
+          className="w-full h-full rounded-full"
+          aspectRatio="aspect-square"
+          onLoadError={() => setHasError(true)}
+        />
+      </div>
+      <div className="flex-1 min-w-0">
+        <p className="text-sm font-bold text-zinc-900 dark:text-zinc-50 font-headline truncate">{name.startsWith('@') ? name : `@${name}`}</p>
+        <p className="text-[10px] text-zinc-500 font-medium uppercase tracking-wider truncate">{subtitle}</p>
+      </div>
+      <div className="text-right">
+        <div className={`flex items-center gap-1 justify-end font-black ${isXP ? 'text-zinc-900 dark:text-zinc-50' : 'text-amber-500'}`}>
+          {isXP ? <TrendingUp size={12} className="text-emerald-500" /> : <Star size={12} fill="currentColor" />}
+          <span>{value}</span>
+        </div>
+        <p className="text-[9px] text-zinc-400 font-bold uppercase tracking-tighter">{valueLabel}</p>
+      </div>
+    </div>
+  );
+}
 
 interface RankingSectionProps {
   collectors: User[];
@@ -58,65 +105,30 @@ export default function RankingSection({ collectors, sellers, onCollectorClick, 
           >
             {activeTab === 'collectors' ? (
               sortedCollectors.slice(0, 3).map((user, index) => (
-                <div 
-                  key={user.id}
-                  onClick={() => onCollectorClick(user)}
-                  className="flex items-center gap-4 p-3 rounded-xl hover:bg-zinc-50 dark:hover:bg-zinc-800/50 cursor-pointer transition-colors group"
-                >
-                  <div className="w-6 text-center font-black text-zinc-300 dark:text-zinc-700 italic text-xl">
-                    #{index + 1}
-                  </div>
-                  <div className="w-10 h-10 rounded-full overflow-hidden border border-zinc-100 dark:border-zinc-800">
-                    <img 
-                      src={user.avatar} 
-                      alt={user.name} 
-                      className="w-full h-full object-cover"
-                      referrerPolicy="no-referrer"
-                    />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-bold text-zinc-900 dark:text-zinc-50 font-headline truncate">@{user.username}</p>
-                    <p className="text-[10px] text-zinc-500 font-medium uppercase tracking-wider truncate">{user.role}</p>
-                  </div>
-                  <div className="text-right">
-                    <div className="flex items-center gap-1 justify-end text-zinc-900 dark:text-zinc-50 font-black">
-                      <TrendingUp size={12} className="text-emerald-500" />
-                      <span>{user.xp?.toLocaleString()}</span>
-                    </div>
-                    <p className="text-[9px] text-zinc-400 font-bold uppercase tracking-tighter">TOTAL XP</p>
-                  </div>
-                </div>
+                <RankItem 
+                  key={user.id} 
+                  index={index} 
+                  name={user.username || user.name} 
+                  subtitle={user.role} 
+                  img={user.avatar} 
+                  value={user.xp?.toLocaleString()} 
+                  valueLabel="TOTAL XP" 
+                  onClick={() => onCollectorClick(user)} 
+                  isXP 
+                />
               ))
             ) : (
               sortedSellers.slice(0, 3).map((seller, index) => (
-                <div 
-                  key={seller.id}
-                  onClick={() => onSellerClick(seller)}
-                  className="flex items-center gap-4 p-3 rounded-xl hover:bg-zinc-50 dark:hover:bg-zinc-800/50 cursor-pointer transition-colors group"
-                >
-                  <div className="w-6 text-center font-black text-zinc-300 dark:text-zinc-700 italic text-xl">
-                    #{index + 1}
-                  </div>
-                  <div className="w-10 h-10 rounded-xl overflow-hidden bg-zinc-100 dark:bg-zinc-800">
-                    <img 
-                      src={seller.avatar} 
-                      alt={seller.name} 
-                      className="w-full h-full object-cover"
-                      referrerPolicy="no-referrer"
-                    />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-bold text-zinc-900 dark:text-zinc-50 font-headline truncate">{seller.name}</p>
-                    <p className="text-[10px] text-zinc-500 font-medium uppercase tracking-wider truncate">{seller.specialty}</p>
-                  </div>
-                  <div className="text-right">
-                    <div className="flex items-center gap-1 justify-end text-amber-500 font-black">
-                      <Star size={12} fill="currentColor" />
-                      <span>{seller.rating}</span>
-                    </div>
-                    <p className="text-[9px] text-zinc-400 font-bold uppercase tracking-tighter">{seller.reviewCount} REVIEWS</p>
-                  </div>
-                </div>
+                <RankItem 
+                  key={seller.id} 
+                  index={index} 
+                  name={seller.name} 
+                  subtitle={seller.specialty} 
+                  img={seller.avatar} 
+                  value={seller.rating.toString()} 
+                  valueLabel={`${seller.reviewCount} REVIEWS`} 
+                  onClick={() => onSellerClick(seller)} 
+                />
               ))
             )}
           </motion.div>

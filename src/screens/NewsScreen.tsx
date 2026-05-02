@@ -7,6 +7,7 @@ import * as React from 'react';
 import { NewsArticle } from '../types';
 import { articles } from '../mockData';
 import { motion, AnimatePresence } from 'motion/react';
+import SafeImage from '../components/ui/SafeImage';
 
 interface NewsScreenProps {
   onArticleClick?: (article: NewsArticle) => void;
@@ -21,6 +22,73 @@ const NEWS_CATEGORIES = [
   'Events'
 ];
 
+function HeroSection({ heroArticle, onClick }: { heroArticle: NewsArticle, onClick: () => void }) {
+  const [hasError, setHasError] = React.useState(false);
+  if (hasError) return null;
+  return (
+    <section onClick={onClick}>
+      <motion.div 
+        initial={{ opacity: 0, scale: 0.98 }}
+        animate={{ opacity: 1, scale: 1 }}
+        className="relative group cursor-pointer overflow-hidden rounded-xl bg-black"
+      >
+        <SafeImage 
+          className="w-full h-[500px] group-hover:scale-105 transition-transform duration-700 opacity-80" 
+          src={heroArticle.image} 
+          alt={heroArticle.title}
+          aspectRatio="aspect-video"
+          onLoadError={() => setHasError(true)}
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent z-10 pointer-events-none"></div>
+        <div className="absolute bottom-0 left-0 p-8 md:p-12 z-20">
+          <span className="inline-block px-3 py-1 bg-white text-black text-[10px] font-black tracking-widest uppercase mb-4 font-label">
+            {heroArticle.timestamp}
+          </span>
+          <h2 className="text-4xl md:text-6xl font-black text-white tracking-tighter leading-none mb-4 font-headline uppercase">
+            {heroArticle.title.split(' ').slice(0, 3).join(' ')} <br/> {heroArticle.title.split(' ').slice(3).join(' ')}
+          </h2>
+          <p className="text-zinc-300 text-lg max-w-xl font-light mb-6">{heroArticle.description}</p>
+          <button className="bg-white text-black px-8 py-4 font-black uppercase text-xs tracking-widest hover:bg-zinc-200 transition-colors pointer-events-auto">
+            Read Article
+          </button>
+        </div>
+      </motion.div>
+    </section>
+  );
+}
+
+function ArticleCard({ article, index, onClick }: { article: NewsArticle, index: number, onClick: () => void }) {
+  const [hasError, setHasError] = React.useState(false);
+  if (hasError) return null;
+  return (
+    <motion.div 
+      layout
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, scale: 0.95 }}
+      transition={{ duration: 0.4, delay: index * 0.05 }}
+      className="group cursor-pointer"
+      onClick={onClick}
+    >
+      <div className="aspect-[4/5] rounded-lg mb-4 overflow-hidden">
+         <SafeImage 
+          className="group-hover:scale-110 transition-transform duration-500" 
+          src={article.image} 
+          alt={article.title}
+          aspectRatio="aspect-[4/5]"
+          onLoadError={() => setHasError(true)}
+        />
+      </div>
+      <div className="flex items-center justify-between mb-2">
+        <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">{article.publisher}</span>
+        <span className="text-[9px] font-black px-2 py-0.5 bg-zinc-100 dark:bg-zinc-900 rounded uppercase tracking-tighter">{article.category}</span>
+      </div>
+      <h4 className="text-xl font-bold font-headline leading-tight group-hover:underline underline-offset-4 decoration-2">
+        {article.title}
+      </h4>
+    </motion.div>
+  );
+}
 export default function NewsScreen({ onArticleClick }: NewsScreenProps) {
   const [selectedCategory, setSelectedCategory] = React.useState('All');
   const [displayCount, setDisplayCount] = React.useState(6);
@@ -87,33 +155,7 @@ export default function NewsScreen({ onArticleClick }: NewsScreenProps) {
 
       {/* Hero Editorial (Only shown in 'All' or if it matches category) */}
       {(selectedCategory === 'All' || heroArticle?.category === selectedCategory) && heroArticle && (
-        <section onClick={() => onArticleClick?.(heroArticle)}>
-          <motion.div 
-            initial={{ opacity: 0, scale: 0.98 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="relative group cursor-pointer overflow-hidden rounded-xl bg-black"
-          >
-            <img 
-              className="w-full h-[500px] object-cover opacity-80 group-hover:scale-105 transition-transform duration-700" 
-              src={heroArticle.image} 
-              alt={heroArticle.title}
-              referrerPolicy="no-referrer"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent"></div>
-            <div className="absolute bottom-0 left-0 p-8 md:p-12">
-              <span className="inline-block px-3 py-1 bg-white text-black text-[10px] font-black tracking-widest uppercase mb-4 font-label">
-                {heroArticle.timestamp}
-              </span>
-              <h2 className="text-4xl md:text-6xl font-black text-white tracking-tighter leading-none mb-4 font-headline uppercase">
-                {heroArticle.title.split(' ').slice(0, 3).join(' ')} <br/> {heroArticle.title.split(' ').slice(3).join(' ')}
-              </h2>
-              <p className="text-zinc-300 text-lg max-w-xl font-light mb-6">{heroArticle.description}</p>
-              <button className="bg-white text-black px-8 py-4 font-black uppercase text-xs tracking-widest hover:bg-zinc-200 transition-colors">
-                Read Article
-              </button>
-            </div>
-          </motion.div>
-        </section>
+        <HeroSection heroArticle={heroArticle} onClick={() => onArticleClick?.(heroArticle)} />
       )}
 
       {/* Articles Feed */}
@@ -130,32 +172,12 @@ export default function NewsScreen({ onArticleClick }: NewsScreenProps) {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <AnimatePresence mode="popLayout">
             {displayedArticles.map((article, index) => (
-              <motion.div 
-                key={article.id}
-                layout
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, scale: 0.95 }}
-                transition={{ duration: 0.4, delay: index * 0.05 }}
-                className="group cursor-pointer"
-                onClick={() => onArticleClick?.(article)}
-              >
-                <div className="aspect-[4/5] overflow-hidden rounded-lg mb-4 bg-zinc-100 dark:bg-zinc-800">
-                  <img 
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" 
-                    src={article.image} 
-                    alt={article.title}
-                    referrerPolicy="no-referrer"
-                  />
-                </div>
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">{article.publisher}</span>
-                  <span className="text-[9px] font-black px-2 py-0.5 bg-zinc-100 dark:bg-zinc-900 rounded uppercase tracking-tighter">{article.category}</span>
-                </div>
-                <h4 className="text-xl font-bold font-headline leading-tight group-hover:underline underline-offset-4 decoration-2">
-                  {article.title}
-                </h4>
-              </motion.div>
+              <ArticleCard 
+                key={article.id} 
+                article={article} 
+                index={index} 
+                onClick={() => onArticleClick?.(article)} 
+              />
             ))}
           </AnimatePresence>
         </div>

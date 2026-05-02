@@ -120,12 +120,13 @@ export const posts: Post[] = [
     },
     image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBOE8Is3atjF_Y6Eku5Lq0xcGAncc2kmY12JX92u1e4gEG4463cxp1vQbsVD6-eQ0Qz5cyQhS2H9U7PeH3kIchxwSwBawp7Vqon7JOTLyidncU2CXSOP8faKkVYKlVR0ZVgy1xiLEv1tKU7iBJP4YlN-4UnMHZt2OIBfZp4YrMyBdfbqKbFjuwiEuyK7EfcjP9mnu1GIcaHEpi65Lbg6IioOlAPMGyKSViP27nwM2bRKubeHCWkLglM4DIkgPBG3YP0LayRIixe_rI',
     title: 'M2 Machines Custom',
-    caption: 'Clean build. Custom wheels and lowered suspension for a more aggressive stance.',
+    caption: 'Anyone know if this is a rare variant? Found it in a local shop. The wheel color seems different from the standard release.',
     timestamp: '4 hours ago',
     likes: 450,
     comments: [],
     estimatedValue: '$35.00',
     category: 'Hot Wheels',
+    isQuestion: true,
     type: 'square'
   },
   {
@@ -177,12 +178,13 @@ export const posts: Post[] = [
     },
     image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBPH5qSIHumI_zhcg7Kd6k2fDbdBh7zxnjkSKxRXOsw82-U6N_Kc2wkB3n-JdrrEmwfQCzTK4s1q2U_DIJf6vY--rUJ_AfIVWsuX9tUOiVOidWz4fo0xa2aAHnFF1tHj_XgE5zu5CsJLuO3DaRVYkt86IHlw-nVNsKcLA52wAajgPh5jY3wnCN1nLO8L75dWTbeSAlHpQCUTBuoRZbLHr2O76YIWpsjxo1xBSsxlGaGT-s8D-BwUWA3hbZaQMBWemp3V_LVy0w2sI8',
     title: 'Vintage Finds',
-    caption: 'Just hit the local flea market and found these gems from \'85. Original packaging too!',
+    caption: 'How much is this worth? Just hit the local flea market and found these gems from \'85. Original packaging too!',
     timestamp: '3 days ago',
     likes: 560,
     comments: [],
     estimatedValue: '$200.00',
     category: 'Antique',
+    isQuestion: true,
     type: 'wide'
   },
   {
@@ -598,11 +600,12 @@ export const posts: Post[] = [
     user: currentUser,
     image: 'https://images.unsplash.com/photo-1512626120412-fab41fc844a1?auto=format&fit=crop&q=80&w=800',
     title: 'Retro Gaming Treasures',
-    caption: 'Unboxing some mint condition classics from the early 90s.',
+    caption: 'Is this vintage set worth anything today? Just found these mint condition classics from the early 90s in my attic.',
     timestamp: '4 days ago',
     likes: 2500,
     comments: [],
     category: 'Toys',
+    isQuestion: true,
     type: 'large'
   },
   {
@@ -644,10 +647,10 @@ export const posts: Post[] = [
 ];
 
 export const collectibleCategories = [
-  { id: 'cat1', name: 'Action Figures', icon: 'https://vader-prod.s3.amazonaws.com/1643639144-spiderman-1643639136.jpg' },
-  { id: 'cat2', name: 'Pokémon Cards', icon: 'https://www.dexerto.com/cdn-image/wp-content/uploads/2024/05/13/Pokemon-TCG-Twilight-Masquerade-Most-expensive-cards.jpg?width=1200&quality=60&format=auto' },
-  { id: 'cat3', name: 'Hot Wheels', icon: 'https://dochoitreem.com/wp-content/uploads/2015/03/xe-hot-wheels-co-ban-C4982-1-500x480.png' },
-  { id: 'cat4', name: 'Toys', icon: 'https://www.heritagestatic.com/c/i/articles/pr/kaws.jpg' },
+  { id: 'cat1', name: 'Action Figures', icon: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBEjpZWHkgxQG12-KyD49y79-Mtc9lhLsgxaigYEMJHAlZAMPoj8lELsLQRJyJMVS1HvKrLoqlZGoFL6JSjMgAXE6aCmfOnMJhPn9QVpTtGdx2eJeptblf7l96TEBKIq5f2H_w8siVKFkeTgqPOOKY2nnebHseNGyGChFhmOS7sIbX7XpXbNASbKyn7amF4eG9fhOeB8UgC_iSK0fbUffaCefBM4Etx0UgN5q9-pbpMJzvjYH4nPanL4-i4kE6qNI0F3M5DJQii8tI' },
+  { id: 'cat2', name: 'Pokémon Cards', icon: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCWEN0qx-IafOmA2G3LdvFCO5FbC7tWU3fs4t_jYUSNhLkfkc4rJvM-jC-D-zxIrlDYhRqTPSvWsVdgcOt-XHJN10ZI-4zr8bO49XIUJx1bfB1urDFjOivrroRXZk6bQJyy-Yh-J1Ky6_GwOz_XkBx8RFY8Wb82tInJvh4NejDYHct90iQjE51ODOS32SbMmANDTwjyfS0Bz3swFq4e_pzPMZ-5pQMGs-VNSwTVTpX3F8GJeSkfHgZMafm4nDN6KmKYEumH3Xs-cvk' },
+  { id: 'cat3', name: 'Hot Wheels', icon: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBSRMd0ezZhrFWCi6Ty7SW_ofEIhMAvGeumIK40lOYHgMgZ51JrSyXk4YYiFnnGcrD8eBfz-RP-weISuKvhWudnMPai_xNH-DDA1ORwPvrzxJH5UYhsT3JMIWhwYib97VnyBQ3GjysRlTXVR-aqV-V09YwcCDtqECaUshyrvIwNt712nfQBGhGhBcUozUO9Z74nmUjmAYU1000EF01dWV-gkDifE_jhBuS_38243IPwENawF2iOzm0t6FjsOg6WQ57asLb5RpR2uDc' },
+  { id: 'cat4', name: 'Toys', icon: 'https://lh3.googleusercontent.com/aida-public/AB6AXuC2_yShY4jADbMFqOP8C7YDGSFoa4cr18qejYzjCU-EpPC-8Rc6sFdm2Q7sWnqj9LKyOoILRKPVORRUV0J8pHrnR4r7mHl_RbECZmo8cjJhnnc9PIwkrHyOvdQlQlsKeSEEwpHwsW6Ysu4oHFseYzgQoHvOLMR_SaW9gUUPMIKn5Id40MlSasukL2muCPcKUiGEb33VsIObdKUwxhEgNo8kf2mr72jpw6OigFl5HvSY33CPPIXjHIgrIuQbszIW7NjKT4ZxsTlnjZg' },
   { id: 'cat5', name: 'Antique', icon: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRXl1nKOuT2XnF7_nX4lSHf3Q-hqaLxyzSEdA&s' },
   { id: 'cat6', name: 'Books', icon: 'https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&q=80&w=400' },
   { id: 'cat7', name: 'Sport Cards', icon: 'https://cms.cdn4vest.com/images/investing-in-sports-cards.width-1028.jpg' },
@@ -795,10 +798,10 @@ export const auctions: Auction[] = [
 ];
 
 export const categories: Category[] = [
-  { id: 'c1', name: 'Action Figures', image: 'https://vader-prod.s3.amazonaws.com/1643639144-spiderman-1643639136.jpg' },
-  { id: 'c2', name: 'Pokémon Cards', image: 'https://www.dexerto.com/cdn-image/wp-content/uploads/2024/05/13/Pokemon-TCG-Twilight-Masquerade-Most-expensive-cards.jpg?width=1200&quality=60&format=auto' },
-  { id: 'c3', name: 'Hot Wheels', image: 'https://dochoitreem.com/wp-content/uploads/2015/03/xe-hot-wheels-co-ban-C4982-1-500x480.png' },
-  { id: 'c4', name: 'Toys', image: 'https://www.heritagestatic.com/c/i/articles/pr/kaws.jpg' },
+  { id: 'c1', name: 'Action Figures', image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBEjpZWHkgxQG12-KyD49y79-Mtc9lhLsgxaigYEMJHAlZAMPoj8lELsLQRJyJMVS1HvKrLoqlZGoFL6JSjMgAXE6aCmfOnMJhPn9QVpTtGdx2eJeptblf7l96TEBKIq5f2H_w8siVKFkeTgqPOOKY2nnebHseNGyGChFhmOS7sIbX7XpXbNASbKyn7amF4eG9fhOeB8UgC_iSK0fbUffaCefBM4Etx0UgN5q9-pbpMJzvjYH4nPanL4-i4kE6qNI0F3M5DJQii8tI' },
+  { id: 'c2', name: 'Pokémon Cards', image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCWEN0qx-IafOmA2G3LdvFCO5FbC7tWU3fs4t_jYUSNhLkfkc4rJvM-jC-D-zxIrlDYhRqTPSvWsVdgcOt-XHJN10ZI-4zr8bO49XIUJx1bfB1urDFjOivrroRXZk6bQJyy-Yh-J1Ky6_GwOz_XkBx8RFY8Wb82tInJvh4NejDYHct90iQjE51ODOS32SbMmANDTwjyfS0Bz3swFq4e_pzPMZ-5pQMGs-VNSwTVTpX3F8GJeSkfHgZMafm4nDN6KmKYEumH3Xs-cvk' },
+  { id: 'c3', name: 'Hot Wheels', image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBSRMd0ezZhrFWCi6Ty7SW_ofEIhMAvGeumIK40lOYHgMgZ51JrSyXk4YYiFnnGcrD8eBfz-RP-weISuKvhWudnMPai_xNH-DDA1ORwPvrzxJH5UYhsT3JMIWhwYib97VnyBQ3GjysRlTXVR-aqV-V09YwcCDtqECaUshyrvIwNt712nfQBGhGhBcUozUO9Z74nmUjmAYU1000EF01dWV-gkDifE_jhBuS_38243IPwENawF2iOzm0t6FjsOg6WQ57asLb5RpR2uDc' },
+  { id: 'c4', name: 'Toys', image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuC2_yShY4jADbMFqOP8C7YDGSFoa4cr18qejYzjCU-EpPC-8Rc6sFdm2Q7sWnqj9LKyOoILRKPVORRUV0J8pHrnR4r7mHl_RbECZmo8cjJhnnc9PIwkrHyOvdQlQlsKeSEEwpHwsW6Ysu4oHFseYzgQoHvOLMR_SaW9gUUPMIKn5Id40MlSasukL2muCPcKUiGEb33VsIObdKUwxhEgNo8kf2mr72jpw6OigFl5HvSY33CPPIXjHIgrIuQbszIW7NjKT4ZxsTlnjZg' },
   { id: 'c5', name: 'Antique', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRXl1nKOuT2XnF7_nX4lSHf3Q-hqaLxyzSEdA&s' },
   { id: 'c6', name: 'Books', image: 'https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&q=80&w=400' },
   { id: 'c7', name: 'Sport Cards', image: 'https://cms.cdn4vest.com/images/investing-in-sports-cards.width-1028.jpg' },

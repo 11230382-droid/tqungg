@@ -7,6 +7,7 @@ import React, { useState } from 'react';
 import { ChevronLeft, RotateCcw, Save, Share2, Crown, Sparkles } from 'lucide-react';
 import { motion } from 'motion/react';
 import { Asset } from '../../types';
+import SafeImage from '../ui/SafeImage';
 
 interface KitbashGameProps {
   items: Asset[];
@@ -50,21 +51,21 @@ export default function KitbashGame({ items, onBack, onSaveScore }: KitbashGameP
                   key={currentHeadImg}
                   initial={{ scale: 0.8, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
-                  src={currentHeadImg} 
+                  src={currentHeadImg || null} 
                   className="w-32 h-32 rounded-full border-4 border-white dark:border-zinc-800 object-cover z-30 shadow-xl" 
                 />
                 <motion.img 
                   key={currentTorsoImg}
                   initial={{ scale: 0.8, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
-                  src={currentTorsoImg} 
+                  src={currentTorsoImg || null} 
                   className="w-48 h-48 rounded-3xl border-4 border-white dark:border-zinc-800 object-cover z-20 shadow-lg" 
                 />
                 <motion.img 
                   key={currentLegsImg}
                   initial={{ scale: 0.8, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
-                  src={currentLegsImg} 
+                  src={currentLegsImg || null} 
                   className="w-56 h-56 rounded-full border-4 border-white dark:border-zinc-800 object-cover z-10 shadow-md" 
                 />
               </div>
@@ -98,7 +99,7 @@ export default function KitbashGame({ items, onBack, onSaveScore }: KitbashGameP
                       onClick={() => setSelectedHead(i)}
                       className={`aspect-square rounded-xl border-2 transition-all overflow-hidden ${selectedHead === i ? 'border-purple-500 scale-105' : 'border-zinc-200 dark:border-zinc-800 opacity-60'}`}
                     >
-                      <img src={item.image} className="w-full h-full object-cover" />
+                      <SafeImage src={item.image} alt={item.name} className="w-full h-full" aspectRatio="aspect-square" />
                     </button>
                   ))}
                 </div>
@@ -113,7 +114,7 @@ export default function KitbashGame({ items, onBack, onSaveScore }: KitbashGameP
                       onClick={() => setSelectedTorso(i)}
                       className={`aspect-square rounded-xl border-2 transition-all overflow-hidden ${selectedTorso === i ? 'border-purple-500 scale-105' : 'border-zinc-200 dark:border-zinc-800 opacity-60'}`}
                     >
-                      <img src={item.image} className="w-full h-full object-cover" />
+                      <SafeImage src={item.image} alt={item.name} className="w-full h-full" aspectRatio="aspect-square" />
                     </button>
                   ))}
                 </div>
@@ -128,7 +129,7 @@ export default function KitbashGame({ items, onBack, onSaveScore }: KitbashGameP
                       onClick={() => setSelectedLegs(i)}
                       className={`aspect-square rounded-xl border-2 transition-all overflow-hidden ${selectedLegs === i ? 'border-purple-500 scale-105' : 'border-zinc-200 dark:border-zinc-800 opacity-60'}`}
                     >
-                      <img src={item.image} className="w-full h-full object-cover" />
+                      <SafeImage src={item.image} alt={item.name} className="w-full h-full" aspectRatio="aspect-square" />
                     </button>
                   ))}
                 </div>

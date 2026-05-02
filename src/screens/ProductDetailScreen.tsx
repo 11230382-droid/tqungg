@@ -3,9 +3,11 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import React, { useState } from 'react';
 import { Asset } from '../types';
 import { ChevronLeft, Share2, MoreHorizontal, ArrowRight, ShieldCheck, Factory, Landmark, History, TrendingUp, Palette, Bookmark } from 'lucide-react';
 import { motion } from 'motion/react';
+import SafeImage from '../components/ui/SafeImage';
 
 interface ProductDetailScreenProps {
   product: Asset;
@@ -16,17 +18,36 @@ interface ProductDetailScreenProps {
 }
 
 export default function ProductDetailScreen({ product, onBack, onWishlistToggle, onMuseumClick, isInMuseum }: ProductDetailScreenProps) {
+  const [hasError, setHasError] = useState(false);
+  
+  if (hasError) {
+    return (
+      <div className="pt-32 pb-32 min-h-screen bg-zinc-50 dark:bg-zinc-950 flex flex-col items-center justify-center text-center px-6">
+        <div className="bg-red-50 dark:bg-red-950/20 text-red-600 p-4 rounded-full mb-6">
+          <ShieldCheck size={48} />
+        </div>
+        <h2 className="text-3xl font-black font-headline uppercase tracking-tighter mb-4">Security Redaction</h2>
+        <p className="text-zinc-500 max-w-md mx-auto mb-8 font-medium">This item's visual asset failed verification or is missing. To maintain authenticity standards, the profile has been hidden.</p>
+        <button onClick={onBack} className="bg-zinc-900 dark:bg-zinc-50 text-white dark:text-zinc-900 px-10 py-5 rounded-2xl font-black uppercase tracking-widest text-xs active:scale-95 transition-all">
+          Return to Feed
+        </button>
+      </div>
+    );
+  }
+
   return (
     <div className="pt-24 pb-32 min-h-screen bg-zinc-50 dark:bg-zinc-950">
       <div className="max-w-4xl mx-auto px-4 md:px-6">
         {/* Product Display Card */}
         <section className="mt-8 mb-10 overflow-hidden rounded-[2.5rem] bg-white dark:bg-zinc-900 shadow-2xl shadow-zinc-200 dark:shadow-none border border-zinc-100 dark:border-zinc-800">
           <div className="aspect-square relative p-8 md:p-12 flex items-center justify-center bg-zinc-50 dark:bg-zinc-950/50">
-            <img 
+            <SafeImage 
               src={product.image} 
               alt={product.name} 
-              className="w-full h-full object-contain hover:scale-105 transition-transform duration-500 drop-shadow-2xl"
-              referrerPolicy="no-referrer"
+              className="w-full h-full hover:scale-105 transition-transform duration-500 drop-shadow-2xl"
+              style={{ objectFit: 'contain' }}
+              aspectRatio="aspect-square"
+              onLoadError={() => setHasError(true)}
             />
             
             <div className="absolute top-8 left-8">
@@ -138,7 +159,7 @@ export default function ProductDetailScreen({ product, onBack, onWishlistToggle,
              <div className="flex items-center justify-between p-4 bg-zinc-50 dark:bg-zinc-950 rounded-2xl border border-zinc-100 dark:border-zinc-800">
                 <div className="flex items-center gap-4">
                    <div className="w-12 h-12 bg-white dark:bg-zinc-900 rounded-full flex items-center justify-center overflow-hidden border border-zinc-200">
-                      <img src="https://picsum.photos/seed/curator/100/100" alt="Curator" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+                      <SafeImage src="https://picsum.photos/seed/curator/100/100" alt="Curator" className="w-full h-full" aspectRatio="aspect-square" />
                    </div>
                    <div>
                       <p className="text-[10px] font-black uppercase tracking-widest text-zinc-400">Current Custodian</p>

@@ -4,6 +4,7 @@
  */
 
 import React from 'react';
+import SafeImage from './ui/SafeImage';
 
 export default function LiveDiscussion() {
   const participants = [
@@ -28,8 +29,8 @@ export default function LiveDiscussion() {
            <div key={i} className="flex-shrink-0 group cursor-pointer active:scale-95 transition-transform">
               <div className="relative">
                 <div className="w-16 h-16 rounded-2xl overflow-hidden p-0.5 bg-gradient-to-tr from-red-500 to-orange-500">
-                  <div className="w-full h-full rounded-[14px] overflow-hidden border-2 border-white dark:border-zinc-950">
-                    <img src={live.img} className="w-full h-full object-cover" alt={live.name} referrerPolicy="no-referrer" />
+                  <div className="w-full h-full rounded-[14px] border-2 border-white dark:border-zinc-950 overflow-hidden">
+                    <SafeImage src={live.img} className="w-full h-full" alt={live.name} aspectRatio="aspect-square" />
                   </div>
                 </div>
                 <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 bg-red-500 text-white text-[7px] font-black px-1.5 py-0.5 rounded uppercase tracking-tighter shadow-lg">Live</div>

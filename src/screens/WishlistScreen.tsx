@@ -3,9 +3,83 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import React from 'react';
 import { Post, Asset } from '../types';
-import { Bookmark, ChevronLeft, ArrowRight, Grid } from 'lucide-react';
-import { motion, AnimatePresence } from 'motion/react';
+import { Bookmark, Grid } from 'lucide-react';
+import { motion } from 'motion/react';
+import SafeImage from '../components/ui/SafeImage';
+
+function ProductWishlistItem({ product, onClick, onToggle }: { product: Asset, onClick: () => void, onToggle: () => void }) {
+  const [hasError, setHasError] = React.useState(false);
+  if (hasError) return null;
+  return (
+    <motion.div 
+      layout
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, scale: 0.9 }}
+      onClick={onClick}
+      className="group relative bg-white dark:bg-zinc-900 p-6 rounded-3xl border border-zinc-100 dark:border-zinc-800 flex gap-6 cursor-pointer hover:shadow-xl transition-all active:scale-[0.98]"
+    >
+      <button 
+        onClick={(e) => {
+          e.stopPropagation();
+          onToggle();
+        }}
+        className="absolute top-4 right-4 p-2 bg-zinc-900 dark:bg-zinc-50 text-white dark:text-zinc-900 rounded-full opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity z-10"
+      >
+        <Bookmark size={12} fill="currentColor" />
+      </button>
+      <div className="w-24 h-24 bg-zinc-50 dark:bg-zinc-950 rounded-2xl shrink-0 overflow-hidden">
+         <SafeImage src={product.image} alt={product.name} className="w-full h-full" style={{ objectFit: 'contain' }} aspectRatio="aspect-square" onLoadError={() => setHasError(true)} />
+      </div>
+      <div className="flex flex-col justify-center overflow-hidden min-w-0">
+        <span className="text-[9px] font-black uppercase tracking-widest text-zinc-400 mb-1 truncate">{product.series}</span>
+        <h4 className="font-headline font-black text-lg uppercase leading-tight truncate">{product.name}</h4>
+        <div className="mt-2 flex items-center gap-4">
+           <span className="font-black text-zinc-900 dark:text-zinc-50">{product.price}</span>
+           <span className="text-[10px] bg-zinc-900 dark:bg-zinc-50 text-white dark:text-zinc-900 px-2 py-0.5 rounded uppercase font-black">{product.scarcity}</span>
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
+function PostWishlistItem({ post, onClick, onToggle }: { post: Post, onClick: () => void, onToggle: () => void }) {
+  const [hasError, setHasError] = React.useState(false);
+  if (hasError) return null;
+  return (
+    <motion.div 
+      layout
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, scale: 0.9 }}
+      onClick={onClick}
+      className="group aspect-square relative rounded-2xl overflow-hidden cursor-pointer active:scale-[0.98] transition-transform"
+    >
+      <button 
+        onClick={(e) => {
+          e.stopPropagation();
+          onToggle();
+        }}
+        className="absolute top-4 right-4 p-2 bg-zinc-900 dark:bg-zinc-50 text-white dark:text-zinc-900 rounded-full opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity z-10"
+      >
+        <Bookmark size={12} fill="currentColor" />
+      </button>
+      <SafeImage 
+        src={post.image} 
+        alt={post.title} 
+        className="group-hover:scale-110 transition-transform duration-700" 
+        aspectRatio="aspect-square"
+        onLoadError={() => setHasError(true)}
+      />
+      <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex flex-col justify-end p-4 z-10 pointer-events-none">
+        <h4 className="text-white font-headline font-black text-xs uppercase tracking-tight truncate">{post.title}</h4>
+        <p className="text-white/60 text-[9px] font-medium uppercase tracking-widest mt-1 truncate">@{post.user.username}</p>
+      </div>
+    </motion.div>
+  );
+}
 
 interface WishlistScreenProps {
   wishlistedPosts: Post[];
@@ -64,36 +138,12 @@ export default function WishlistScreen({
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {wishlistedProducts.map((product) => (
-                    <motion.div 
-                      key={product.id}
-                      layout
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, scale: 0.9 }}
+                    <ProductWishlistItem 
+                      key={product.id} 
+                      product={product} 
                       onClick={() => onProductClick(product)}
-                      className="group relative bg-white dark:bg-zinc-900 p-6 rounded-3xl border border-zinc-100 dark:border-zinc-800 flex gap-6 cursor-pointer hover:shadow-xl transition-all active:scale-[0.98]"
-                    >
-                      <button 
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          onProductWishlistToggle?.(product.id);
-                        }}
-                        className="absolute top-4 right-4 p-2 bg-zinc-900 dark:bg-zinc-50 text-white dark:text-zinc-900 rounded-full opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity z-10"
-                      >
-                        <Bookmark size={12} fill="currentColor" />
-                      </button>
-                      <div className="w-24 h-24 bg-zinc-50 dark:bg-zinc-950 rounded-2xl p-2 shrink-0">
-                         <img src={product.image} alt={product.name} className="w-full h-full object-contain" referrerPolicy="no-referrer" />
-                      </div>
-                      <div className="flex flex-col justify-center overflow-hidden min-w-0">
-                        <span className="text-[9px] font-black uppercase tracking-widest text-zinc-400 mb-1 truncate">{product.series}</span>
-                        <h4 className="font-headline font-black text-lg uppercase leading-tight truncate">{product.name}</h4>
-                        <div className="mt-2 flex items-center gap-4">
-                           <span className="font-black text-zinc-900 dark:text-zinc-50">{product.price}</span>
-                           <span className="text-[10px] bg-zinc-900 dark:bg-zinc-50 text-white dark:text-zinc-900 px-2 py-0.5 rounded uppercase font-black">{product.scarcity}</span>
-                        </div>
-                      </div>
-                    </motion.div>
+                      onToggle={() => onProductWishlistToggle?.(product.id)}
+                    />
                   ))}
                 </div>
               </section>
@@ -108,30 +158,12 @@ export default function WishlistScreen({
                 </div>
                 <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
                   {wishlistedPosts.map((post) => (
-                    <motion.div 
-                      key={post.id}
-                      layout
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, scale: 0.9 }}
+                    <PostWishlistItem 
+                      key={post.id} 
+                      post={post} 
                       onClick={() => onPostClick(post)}
-                      className="group aspect-square relative rounded-2xl overflow-hidden cursor-pointer active:scale-[0.98] transition-transform"
-                    >
-                      <button 
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          onPostWishlistToggle?.(post.id);
-                        }}
-                        className="absolute top-4 right-4 p-2 bg-zinc-900 dark:bg-zinc-50 text-white dark:text-zinc-900 rounded-full opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity z-10"
-                      >
-                        <Bookmark size={12} fill="currentColor" />
-                      </button>
-                      <img src={post.image} alt={post.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" referrerPolicy="no-referrer" />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex flex-col justify-end p-4">
-                        <h4 className="text-white font-headline font-black text-xs uppercase tracking-tight truncate">{post.title}</h4>
-                        <p className="text-white/60 text-[9px] font-medium uppercase tracking-widest mt-1 truncate">@{post.user.username}</p>
-                      </div>
-                    </motion.div>
+                      onToggle={() => onPostWishlistToggle?.(post.id)}
+                    />
                   ))}
                 </div>
               </section>

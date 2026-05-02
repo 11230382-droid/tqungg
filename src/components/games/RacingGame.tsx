@@ -7,6 +7,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { ChevronLeft, Play, Timer, Trophy, Zap } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Asset } from '../../types';
+import SafeImage from '../ui/SafeImage';
 
 interface RacingGameProps {
   items: Asset[];
@@ -105,10 +106,12 @@ export default function RacingGame({ items, onBack, onSaveScore }: RacingGamePro
                className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 z-20 group"
              >
                 <div className="relative">
-                  <img 
+                  <SafeImage 
                     src={selectedCar.image} 
-                    className="w-48 h-48 object-contain drop-shadow-[0_20px_30px_rgba(0,0,0,0.5)] transform rotate-0" 
-                    referrerPolicy="no-referrer"
+                    alt={selectedCar.name}
+                    className="w-48 h-48 drop-shadow-[0_20px_30px_rgba(0,0,0,0.5)] transform rotate-0" 
+                    style={{ objectFit: 'contain' }}
+                    aspectRatio="aspect-square"
                   />
                   {speed > 100 && (
                      <div className="absolute -left-10 top-1/2 -translate-y-1/2 flex flex-col gap-2">
@@ -208,7 +211,7 @@ export default function RacingGame({ items, onBack, onSaveScore }: RacingGamePro
                   onClick={() => !isPlaying && setSelectedCar(car)}
                   className={`aspect-square rounded-xl overflow-hidden border-2 transition-all ${selectedCar.id === car.id ? 'border-orange-500 scale-105 shadow-lg shadow-orange-500/20' : 'border-zinc-700 opacity-40 hover:opacity-100'}`}
                  >
-                   <img src={car.image} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+                   <SafeImage src={car.image} alt={car.name} className="w-full h-full" aspectRatio="aspect-square" />
                  </button>
                ))}
             </div>

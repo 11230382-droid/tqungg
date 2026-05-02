@@ -48,6 +48,7 @@ export interface Post {
   tags?: string[];
   isPremium?: boolean;
   isWishlisted?: boolean;
+  isQuestion?: boolean;
   type?: 'large' | 'square' | 'wide' | 'vertical';
 }
 

@@ -4,11 +4,12 @@
  */
 
 import React from 'react';
-import { MoreHorizontal, Heart, MessageCircle, Share2, Plus, Bookmark } from 'lucide-react';
+import { MoreHorizontal, Heart, MessageCircle, Share2, Plus, Bookmark, ChevronRight } from 'lucide-react';
 import { Post, User, Seller } from '../types';
 import { motion, AnimatePresence } from 'motion/react';
 import { collectibleCategories } from '../mockData';
 import LiveDiscussion from '../components/LiveDiscussion';
+import SafeImage from '../components/ui/SafeImage';
 
 interface FeedScreenProps {
   posts: Post[];
@@ -23,6 +24,13 @@ interface FeedScreenProps {
   isCategoryMenuOpen?: boolean;
   onCategorySelect?: (category: string | null) => void;
   onCloseCategoryMenu?: () => void;
+}
+
+interface SuggestionModule {
+  id: string;
+  type: 'suggestion';
+  title: string;
+  items: Post[];
 }
 
 export default function FeedScreen({ 
@@ -42,21 +50,62 @@ export default function FeedScreen({
   const [displayCount, setDisplayCount] = React.useState(activeCategory ? 20 : 6);
   const [isLoadingMore, setIsLoadingMore] = React.useState(false);
 
-  const filteredPosts = activeCategory 
-    ? posts.filter(p => p.category === activeCategory)
-    : posts;
+  const filteredPosts = React.useMemo(() => {
+    return activeCategory 
+      ? posts.filter(p => p.category === activeCategory)
+      : posts;
+  }, [posts, activeCategory]);
 
   const displayedPosts = filteredPosts.slice(0, displayCount);
+
+  // Generate interleaved feed items (Posts + Suggestions)
+  const feedItems = React.useMemo(() => {
+    if (activeCategory) return displayedPosts.map(p => ({ ...p, feedType: 'post' as const }));
+
+    const items: ((Post & { feedType: 'post' }) | SuggestionModule)[] = [];
+    const suggestionInterval = 3; // Every 3 posts
+
+    displayedPosts.forEach((post, index) => {
+      items.push({ ...post, feedType: 'post' });
+
+      // Insert suggestion module at interval
+      if ((index + 1) % suggestionInterval === 0 && index < displayedPosts.length - 1) {
+        const suggestionId = `suggestion-${Math.floor(index / suggestionInterval)}`;
+        const suggestionTitles = [
+          'For You',
+          'Trending in Action Figures',
+          'Suggested Collectors',
+          'Community Rare Finds',
+          'Market Picks'
+        ];
+        const title = suggestionTitles[Math.floor(index / suggestionInterval) % suggestionTitles.length];
+        
+        // Pick random items that are NOT currently in the vertical feed if possible, 
+        // or just shuffle some relevant ones.
+        const suggestedItems = posts
+          .filter(p => p.id !== post.id)
+          .sort(() => 0.5 - Math.random())
+          .slice(0, 5);
+
+        items.push({
+          id: suggestionId,
+          type: 'suggestion',
+          title,
+          items: suggestedItems
+        });
+      }
+    });
+
+    return items;
+  }, [displayedPosts, activeCategory, posts]);
 
   // Simple infinite scroll logic
   React.useEffect(() => {
     const handleScroll = () => {
-      // Sensitivity threshold for Community Feed vs Category Feed
       const threshold = activeCategory ? 800 : 500;
       
       if (window.innerHeight + window.scrollY >= document.body.offsetHeight - threshold && !isLoadingMore && displayCount < filteredPosts.length) {
         setIsLoadingMore(true);
-        // Simulate loading delay
         setTimeout(() => {
           const increment = activeCategory ? 10 : 4;
           setDisplayCount(prev => Math.min(prev + increment, filteredPosts.length));
@@ -75,14 +124,14 @@ export default function FeedScreen({
   }, [activeCategory]);
 
   return (
-    <div className="pt-20 px-4 md:px-6 max-w-5xl mx-auto pb-32">
+    <div className="pt-20 px-4 md:px-6 max-w-2xl mx-auto pb-32">
       <section className="mb-8 flex justify-between items-end">
         <div>
-           <h1 className="font-headline font-black text-4xl tracking-tighter mb-2">
-             {activeCategory ? activeCategory.toUpperCase() : 'COMMUNITY FEED'}
+           <h1 className="font-headline font-black text-4xl tracking-tighter mb-2 text-zinc-900 dark:text-zinc-50">
+             {activeCategory ? activeCategory.toUpperCase() : 'COMMUNITY'}
            </h1>
-           <p className="text-zinc-500 font-medium">
-             {activeCategory ? `Exploring the best of ${activeCategory}.` : 'Trending collections from the community today.'}
+           <p className="text-zinc-500 font-medium text-sm">
+             {activeCategory ? `Exploring the best of ${activeCategory}.` : 'Trending collections from the community.'}
            </p>
         </div>
         {activeCategory && (
@@ -90,7 +139,7 @@ export default function FeedScreen({
             onClick={() => onCategorySelect?.(null)}
             className="text-[10px] font-black uppercase tracking-widest text-zinc-400 hover:text-zinc-900 transition-colors"
           >
-            Clear Filter
+            Clear
           </button>
         )}
       </section>
@@ -98,21 +147,35 @@ export default function FeedScreen({
       {/* Live Discussion Hub */}
       {!activeCategory && <LiveDiscussion />}
 
-      <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 mb-10">
+      <div className="flex flex-col gap-10 mb-20">
         <AnimatePresence mode="popLayout">
-          {displayedPosts.map((post, index) => (
-            <PostCard 
-              key={post.id} 
-              post={post} 
-              index={index} 
-              isWishlisted={wishlist.includes(post.id)}
-              onClick={() => onPostClick(post)} 
-              onWishlistToggle={onWishlistToggle}
-            />
-          ))}
+          {feedItems.map((item, index) => {
+            if ('feedType' in item && item.feedType === 'post') {
+              return (
+                <PostCard 
+                  key={item.id} 
+                  post={item} 
+                  index={index} 
+                  isWishlisted={wishlist.includes(item.id)}
+                  onClick={() => onPostClick(item)} 
+                  onWishlistToggle={onWishlistToggle}
+                />
+              );
+            } else if ('type' in item && item.type === 'suggestion') {
+              return (
+                <SuggestionCarousel 
+                  key={item.id}
+                  title={item.title}
+                  items={item.items}
+                  onItemClick={onPostClick}
+                />
+              );
+            }
+            return null;
+          })}
         </AnimatePresence>
         {filteredPosts.length === 0 && (
-          <div className="col-span-full py-20 text-center">
+          <div className="py-20 text-center">
             <p className="text-zinc-400 font-medium italic">No posts found for this category yet.</p>
           </div>
         )}
@@ -161,8 +224,8 @@ export default function FeedScreen({
                       }}
                       className={`flex items-center gap-4 p-3 rounded-2xl transition-all active:scale-[0.98] ${activeCategory === cat.name ? 'bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800' : 'hover:bg-zinc-50 dark:hover:bg-zinc-900'}`}
                     >
-                      <div className="w-12 h-12 rounded-full overflow-hidden flex-shrink-0 bg-zinc-200 border border-zinc-100 dark:border-zinc-800">
-                        <img src={cat.icon} alt={cat.name} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+                      <div className="w-12 h-12 rounded-full flex-shrink-0 bg-zinc-200 border border-zinc-100 dark:border-zinc-800">
+                        <SafeImage src={cat.icon} alt={cat.name} className="w-full h-full rounded-full" aspectRatio="aspect-square" />
                       </div>
                       <span className="font-headline font-bold text-sm tracking-tight text-zinc-900 dark:text-zinc-50">{cat.name}</span>
                     </button>
@@ -189,115 +252,176 @@ export default function FeedScreen({
   );
 }
 
+function SuggestionCarousel({ title, items, onItemClick }: { title: string, items: Post[], onItemClick: (post: Post) => void }) {
+  return (
+    <motion.section 
+      initial={{ opacity: 0, x: 20 }}
+      whileInView={{ opacity: 1, x: 0 }}
+      viewport={{ once: true }}
+      className="py-4 -mx-4 md:-mx-6"
+    >
+      <div className="flex justify-between items-center px-4 md:px-6 mb-4">
+        <h3 className="text-xs font-black font-headline uppercase tracking-[0.2em] text-zinc-400">{title}</h3>
+        <button className="flex items-center gap-1 text-zinc-400 hover:text-zinc-900 transition-colors">
+          <span className="text-[10px] font-black uppercase tracking-widest">More</span>
+          <ChevronRight size={14} />
+        </button>
+      </div>
+      <div className="flex gap-4 overflow-x-auto px-4 md:px-6 no-scrollbar pb-4 scroll-smooth snap-x snap-mandatory">
+        {items.map((item) => (
+          <SuggestionCard key={item.id} item={item} onItemClick={onItemClick} />
+        ))}
+      </div>
+    </motion.section>
+  );
+}
+
+function SuggestionCard({ item, onItemClick }: { item: Post, onItemClick: (post: Post) => void }) {
+  const [hasError, setHasError] = React.useState(false);
+
+  if (hasError) return null;
+
+  return (
+    <div 
+      onClick={() => onItemClick(item)}
+      className="flex-shrink-0 w-40 snap-start active:scale-95 transition-transform cursor-pointer"
+    >
+      <div className="mb-2">
+        <SafeImage 
+          src={item.image} 
+          alt={item.title} 
+          aspectRatio="aspect-[4/5]"
+          className="rounded-xl border border-zinc-100 dark:border-zinc-800"
+          onLoadError={() => setHasError(true)}
+        />
+      </div>
+      <h4 className="text-[10px] font-black font-headline uppercase truncate text-zinc-900 dark:text-zinc-50">{item.title}</h4>
+      <p className="text-[9px] text-zinc-500 font-bold uppercase tracking-wider">{item.category}</p>
+    </div>
+  );
+}
+
 interface PostCardProps {
   post: Post;
   index: number;
   isWishlisted: boolean;
   onClick: () => void;
   onWishlistToggle?: (postId: string) => void;
-  key?: React.Key;
 }
 
 function PostCard({ post, index, isWishlisted, onClick, onWishlistToggle }: PostCardProps) {
-  const isLarge = post.type === 'large';
-  const isWide = post.type === 'wide';
-  const isVertical = post.type === 'vertical';
-
-  const colSpan = isLarge || isWide ? 'col-span-2' : 'col-span-1';
-  const rowSpan = isLarge || isVertical ? 'row-span-2' : 'row-span-1';
+  const [hasError, setHasError] = React.useState(false);
 
   const handleWishlistClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     onWishlistToggle?.(post.id);
   };
 
+  if (hasError) return null;
+
   return (
     <motion.article
       initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: index * 0.1 }}
-      onClick={onClick}
-      className={`${colSpan} ${rowSpan} bg-white dark:bg-zinc-900 rounded-xl overflow-hidden shadow-sm border border-zinc-100 dark:border-zinc-800 flex flex-col cursor-pointer active:scale-[0.98] transition-transform`}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-100px" }}
+      transition={{ duration: 0.5 }}
+      className="bg-white dark:bg-zinc-950 rounded-2xl overflow-hidden border border-zinc-100 dark:border-zinc-900 group"
     >
-      <div className={`relative overflow-hidden ${isWide ? 'flex h-40' : 'flex-1'}`}>
-        <div className={`${isWide ? 'w-1/2' : 'h-full w-full'}`}>
-          <img
-            src={post.image}
-            alt={post.caption}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-            referrerPolicy="no-referrer"
-          />
-          {post.isPremium && (
-            <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-[10px] font-bold text-zinc-900 uppercase tracking-widest">
-              PREMIUM FIG
-            </div>
+      {/* Header */}
+      <div className="p-4 flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <div className="relative">
+            <SafeImage
+              src={post.user.avatar || 'https://picsum.photos/seed/avatar/100/100'}
+              alt="Avatar"
+              className="w-10 h-10 rounded-full bg-zinc-100 border border-zinc-200 dark:border-zinc-800"
+              aspectRatio="aspect-square"
+            />
+            {post.isQuestion && (
+              <div className="absolute -top-1 -right-1 bg-yellow-400 text-black text-[8px] font-black w-4 h-4 rounded-full flex items-center justify-center border-2 border-white dark:border-zinc-950 z-10">
+                ?
+              </div>
+            )}
+          </div>
+          <div>
+            <p className="text-sm font-black font-headline tracking-tight text-zinc-900 dark:text-zinc-50">{post.user.username}</p>
+            <p className="text-[10px] text-zinc-500 font-medium uppercase tracking-wider">{post.timestamp}</p>
+          </div>
+        </div>
+        <div className="flex items-center gap-2">
+          {post.isQuestion && (
+             <span className="bg-zinc-100 dark:bg-zinc-900 text-zinc-600 dark:text-zinc-400 text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-widest border border-zinc-200 dark:border-zinc-800">
+               Question
+             </span>
           )}
-          <button 
-            onClick={handleWishlistClick}
-            className={`absolute top-4 right-4 p-2 rounded-full transition-all ${isWishlisted ? 'bg-zinc-900 dark:bg-zinc-50 text-white dark:text-zinc-900' : 'bg-white/50 backdrop-blur shadow-sm text-zinc-600'}`}
-          >
-            <Bookmark size={14} fill={isWishlisted ? 'currentColor' : 'none'} />
+          <button className="p-2 text-zinc-400 hover:text-zinc-900 transition-colors">
+            <MoreHorizontal size={20} />
           </button>
         </div>
+      </div>
 
-        {isWide ? (
-          <div className="w-1/2 p-4 flex flex-col justify-center">
-            <div className="flex items-center gap-2 mb-2">
-              <div className="w-6 h-6 rounded-full bg-zinc-900 border border-zinc-700 flex items-center justify-center text-[8px] text-white font-bold">
-                DR
-              </div>
-              <p className="text-[11px] font-bold font-headline truncate">{post.user.username}</p>
-            </div>
-            <p className="text-xs font-medium text-zinc-700 dark:text-zinc-300 line-clamp-2">{post.caption}</p>
-            <div className="mt-3 flex items-center gap-3 text-zinc-400">
-               <div className="flex items-center gap-1">
-                 <Heart size={16} className={post.likedByCurrentUser ? 'text-red-500' : ''} fill={post.likedByCurrentUser ? 'currentColor' : 'none'} />
-                 <span className="text-[10px] font-bold">{post.likes}</span>
-               </div>
-               <div className="flex items-center gap-1">
-                 <MessageCircle size={16} />
-                 <span className="text-[10px] font-bold">{post.comments.length}</span>
-               </div>
-            </div>
+      {/* Main Image */}
+      <div 
+        onClick={onClick}
+        className="relative cursor-pointer"
+      >
+        <SafeImage
+          src={post.image}
+          alt={post.caption}
+          aspectRatio="aspect-square md:aspect-[4/5]"
+          className="transition-transform duration-700 group-hover:scale-105"
+          onLoadError={() => setHasError(true)}
+        />
+        {post.isPremium && (
+          <div className="absolute top-4 left-4 bg-zinc-900/80 backdrop-blur-md px-3 py-1 rounded-lg text-[9px] font-black text-white uppercase tracking-widest border border-zinc-700 shadow-xl z-20">
+            Premium Find
           </div>
-        ) : (
-          <div className="p-4">
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-3">
-                <img
-                  src={post.user.avatar || 'https://picsum.photos/seed/avatar/100/100'}
-                  alt="Avatar"
-                  className="w-8 h-8 rounded-full bg-zinc-100 object-cover"
-                  referrerPolicy="no-referrer"
-                />
-                <div>
-                  <p className="text-sm font-bold font-headline leading-none truncate">{post.user.username}</p>
-                  <p className="text-[10px] text-zinc-500 mt-1">{post.timestamp}</p>
-                </div>
-              </div>
-              <button className="text-zinc-400 hover:text-zinc-900">
-                <MoreHorizontal size={18} />
-              </button>
-            </div>
-            
-            {!isVertical && !isLarge && <div className="h-0" />}
-            
-            <p className={`text-sm text-zinc-800 dark:text-zinc-200 leading-relaxed mb-4 ${isLarge ? 'line-clamp-3' : 'hidden'}`}>
-              {post.caption}
-            </p>
+        )}
+      </div>
 
-            <div className="flex items-center gap-6 pt-4 border-t border-zinc-50 dark:border-zinc-800/50">
-              <button className="flex items-center gap-2 text-xs font-semibold hover:text-zinc-900 transition-colors">
-                <Heart size={18} className={post.likedByCurrentUser ? 'text-red-500' : 'text-zinc-400'} fill={post.likedByCurrentUser ? 'currentColor' : 'none'} /> {post.likes.toLocaleString()}
-              </button>
-              <button className="flex items-center gap-2 text-xs font-semibold hover:text-zinc-900 transition-colors">
-                <MessageCircle size={18} className="text-zinc-400" /> {post.comments.length}
-              </button>
-              <button className="flex items-center gap-2 text-xs font-semibold ml-auto text-zinc-400">
-                <Share2 size={18} />
-              </button>
-            </div>
-          </div>
+      {/* Actions */}
+      <div className="p-4 pt-5 pb-2 flex items-center justify-between">
+        <div className="flex items-center gap-5">
+          <button className="flex items-center gap-2 text-zinc-900 dark:text-zinc-100 hover:scale-110 transition-transform">
+            <Heart 
+              size={24} 
+              className={post.likedByCurrentUser ? 'text-red-500' : 'text-zinc-900 dark:text-zinc-100'} 
+              fill={post.likedByCurrentUser ? 'currentColor' : 'none'} 
+            />
+          </button>
+          <button className="flex items-center gap-2 text-zinc-900 dark:text-zinc-100 hover:scale-110 transition-transform">
+            <MessageCircle size={24} />
+          </button>
+          <button className="flex items-center gap-2 text-zinc-900 dark:text-zinc-100 hover:scale-110 transition-transform">
+            <Share2 size={24} />
+          </button>
+        </div>
+        <button 
+          onClick={handleWishlistClick}
+          className={`hover:scale-110 transition-transform ${isWishlisted ? 'text-zinc-900 dark:text-zinc-100' : 'text-zinc-300 dark:text-zinc-700'}`}
+        >
+          <Bookmark size={24} fill={isWishlisted ? 'currentColor' : 'none'} />
+        </button>
+      </div>
+
+      {/* Caption Area */}
+      <div className="px-4 pb-6 pt-2">
+        <p className="text-sm font-bold text-zinc-900 dark:text-zinc-100 mb-1">
+          {post.likes.toLocaleString()} likes
+        </p>
+        <div className="text-sm text-zinc-800 dark:text-zinc-200">
+          <span className="font-black font-headline mr-2">{post.user.username}</span>
+          <span className="font-medium leading-relaxed opacity-90 line-clamp-2">
+            {post.caption}
+          </span>
+        </div>
+        {post.comments.length > 0 && (
+          <button 
+            onClick={onClick}
+            className="mt-2 text-xs font-bold text-zinc-400 hover:text-zinc-500 transition-colors uppercase tracking-widest"
+          >
+            View all {post.comments.length} comments
+          </button>
         )}
       </div>
     </motion.article>
