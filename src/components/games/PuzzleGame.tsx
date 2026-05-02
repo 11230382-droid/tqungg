@@ -7,7 +7,6 @@ import React, { useState, useEffect } from 'react';
 import { ChevronLeft, RefreshCw, Trophy, LayoutGrid } from 'lucide-react';
 import { motion, Reorder } from 'motion/react';
 import { Asset } from '../../types';
-import SafeImage from '../ui/SafeImage';
 
 interface PuzzleGameProps {
   items: Asset[];
@@ -57,7 +56,7 @@ export default function PuzzleGame({ items, onBack, onSaveScore }: PuzzleGamePro
                 onClick={() => setSelectedAsset(item)}
                 className={`flex-shrink-0 w-12 h-16 rounded-lg border-2 transition-all overflow-hidden ${selectedAsset.id === item.id ? 'border-blue-500 scale-110' : 'border-transparent opacity-50'}`}
               >
-                <SafeImage src={item.image} alt={item.name} className="w-full h-full" aspectRatio="aspect-[3/4]" />
+                <img src={item.image} className="w-full h-full object-cover" />
               </button>
             ))}
           </div>
@@ -88,7 +87,7 @@ export default function PuzzleGame({ items, onBack, onSaveScore }: PuzzleGamePro
                     className="relative aspect-square cursor-grab active:cursor-grabbing overflow-hidden group"
                   >
                     <img 
-                      src={selectedAsset.image || null} 
+                      src={selectedAsset.image} 
                       className="absolute w-[300%] h-[300%] max-w-none object-cover transition-transform duration-300 group-hover:scale-110"
                       style={{
                         top: `-${row * 100}%`,

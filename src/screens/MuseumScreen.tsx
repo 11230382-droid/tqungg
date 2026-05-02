@@ -7,66 +7,12 @@ import * as React from 'react';
 import { Monitor, Verified, Palette, Factory, Landmark, History, TrendingUp, ChevronLeft, ShieldCheck, ArrowRight } from 'lucide-react';
 import { scanningAsset } from '../mockData';
 import { motion } from 'motion/react';
-import SafeImage from '../components/ui/SafeImage';
 
 interface MuseumScreenProps {
   onBack?: () => void;
   onMuseumClick?: () => void;
   isInMuseum?: boolean;
   onResultInView?: (inView: boolean) => void;
-}
-
-function Viewfinder({ src, name, matchPercentage }: { src: string, name: string, matchPercentage: number }) {
-  const [hasError, setHasError] = React.useState(false);
-  if (hasError) return null;
-  return (
-    <section className="relative h-[397px] overflow-hidden bg-black flex items-center justify-center">
-      <SafeImage 
-        className="absolute inset-0 w-full h-full opacity-80 mix-blend-lighten" 
-        src={src} 
-        alt="Scanning"
-        aspectRatio="aspect-video"
-        onLoadError={() => setHasError(true)}
-      />
-      
-      {/* Scanning Overlay UI */}
-      <div className="absolute inset-0 z-10 p-8 flex flex-col justify-between pointer-events-none">
-        <div className="flex justify-between items-start">
-          <div className="bg-black/40 backdrop-blur-md px-4 py-2 rounded-xl border border-white/20">
-            <p className="font-headline text-[10px] uppercase tracking-widest text-white/70">Scanning...</p>
-            <p className="font-headline font-bold text-white text-lg">{matchPercentage}% Match</p>
-          </div>
-          <div className="text-white text-3xl">
-            <Monitor size={32} />
-          </div>
-        </div>
-        
-        <div className="relative w-full max-w-xs mx-auto aspect-square">
-          <div className="absolute top-0 left-0 w-10 h-10 border-t-2 border-l-2 border-white/80"></div>
-          <div className="absolute top-0 right-0 w-10 h-10 border-t-2 border-r-2 border-white/80"></div>
-          <div className="absolute bottom-0 left-0 w-10 h-10 border-b-2 border-l-2 border-white/80"></div>
-          <div className="absolute bottom-0 right-0 w-10 h-10 border-b-2 border-r-2 border-white/80"></div>
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div className="w-16 h-16 border-2 border-white/40 rounded-full animate-pulse"></div>
-          </div>
-        </div>
-        
-        <div className="bg-black/60 backdrop-blur-xl px-4 py-3 rounded-2xl border border-white/10 self-center max-w-[80%]">
-          <div className="flex items-center gap-3">
-            <span className="w-2 h-2 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,1)] shrink-0"></span>
-            <p className="font-headline font-bold text-white tracking-tight uppercase text-[9px] truncate">Target Locked: {name.toUpperCase()}</p>
-          </div>
-        </div>
-      </div>
-      
-      {/* Animated Scan Line */}
-      <motion.div 
-        animate={{ top: ['0%', '100%'] }}
-        transition={{ duration: 3, repeat: Infinity, ease: 'linear' }}
-        className="absolute left-0 w-full h-1 bg-gradient-to-r from-transparent via-white/40 to-transparent z-20"
-      />
-    </section>
-  );
 }
 
 export default function MuseumScreen({ onBack, onMuseumClick, isInMuseum, onResultInView }: MuseumScreenProps) {
@@ -89,10 +35,54 @@ export default function MuseumScreen({ onBack, onMuseumClick, isInMuseum, onResu
     <div className="pt-0 pb-32 min-h-screen bg-zinc-50 dark:bg-zinc-950">
       <div className="pt-0 md:pt-4">
         {/* Viewfinder Section */}
-        <Viewfinder src={scanningAsset.image} name={scanningAsset.name} matchPercentage={scanningAsset.matchPercentage} />
+        <section className="relative h-[397px] overflow-hidden bg-black flex items-center justify-center">
+        <img 
+          className="absolute inset-0 w-full h-full object-cover opacity-80 mix-blend-lighten" 
+          src={scanningAsset.image} 
+          alt="Scanning"
+          referrerPolicy="no-referrer"
+        />
+        
+        {/* Scanning Overlay UI */}
+        <div className="absolute inset-0 z-10 p-8 flex flex-col justify-between pointer-events-none">
+          <div className="flex justify-between items-start">
+            <div className="bg-black/40 backdrop-blur-md px-4 py-2 rounded-xl border border-white/20">
+              <p className="font-headline text-[10px] uppercase tracking-widest text-white/70">Scanning...</p>
+              <p className="font-headline font-bold text-white text-lg">{scanningAsset.matchPercentage}% Match</p>
+            </div>
+            <div className="text-white text-3xl">
+              <Monitor size={32} />
+            </div>
+          </div>
+          
+          <div className="relative w-full max-w-xs mx-auto aspect-square">
+            <div className="absolute top-0 left-0 w-10 h-10 border-t-2 border-l-2 border-white/80"></div>
+            <div className="absolute top-0 right-0 w-10 h-10 border-t-2 border-r-2 border-white/80"></div>
+            <div className="absolute bottom-0 left-0 w-10 h-10 border-b-2 border-l-2 border-white/80"></div>
+            <div className="absolute bottom-0 right-0 w-10 h-10 border-b-2 border-r-2 border-white/80"></div>
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="w-16 h-16 border-2 border-white/40 rounded-full animate-pulse"></div>
+            </div>
+          </div>
+          
+          <div className="bg-black/60 backdrop-blur-xl px-4 py-3 rounded-2xl border border-white/10 self-center max-w-[80%]">
+            <div className="flex items-center gap-3">
+              <span className="w-2 h-2 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,1)] shrink-0"></span>
+              <p className="font-headline font-bold text-white tracking-tight uppercase text-[9px] truncate">Target Locked: {scanningAsset.name.toUpperCase()}</p>
+            </div>
+          </div>
+        </div>
+        
+        {/* Animated Scan Line */}
+        <motion.div 
+          animate={{ top: ['0%', '100%'] }}
+          transition={{ duration: 3, repeat: Infinity, ease: 'linear' }}
+          className="absolute left-0 w-full h-1 bg-gradient-to-r from-transparent via-white/40 to-transparent z-20"
+        />
+      </section>
 
-        {/* Result Content */}
-        <section ref={resultRef} className="px-4 -mt-8 relative z-20 max-w-md mx-auto">
+      {/* Result Content */}
+      <section ref={resultRef} className="px-4 -mt-8 relative z-20 max-w-md mx-auto">
         <motion.div 
           initial={{ y: 50, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
@@ -197,7 +187,7 @@ export default function MuseumScreen({ onBack, onMuseumClick, isInMuseum, onResu
              <div className="flex items-center justify-between p-4 bg-zinc-50 dark:bg-zinc-950 rounded-2xl border border-zinc-100 dark:border-zinc-800">
                 <div className="flex items-center gap-4">
                    <div className="w-12 h-12 bg-white dark:bg-zinc-900 rounded-full flex items-center justify-center overflow-hidden border border-zinc-200">
-                      <SafeImage src="https://picsum.photos/seed/curator/100/100" alt="Curator" className="w-full h-full rounded-full" aspectRatio="aspect-square" />
+                      <img src="https://picsum.photos/seed/curator/100/100" alt="Curator" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
                    </div>
                    <div>
                       <p className="text-[10px] font-black uppercase tracking-widest text-zinc-400">Current Custodian</p>

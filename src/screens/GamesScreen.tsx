@@ -11,7 +11,6 @@ import KitbashGame from '../components/games/KitbashGame';
 import PuzzleGame from '../components/games/PuzzleGame';
 import RacingGame from '../components/games/RacingGame';
 import BookshelfGame from '../components/games/BookshelfGame';
-import SafeImage from '../components/ui/SafeImage';
 import { gameLeaderboards as initialLeaderboards } from '../mockData';
 
 interface GamesScreenProps {
@@ -155,8 +154,8 @@ export default function GamesScreen({ collectedItems }: GamesScreenProps) {
             >
               {/* Game Thumbnail */}
               <div className="h-56 relative overflow-hidden">
-                <SafeImage src={game.img} className="group-hover:scale-110 transition-transform duration-700" alt={game.name} aspectRatio="aspect-video" />
-                <div className={`absolute inset-0 bg-gradient-to-t from-white dark:from-zinc-900 via-zinc-900/40 to-transparent z-10`} />
+                <img src={game.img} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" referrerPolicy="no-referrer" />
+                <div className={`absolute inset-0 bg-gradient-to-t from-white dark:from-zinc-900 via-zinc-900/40 to-transparent`} />
                 
                 {/* Logo Style Overlay */}
                 <div className="absolute inset-x-0 bottom-6 flex flex-col items-center justify-center text-center px-4">
@@ -272,7 +271,7 @@ export default function GamesScreen({ collectedItems }: GamesScreenProps) {
                       {idx + 1}
                     </div>
                     <div className="w-10 h-10 rounded-full overflow-hidden bg-zinc-200">
-                       <SafeImage src={entry.user.avatar} className="w-full h-full rounded-full" alt={entry.user.name} aspectRatio="aspect-square" />
+                       <img src={entry.user.avatar} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
                     </div>
                     <div className="min-w-0">
                        <p className="font-bold text-sm truncate">{entry.user.name}</p>

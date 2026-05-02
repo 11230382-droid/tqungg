@@ -5,101 +5,9 @@
 
 import { Verified, Grid, List, ArrowRight, Box, Plus, Bookmark, Image } from 'lucide-react';
 import { currentUser } from '../mockData';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Asset, Post, User } from '../types';
-import SafeImage from '../components/ui/SafeImage';
-
-function CollectionItem({ item, onProductClick, isWishlisted }: { item: Asset, onProductClick: (item: Asset) => void, isWishlisted: boolean }) {
-  const [hasError, setHasError] = React.useState(false);
-  if (hasError) return null;
-  return (
-    <div 
-      onClick={() => onProductClick(item)}
-      className="flex flex-col gap-3 group cursor-pointer active:scale-[0.98] transition-transform"
-    >
-      <div className="aspect-[4/3] rounded-2xl bg-zinc-100 dark:bg-zinc-800 relative shadow-sm overflow-hidden">
-        <SafeImage 
-          src={item.image} 
-          className="w-full h-full transition-transform duration-700 group-hover:scale-110" 
-          alt={item.name} 
-          aspectRatio="aspect-[4/3]"
-          onLoadError={() => setHasError(true)}
-        />
-        <div className="absolute top-4 left-4 z-10">
-          {isWishlisted && (
-            <div className="p-2 bg-white/90 dark:bg-zinc-900/90 backdrop-blur-md rounded-full border border-white/20 text-zinc-900 dark:text-zinc-50 shadow-lg">
-              <Bookmark size={14} fill="currentColor" />
-            </div>
-          )}
-        </div>
-        <div className="absolute top-4 right-4 px-3 py-1 bg-white/90 dark:bg-zinc-900/90 backdrop-blur-md rounded-full border border-white/20 z-10">
-          <span className="text-[9px] font-black tracking-widest text-zinc-900 dark:text-zinc-50 uppercase">{item.scarcity || 'Authenticated'}</span>
-        </div>
-      </div>
-      <div>
-        <h4 className="font-bold text-zinc-900 dark:text-zinc-50 tracking-tight text-lg leading-tight truncate">{item.name}</h4>
-        <p className="text-[10px] text-zinc-500 font-black uppercase tracking-widest mt-1 truncate">{item.series}</p>
-      </div>
-    </div>
-  );
-}
-
-function ProfileWishlistProduct({ item, onClick }: { item: Asset, onClick: () => void }) {
-  const [hasError, setHasError] = React.useState(false);
-  if (hasError) return null;
-  return (
-    <div 
-      onClick={onClick}
-      className="flex flex-col gap-2 group cursor-pointer active:scale-[0.98] transition-transform"
-    >
-      <div className="aspect-square rounded-xl bg-zinc-100 dark:bg-zinc-900 relative overflow-hidden">
-        <SafeImage 
-          src={item.image} 
-          className="w-full h-full" 
-          alt={item.name} 
-          aspectRatio="aspect-square"
-          onLoadError={() => setHasError(true)}
-        />
-        <div className="absolute top-2 right-2 z-10">
-           <div className="p-1.5 bg-zinc-900 text-white rounded-lg">
-              <Bookmark size={10} fill="currentColor" />
-           </div>
-        </div>
-      </div>
-      <h4 className="font-bold text-sm text-zinc-900 dark:text-zinc-50 truncate">{item.name}</h4>
-      <p className="text-[9px] text-zinc-500 font-bold uppercase tracking-widest">{item.price}</p>
-    </div>
-  );
-}
-
-function ProfileWishlistPost({ post, onClick }: { post: Post, onClick: () => void }) {
-  const [hasError, setHasError] = React.useState(false);
-  if (hasError) return null;
-  return (
-    <div 
-      onClick={onClick}
-      className="flex flex-col gap-2 group cursor-pointer active:scale-[0.98] transition-transform"
-    >
-      <div className="aspect-square rounded-xl bg-zinc-100 dark:bg-zinc-900 relative overflow-hidden">
-        <SafeImage 
-          src={post.image} 
-          className="w-full h-full" 
-          alt={post.title} 
-          aspectRatio="aspect-square"
-          onLoadError={() => setHasError(true)}
-        />
-        <div className="absolute top-2 right-2 z-10">
-           <div className="p-1.5 bg-zinc-900 text-white rounded-lg">
-              <Bookmark size={10} fill="currentColor" />
-           </div>
-        </div>
-      </div>
-      <h4 className="font-bold text-sm text-zinc-900 dark:text-zinc-50 truncate">{post.title}</h4>
-      <p className="text-[9px] text-zinc-500 font-bold uppercase tracking-widest">Est. {post.estimatedValue}</p>
-    </div>
-  );
-}
 
 interface ProfileScreenProps {
   user?: User;
@@ -128,16 +36,16 @@ export default function ProfileScreen({ user = currentUser, onProductClick, onPo
       {/* Profile Header */}
       <section className="flex flex-col items-center">
         <div className="relative group">
-          <div className="w-28 h-28 rounded-full border-2 border-zinc-100 dark:border-zinc-800 shadow-sm overflow-hidden bg-zinc-100">
-            <SafeImage 
+          <div className="w-28 h-28 rounded-full border-2 border-zinc-100 dark:border-zinc-800 overflow-hidden shadow-sm">
+            <img 
               src={user.avatar} 
               alt={user.name} 
-              className="w-full h-full rounded-full"
-              aspectRatio="aspect-square"
+              className="w-full h-full object-cover"
+              referrerPolicy="no-referrer"
             />
           </div>
           {user.isVerified && (
-            <div className="absolute bottom-0 right-0 bg-zinc-900 dark:bg-zinc-50 w-8 h-8 rounded-full border-4 border-white dark:border-zinc-950 flex items-center justify-center text-white dark:text-zinc-900 shadow-lg z-10">
+            <div className="absolute bottom-0 right-0 bg-zinc-900 dark:bg-zinc-50 w-8 h-8 rounded-full border-4 border-white dark:border-zinc-950 flex items-center justify-center text-white dark:text-zinc-900 shadow-lg">
               <Verified size={14} fill="currentColor" fillOpacity={0.2} />
             </div>
           )}
@@ -197,8 +105,8 @@ export default function ProfileScreen({ user = currentUser, onProductClick, onPo
              { time: '4h ago', img: 'https://picsum.photos/seed/scan_card_hologram/200/200' }
           ].map((scan, i) => (
             <div key={i} className="flex-shrink-0 flex flex-col items-center gap-2">
-              <div className="w-16 h-16 rounded-xl ring-2 ring-zinc-50 dark:ring-zinc-800 ring-offset-2 overflow-hidden bg-zinc-100">
-                <SafeImage src={scan.img} className="w-full h-full" alt="Scan" aspectRatio="aspect-square" />
+              <div className="w-16 h-16 rounded-xl overflow-hidden ring-2 ring-zinc-50 dark:ring-zinc-800 ring-offset-2">
+                <img src={scan.img} className="w-full h-full object-cover" alt="Scan" referrerPolicy="no-referrer" />
               </div>
               <span className="text-[9px] font-black text-zinc-400 uppercase tracking-tighter">{scan.time}</span>
             </div>
@@ -270,12 +178,29 @@ export default function ProfileScreen({ user = currentUser, onProductClick, onPo
             </div>
             <div className="grid grid-cols-1 gap-8">
               {collectionItems.map((item) => (
-                <CollectionItem 
+                <div 
                   key={item.id} 
-                  item={item} 
-                  onProductClick={onProductClick} 
-                  isWishlisted={wishlist.products.includes(item.id)} 
-                />
+                  onClick={() => onProductClick(item)}
+                  className="flex flex-col gap-3 group cursor-pointer active:scale-[0.98] transition-transform"
+                >
+                  <div className="aspect-[4/3] rounded-2xl overflow-hidden bg-zinc-100 dark:bg-zinc-800 relative shadow-sm">
+                    <img src={item.image} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" alt={item.name} referrerPolicy="no-referrer" />
+                    <div className="absolute top-4 left-4">
+                      {wishlist.products.includes(item.id) && (
+                        <div className="p-2 bg-white/90 dark:bg-zinc-900/90 backdrop-blur-md rounded-full border border-white/20 text-zinc-900 dark:text-zinc-50 shadow-lg">
+                          <Bookmark size={14} fill="currentColor" />
+                        </div>
+                      )}
+                    </div>
+                    <div className="absolute top-4 right-4 px-3 py-1 bg-white/90 dark:bg-zinc-900/90 backdrop-blur-md rounded-full border border-white/20">
+                      <span className="text-[9px] font-black tracking-widest text-zinc-900 dark:text-zinc-50 uppercase">{item.scarcity || 'Authenticated'}</span>
+                    </div>
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-zinc-900 dark:text-zinc-50 tracking-tight text-lg leading-tight truncate">{item.name}</h4>
+                    <p className="text-[10px] text-zinc-500 font-black uppercase tracking-widest mt-1 truncate">{item.series}</p>
+                  </div>
+                </div>
               ))}
             </div>
           </motion.section>
@@ -297,11 +222,22 @@ export default function ProfileScreen({ user = currentUser, onProductClick, onPo
                 </h3>
                 <div className="grid grid-cols-2 gap-4">
                   {wishlistedProducts.map((item) => (
-                    <ProfileWishlistProduct 
+                    <div 
                       key={item.id} 
-                      item={item} 
-                      onClick={() => onProductClick(item)} 
-                    />
+                      onClick={() => onProductClick(item)}
+                      className="flex flex-col gap-2 group cursor-pointer active:scale-[0.98] transition-transform"
+                    >
+                      <div className="aspect-square rounded-xl overflow-hidden bg-zinc-100 dark:bg-zinc-900 relative">
+                        <img src={item.image} className="w-full h-full object-cover" alt={item.name} referrerPolicy="no-referrer" />
+                        <div className="absolute top-2 right-2">
+                           <div className="p-1.5 bg-zinc-900 text-white rounded-lg">
+                              <Bookmark size={10} fill="currentColor" />
+                           </div>
+                        </div>
+                      </div>
+                      <h4 className="font-bold text-sm text-zinc-900 dark:text-zinc-50 truncate">{item.name}</h4>
+                      <p className="text-[9px] text-zinc-500 font-bold uppercase tracking-widest">{item.price}</p>
+                    </div>
                   ))}
                 </div>
               </div>
@@ -316,11 +252,22 @@ export default function ProfileScreen({ user = currentUser, onProductClick, onPo
                 </h3>
                 <div className="grid grid-cols-2 gap-4">
                   {wishlistedPosts.map((post) => (
-                    <ProfileWishlistPost 
+                    <div 
                       key={post.id} 
-                      post={post} 
-                      onClick={() => onPostClick(post)} 
-                    />
+                      onClick={() => onPostClick(post)}
+                      className="flex flex-col gap-2 group cursor-pointer active:scale-[0.98] transition-transform"
+                    >
+                      <div className="aspect-square rounded-xl overflow-hidden bg-zinc-100 dark:bg-zinc-900 relative">
+                        <img src={post.image} className="w-full h-full object-cover" alt={post.title} referrerPolicy="no-referrer" />
+                        <div className="absolute top-2 right-2">
+                           <div className="p-1.5 bg-zinc-900 text-white rounded-lg">
+                              <Bookmark size={10} fill="currentColor" />
+                           </div>
+                        </div>
+                      </div>
+                      <h4 className="font-bold text-sm text-zinc-900 dark:text-zinc-50 truncate">{post.title}</h4>
+                      <p className="text-[9px] text-zinc-500 font-bold uppercase tracking-widest">Est. {post.estimatedValue}</p>
+                    </div>
                   ))}
                 </div>
               </div>

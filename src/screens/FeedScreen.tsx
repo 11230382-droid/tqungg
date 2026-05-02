@@ -9,7 +9,6 @@ import { Post, User, Seller } from '../types';
 import { motion, AnimatePresence } from 'motion/react';
 import { collectibleCategories } from '../mockData';
 import LiveDiscussion from '../components/LiveDiscussion';
-import SafeImage from '../components/ui/SafeImage';
 
 interface FeedScreenProps {
   posts: Post[];
@@ -224,8 +223,8 @@ export default function FeedScreen({
                       }}
                       className={`flex items-center gap-4 p-3 rounded-2xl transition-all active:scale-[0.98] ${activeCategory === cat.name ? 'bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800' : 'hover:bg-zinc-50 dark:hover:bg-zinc-900'}`}
                     >
-                      <div className="w-12 h-12 rounded-full flex-shrink-0 bg-zinc-200 border border-zinc-100 dark:border-zinc-800">
-                        <SafeImage src={cat.icon} alt={cat.name} className="w-full h-full rounded-full" aspectRatio="aspect-square" />
+                      <div className="w-12 h-12 rounded-full overflow-hidden flex-shrink-0 bg-zinc-200 border border-zinc-100 dark:border-zinc-800">
+                        <img src={cat.icon} alt={cat.name} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
                       </div>
                       <span className="font-headline font-bold text-sm tracking-tight text-zinc-900 dark:text-zinc-50">{cat.name}</span>
                     </button>
@@ -269,35 +268,25 @@ function SuggestionCarousel({ title, items, onItemClick }: { title: string, item
       </div>
       <div className="flex gap-4 overflow-x-auto px-4 md:px-6 no-scrollbar pb-4 scroll-smooth snap-x snap-mandatory">
         {items.map((item) => (
-          <SuggestionCard key={item.id} item={item} onItemClick={onItemClick} />
+          <div 
+            key={item.id}
+            onClick={() => onItemClick(item)}
+            className="flex-shrink-0 w-40 snap-start active:scale-95 transition-transform cursor-pointer"
+          >
+            <div className="aspect-[4/5] rounded-xl overflow-hidden bg-zinc-100 dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 mb-2">
+              <img 
+                src={item.image} 
+                alt={item.title} 
+                className="w-full h-full object-cover"
+                referrerPolicy="no-referrer"
+              />
+            </div>
+            <h4 className="text-[10px] font-black font-headline uppercase truncate text-zinc-900 dark:text-zinc-50">{item.title}</h4>
+            <p className="text-[9px] text-zinc-500 font-bold uppercase tracking-wider">{item.category}</p>
+          </div>
         ))}
       </div>
     </motion.section>
-  );
-}
-
-function SuggestionCard({ item, onItemClick }: { item: Post, onItemClick: (post: Post) => void }) {
-  const [hasError, setHasError] = React.useState(false);
-
-  if (hasError) return null;
-
-  return (
-    <div 
-      onClick={() => onItemClick(item)}
-      className="flex-shrink-0 w-40 snap-start active:scale-95 transition-transform cursor-pointer"
-    >
-      <div className="mb-2">
-        <SafeImage 
-          src={item.image} 
-          alt={item.title} 
-          aspectRatio="aspect-[4/5]"
-          className="rounded-xl border border-zinc-100 dark:border-zinc-800"
-          onLoadError={() => setHasError(true)}
-        />
-      </div>
-      <h4 className="text-[10px] font-black font-headline uppercase truncate text-zinc-900 dark:text-zinc-50">{item.title}</h4>
-      <p className="text-[9px] text-zinc-500 font-bold uppercase tracking-wider">{item.category}</p>
-    </div>
   );
 }
 
@@ -310,14 +299,10 @@ interface PostCardProps {
 }
 
 function PostCard({ post, index, isWishlisted, onClick, onWishlistToggle }: PostCardProps) {
-  const [hasError, setHasError] = React.useState(false);
-
   const handleWishlistClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     onWishlistToggle?.(post.id);
   };
-
-  if (hasError) return null;
 
   return (
     <motion.article
@@ -331,14 +316,14 @@ function PostCard({ post, index, isWishlisted, onClick, onWishlistToggle }: Post
       <div className="p-4 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="relative">
-            <SafeImage
+            <img
               src={post.user.avatar || 'https://picsum.photos/seed/avatar/100/100'}
               alt="Avatar"
-              className="w-10 h-10 rounded-full bg-zinc-100 border border-zinc-200 dark:border-zinc-800"
-              aspectRatio="aspect-square"
+              className="w-10 h-10 rounded-full bg-zinc-100 object-cover border border-zinc-200 dark:border-zinc-800"
+              referrerPolicy="no-referrer"
             />
             {post.isQuestion && (
-              <div className="absolute -top-1 -right-1 bg-yellow-400 text-black text-[8px] font-black w-4 h-4 rounded-full flex items-center justify-center border-2 border-white dark:border-zinc-950 z-10">
+              <div className="absolute -top-1 -right-1 bg-yellow-400 text-black text-[8px] font-black w-4 h-4 rounded-full flex items-center justify-center border-2 border-white dark:border-zinc-950">
                 ?
               </div>
             )}
@@ -363,17 +348,17 @@ function PostCard({ post, index, isWishlisted, onClick, onWishlistToggle }: Post
       {/* Main Image */}
       <div 
         onClick={onClick}
-        className="relative cursor-pointer"
+        className="relative aspect-square md:aspect-[4/5] overflow-hidden cursor-pointer"
       >
-        <SafeImage
+        <img
           src={post.image}
           alt={post.caption}
-          aspectRatio="aspect-square md:aspect-[4/5]"
-          className="transition-transform duration-700 group-hover:scale-105"
-          onLoadError={() => setHasError(true)}
+          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+          referrerPolicy="no-referrer"
+          loading="lazy"
         />
         {post.isPremium && (
-          <div className="absolute top-4 left-4 bg-zinc-900/80 backdrop-blur-md px-3 py-1 rounded-lg text-[9px] font-black text-white uppercase tracking-widest border border-zinc-700 shadow-xl z-20">
+          <div className="absolute top-4 left-4 bg-zinc-900/80 backdrop-blur-md px-3 py-1 rounded-lg text-[9px] font-black text-white uppercase tracking-widest border border-zinc-700 shadow-xl">
             Premium Find
           </div>
         )}
