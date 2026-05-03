@@ -5,9 +5,9 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { ChevronLeft, Send, Users, MessageSquare, List, MessageCircle, MoreHorizontal } from 'lucide-react';
-import { User, ChatMessage, ForumThread } from '../types';
-import { currentUser } from '../mockData';
+import { ChevronLeft, Send, Users, MessageSquare, List, MessageCircle, Plus, Hash } from 'lucide-react';
+import { ChatMessage, ForumThread } from '../types';
+import { currentUser, collectibleCategories } from '../mockData';
 
 interface LiveDiscussionScreenProps {
   onBack: () => void;
@@ -16,22 +16,46 @@ interface LiveDiscussionScreenProps {
 
 type Mode = 'chat' | 'forum';
 
+interface Channel {
+  id: string;
+  name: string;
+  category?: string;
+  activeUsers: number;
+}
+
 export default function LiveDiscussionScreen({ onBack, initialMode = 'chat' }: LiveDiscussionScreenProps) {
   const [activeMode, setActiveMode] = useState<Mode>(initialMode);
-  const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
+  const [channels, setChannels] = useState<Channel[]>([]);
+  const [selectedChannelId, setSelectedChannelId] = useState<string>('c1');
+  const [chatMessages, setChatMessages] = useState<Record<string, ChatMessage[]>>({});
   const [forumThreads, setForumThreads] = useState<ForumThread[]>([]);
   const [newMessage, setNewMessage] = useState('');
   const [selectedThread, setSelectedThread] = useState<ForumThread | null>(null);
+  const [isCreatingChannel, setIsCreatingChannel] = useState(false);
+  const [newChannelName, setNewChannelName] = useState('');
+  const [newChannelCategory, setNewChannelCategory] = useState('');
   
   const chatEndRef = useRef<HTMLDivElement>(null);
 
   // Initial Data
   useEffect(() => {
-    const initialMessages: ChatMessage[] = [
-      { id: 'm1', user: { id: 'u2', name: 'Marcus', username: 'marcus_v', avatar: 'https://picsum.photos/seed/u1/100/100', followers: '1k', following: '500', itemCount: '100', totalValue: '$5k' }, text: "Just saw a mint condition '67 Camaro pop up in Tokyo!", timestamp: '2m ago' },
-      { id: 'm2', user: { id: 'u3', name: 'Sarah', username: 'sarah_k', avatar: 'https://picsum.photos/seed/u2/100/100', followers: '2k', following: '800', itemCount: '240', totalValue: '$12k' }, text: "The market dip for Gen 1 Gundams is real. Great time to buy.", timestamp: '1m ago' },
-      { id: 'm3', user: { id: 'u4', name: 'Vex', username: 'vex_toys', avatar: 'https://picsum.photos/seed/u3/100/100', followers: '500', following: '200', itemCount: '50', totalValue: '$1k' }, text: "Anyone interested in a trade for a holograhpic Charizard?", timestamp: 'Now' },
+    const initialChannels: Channel[] = [
+      { id: 'c1', name: 'General Collectors', activeUsers: 428 },
+      { id: 'c2', name: 'Pokémon Cards', category: 'Trading Cards', activeUsers: 156 },
+      { id: 'c3', name: 'Price Check', activeUsers: 84 },
+      { id: 'c4', name: 'Hot Wheels', category: 'Diecast', activeUsers: 215 },
+      { id: 'c5', name: 'Showcase', activeUsers: 92 },
     ];
+
+    const initialMessages: Record<string, ChatMessage[]> = {
+      'c1': [
+        { id: 'm1', user: { id: 'u2', name: 'Marcus', username: 'marcus_v', avatar: 'https://picsum.photos/seed/u1/100/100', followers: '1k', following: '500', itemCount: '100', totalValue: '$5k' }, text: "Just saw a mint condition '67 Camaro pop up in Tokyo!", timestamp: '2m ago' },
+        { id: 'm2', user: { id: 'u3', name: 'Sarah', username: 'sarah_k', avatar: 'https://picsum.photos/seed/u2/100/100', followers: '2k', following: '800', itemCount: '240', totalValue: '$12k' }, text: "The market dip for Gen 1 Gundams is real. Great time to buy.", timestamp: '1m ago' },
+      ],
+      'c2': [
+        { id: 'm4', user: { id: 'u4', name: 'Vex', username: 'vex_toys', avatar: 'https://picsum.photos/seed/u3/100/100', followers: '500', following: '200', itemCount: '50', totalValue: '$1k' }, text: "Anyone interested in a trade for a holograhpic Charizard?", timestamp: 'Now' },
+      ],
+    };
 
     const initialThreads: ForumThread[] = [
       { id: 't1', title: "Is this limited edition release worth it?", author: { id: 'u2', name: 'Marcus', username: 'marcus_v', avatar: 'https://picsum.photos/seed/u1/100/100', followers: '1k', following: '500', itemCount: '100', totalValue: '$5k' }, preview: "Thinking about the new Porsche 911 1:18 scale drop next week.", replies: 24, timestamp: '1h ago' },
@@ -39,6 +63,7 @@ export default function LiveDiscussionScreen({ onBack, initialMode = 'chat' }: L
       { id: 't3', title: "Collection Organization Tips", author: { id: 'u4', name: 'Kira', username: 'kira_c', avatar: 'https://picsum.photos/seed/u4/100/100', followers: '800', following: '400', itemCount: '120', totalValue: '$2k' }, preview: "How do you guys display your 1/6 scale pieces?", replies: 42, timestamp: '5h ago' },
     ];
 
+    setChannels(initialChannels);
     setChatMessages(initialMessages);
     setForumThreads(initialThreads);
   }, []);
@@ -48,7 +73,7 @@ export default function LiveDiscussionScreen({ onBack, initialMode = 'chat' }: L
     if (activeMode === 'chat') {
       chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     }
-  }, [chatMessages, activeMode]);
+  }, [chatMessages, selectedChannelId, activeMode]);
 
   const handleSendMessage = () => {
     if (!newMessage.trim()) return;
@@ -60,9 +85,32 @@ export default function LiveDiscussionScreen({ onBack, initialMode = 'chat' }: L
       timestamp: 'Now'
     };
     
-    setChatMessages(prev => [...prev, msg]);
+    setChatMessages(prev => ({
+      ...prev,
+      [selectedChannelId]: [...(prev[selectedChannelId] || []), msg]
+    }));
     setNewMessage('');
   };
+
+  const handleCreateChannel = () => {
+    if (!newChannelName.trim()) return;
+    
+    const newChannel: Channel = {
+      id: `c${Date.now()}`,
+      name: newChannelName,
+      category: newChannelCategory || undefined,
+      activeUsers: 1
+    };
+    
+    setChannels(prev => [...prev, newChannel]);
+    setSelectedChannelId(newChannel.id);
+    setNewChannelName('');
+    setNewChannelCategory('');
+    setIsCreatingChannel(false);
+  };
+
+  const currentChannel = channels.find(c => c.id === selectedChannelId);
+  const currentMessages = chatMessages[selectedChannelId] || [];
 
   return (
     <div className="fixed inset-0 z-50 bg-white dark:bg-zinc-950 flex flex-col pt-safe">
@@ -82,7 +130,9 @@ export default function LiveDiscussionScreen({ onBack, initialMode = 'chat' }: L
           {!selectedThread && (
             <div className="flex items-center justify-center gap-1.5 mt-0.5">
               <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></div>
-              <span className="text-[9px] font-black uppercase text-zinc-400 tracking-tighter">1,248 Online</span>
+              <span className="text-[9px] font-black uppercase text-zinc-400 tracking-tighter">
+                {currentChannel ? `${currentChannel.activeUsers} Online in #${currentChannel.name}` : '1,248 Online'}
+              </span>
             </div>
           )}
         </div>
@@ -110,7 +160,7 @@ export default function LiveDiscussionScreen({ onBack, initialMode = 'chat' }: L
       )}
 
       {/* Content */}
-      <main className="flex-1 overflow-hidden relative">
+      <main className="flex-1 overflow-hidden relative flex flex-col">
         <AnimatePresence mode="wait">
           {selectedThread ? (
             <motion.div 
@@ -131,11 +181,11 @@ export default function LiveDiscussionScreen({ onBack, initialMode = 'chat' }: L
                 <h2 className="text-xl font-black font-headline tracking-tight uppercase leading-tight mb-4">
                   {selectedThread.title}
                 </h2>
-                <p className="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed bg-zinc-50 dark:bg-zinc-900 p-4 rounded-2xl">
+                <div className="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed bg-zinc-50 dark:bg-zinc-900 p-4 rounded-2xl whitespace-pre-wrap">
                   {selectedThread.preview}
                   {"\n\n"}
                   Donec sed odio dui. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Vestibulum id ligula porta felis euismod semper.
-                </p>
+                </div>
               </div>
               
               <div className="space-y-6 pb-20">
@@ -161,35 +211,64 @@ export default function LiveDiscussionScreen({ onBack, initialMode = 'chat' }: L
               exit={{ opacity: 0, scale: 1.02 }}
               className="absolute inset-0 flex flex-col"
             >
-              <div className="flex-1 overflow-y-auto px-6 py-6 space-y-6 no-scrollbar">
-                {chatMessages.map(msg => (
-                  <div 
-                    key={msg.id} 
-                    className={`flex items-end gap-3 ${msg.user.id === currentUser.id ? 'flex-row-reverse' : ''}`}
+              {/* Channel List */}
+              <div className="flex items-center gap-2 px-6 py-4 overflow-x-auto no-scrollbar shrink-0 border-b border-zinc-50 dark:border-zinc-900">
+                <button 
+                  onClick={() => setIsCreatingChannel(true)}
+                  className="flex-shrink-0 w-10 h-10 rounded-full border-2 border-dashed border-zinc-200 dark:border-zinc-800 flex items-center justify-center text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-50 transition-colors"
+                >
+                  <Plus size={20} />
+                </button>
+                {channels.map(channel => (
+                  <button 
+                    key={channel.id}
+                    onClick={() => setSelectedChannelId(channel.id)}
+                    className={`flex-shrink-0 px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest transition-all ${selectedChannelId === channel.id ? 'bg-zinc-900 dark:bg-zinc-50 text-white dark:text-zinc-900 border-zinc-900 dark:border-zinc-50' : 'bg-zinc-100 dark:bg-zinc-900 text-zinc-500 border-transparent'}`}
                   >
-                    <img src={msg.user.avatar} className="w-8 h-8 rounded-full flex-shrink-0" alt="" />
-                    <div className="max-w-[75%] space-y-1">
-                      <p className={`text-[9px] font-black uppercase tracking-widest text-zinc-400 ${msg.user.id === currentUser.id ? 'text-right' : ''}`}>
-                        {msg.user.username}
-                      </p>
-                      <div className={`p-4 rounded-2xl text-xs leading-relaxed ${msg.user.id === currentUser.id ? 'bg-zinc-900 dark:bg-zinc-50 text-white dark:text-zinc-900 rounded-br-none' : 'bg-zinc-100 dark:bg-zinc-900 text-zinc-900 dark:text-zinc-50 rounded-bl-none border border-zinc-200 dark:border-zinc-800'}`}>
-                        {msg.text}
-                      </div>
-                      <p className={`text-[8px] text-zinc-400 font-bold ${msg.user.id === currentUser.id ? 'text-right' : ''}`}>
-                        {msg.timestamp}
-                      </p>
-                    </div>
-                  </div>
+                    #{channel.name}
+                  </button>
                 ))}
+              </div>
+
+              <div className="flex-1 overflow-y-auto px-6 py-6 space-y-6 no-scrollbar">
+                {currentMessages.length > 0 ? (
+                  currentMessages.map(msg => (
+                    <div 
+                      key={msg.id} 
+                      className={`flex items-end gap-3 ${msg.user.id === currentUser.id ? 'flex-row-reverse' : ''}`}
+                    >
+                      <img src={msg.user.avatar} className="w-8 h-8 rounded-full flex-shrink-0" alt="" />
+                      <div className="max-w-[75%] space-y-1">
+                        <p className={`text-[9px] font-black uppercase tracking-widest text-zinc-400 ${msg.user.id === currentUser.id ? 'text-right' : ''}`}>
+                          {msg.user.username}
+                        </p>
+                        <div className={`p-4 rounded-2xl text-xs leading-relaxed ${msg.user.id === currentUser.id ? 'bg-zinc-900 dark:bg-zinc-50 text-white dark:text-zinc-900 rounded-br-none' : 'bg-zinc-100 dark:bg-zinc-900 text-zinc-900 dark:text-zinc-50 rounded-bl-none border border-zinc-200 dark:border-zinc-800'}`}>
+                          {msg.text}
+                        </div>
+                        <p className={`text-[8px] text-zinc-400 font-bold ${msg.user.id === currentUser.id ? 'text-right' : ''}`}>
+                          {msg.timestamp}
+                        </p>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <div className="flex flex-col items-center justify-center h-full text-center space-y-4">
+                    <div className="w-16 h-16 rounded-full bg-zinc-50 dark:bg-zinc-900 flex items-center justify-center text-zinc-200 dark:text-zinc-700">
+                      <Hash size={32} />
+                    </div>
+                    <p className="text-xs font-black uppercase tracking-widest text-zinc-400">Welcome to #{currentChannel?.name}</p>
+                    <p className="text-[10px] text-zinc-400 uppercase tracking-tighter">Be the first to start the conversation!</p>
+                  </div>
+                )}
                 <div ref={chatEndRef} />
               </div>
 
               {/* Chat Input */}
-              <div className="p-4 bg-white dark:bg-zinc-950 border-t border-zinc-100 dark:border-zinc-900">
+              <div className="p-4 bg-white dark:bg-zinc-950 border-t border-zinc-100 dark:border-zinc-900 shrink-0">
                 <div className="flex items-center gap-2 bg-zinc-50 dark:bg-zinc-900 rounded-2xl px-4 py-2 border border-zinc-200 dark:border-zinc-800">
                    <input 
                      type="text" 
-                     placeholder="Message collectors..."
+                     placeholder={`Message #${currentChannel?.name || 'collectors'}...`}
                      className="flex-1 bg-transparent border-none text-xs focus:ring-0 placeholder:text-zinc-400 font-bold"
                      value={newMessage}
                      onChange={(e) => setNewMessage(e.target.value)}
@@ -226,7 +305,7 @@ export default function LiveDiscussionScreen({ onBack, initialMode = 'chat' }: L
                        <p className="text-[8px] text-zinc-500 font-bold uppercase tracking-widest">{thread.timestamp}</p>
                      </div>
                    </div>
-                   <h3 className="text-sm font-black font-headline tracking-tight uppercase leading-tight mb-2 group-hover:text-blue-500 transition-colors">
+                   <h3 className="text-sm font-black font-headline tracking-tight uppercase leading-tight mb-2 group-hover:text-zinc-500 transition-colors">
                      {thread.title}
                    </h3>
                    <p className="text-[11px] text-zinc-500 dark:text-zinc-400 line-clamp-2 leading-relaxed mb-4">
@@ -255,6 +334,70 @@ export default function LiveDiscussionScreen({ onBack, initialMode = 'chat' }: L
                   </div>
                   <span className="text-[10px] font-black uppercase tracking-widest">Start a Discussion</span>
                </button>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Create Channel Modal Overlay */}
+        <AnimatePresence>
+          {isCreatingChannel && (
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="absolute inset-0 z-[100] bg-white/95 dark:bg-zinc-950/95 backdrop-blur-md px-6 flex flex-col justify-center"
+            >
+              <div className="max-w-md mx-auto w-full space-y-8">
+                <div className="space-y-2 text-center">
+                  <h2 className="text-3xl font-black font-headline uppercase tracking-tighter">Create Channel</h2>
+                  <p className="text-xs font-black uppercase tracking-widest text-zinc-400">Start a new topic room</p>
+                </div>
+
+                <div className="space-y-6">
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400 px-1">Channel Name</label>
+                    <input 
+                      type="text"
+                      placeholder="e.g. Vintage Watches"
+                      autoFocus
+                      className="w-full bg-zinc-50 dark:bg-zinc-900 border-none rounded-2xl p-4 text-xs font-bold focus:ring-2 focus:ring-zinc-900 dark:focus:ring-zinc-50 transition-all"
+                      value={newChannelName}
+                      onChange={(e) => setNewChannelName(e.target.value)}
+                    />
+                  </div>
+
+                  <div className="space-y-3">
+                    <label className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400 px-1">Suggested Category</label>
+                    <div className="flex flex-wrap gap-2">
+                      {collectibleCategories.map(cat => (
+                        <button
+                          key={cat.id}
+                          onClick={() => setNewChannelCategory(cat.name)}
+                          className={`px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest transition-all border ${newChannelCategory === cat.name ? 'bg-zinc-900 dark:bg-zinc-50 text-white dark:text-zinc-900 border-zinc-900 dark:border-zinc-50' : 'bg-transparent border-zinc-200 dark:border-zinc-800 text-zinc-400'}`}
+                        >
+                          {cat.name}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="flex gap-4 pt-4">
+                    <button 
+                      onClick={() => setIsCreatingChannel(false)}
+                      className="flex-1 py-4 rounded-2xl bg-zinc-100 dark:bg-zinc-900 text-zinc-900 dark:text-zinc-50 text-xs font-black uppercase tracking-widest active:scale-95 transition-transform"
+                    >
+                      Cancel
+                    </button>
+                    <button 
+                      onClick={handleCreateChannel}
+                      disabled={!newChannelName.trim()}
+                      className="flex-1 py-4 rounded-2xl bg-zinc-900 dark:bg-zinc-50 text-white dark:text-zinc-900 text-xs font-black uppercase tracking-widest active:scale-95 transition-transform disabled:opacity-50"
+                    >
+                      Create
+                    </button>
+                  </div>
+                </div>
+              </div>
             </motion.div>
           )}
         </AnimatePresence>
