@@ -1,4 +1,4 @@
-import { Post, NewsArticle, Auction, Category, Asset, User, Badge, Challenge, Seller, GameLeaderboardEntry } from './types.ts';
+import { Post, NewsArticle, Auction, Category, Asset, User, Badge, Challenge, Seller, GameLeaderboardEntry, Listing } from './types.ts';
 
 export const currentUser: User = {
   id: 'u1',
@@ -873,6 +873,111 @@ export const allAssets: Asset[] = [
   { ...figureAsset, id: 'a6', name: 'Vanguard Elite', category: 'Figure', image: 'https://cards.scryfall.io/large/front/2/8/28a5c350-2ed1-4a25-9626-0f8da5d1aef7.jpg?1580013650' },
   { ...scanningAsset, id: 'a7', name: 'Nissan Skyline GTR', category: 'Car', image: 'https://down-vn.img.susercontent.com/file/vn-11134207-7ras8-mbv28z8kh0fm92' },
   { ...mainAsset, id: 'a8', name: 'Blue-Eyes White Dragon', category: 'Card', image: 'https://i.ebayimg.com/images/g/H6QAAOSw-hJnzbHp/s-l1600.webp' },
+  {
+    id: 'a10',
+    name: 'CyberEra CE-04 Bumblebee',
+    series: 'TRANSFORMERS',
+    price: '$85.00',
+    change: '+12.5%',
+    image: 'https://www.bombusbee.net/wp-content/uploads/2024/08/30493ecf67.jpg',
+    description: 'Highly detailed 3rd party masterpiece scale Bumblebee. Features exceptional paint application and intricate transformation mechanisms that satisfy both casual fans and hardcore collectors.',
+    specs: {
+      releaseDate: '2024',
+      colorway: 'Vibrant Yellow',
+      retailPrice: '$79.99',
+      stockNumber: '#CE-04-BB'
+    },
+    scarcity: 'RARE',
+    condition: 'NEW',
+    category: 'Action Figures'
+  },
+  {
+    id: 'a11',
+    name: 'Mega Charizard X ex',
+    series: 'TCG: Scarlet & Violet',
+    price: '$120.00',
+    change: '+5.2%',
+    image: 'https://images.squarespace-cdn.com/content/v1/5e3b1164feb39b444b58f15b/c9995229-543d-48aa-8cc2-c5d251d32cbb/Mega+Charizard+X+ex+double.webp',
+    description: 'A stunning Double Rare card featuring the iconic Mega Charizard X. The blue flame aesthetic and powerful ex rule make this a must-have for any serious competitive player or Charizard enthusiast.',
+    specs: {
+      releaseDate: '2024',
+      colorway: 'Holographic Blue',
+      retailPrice: 'N/A (Booster Pull)',
+      stockNumber: '#EX-CHZ-X'
+    },
+    scarcity: 'ULTRA RARE',
+    condition: 'NEAR MINT',
+    category: 'Pokémon Cards'
+  },
+  {
+    id: 'a12',
+    name: 'Lamborghini Sian FKP 37 HW',
+    series: 'HW Turbo / Super Treasure Hunt',
+    price: '$45.00',
+    change: '+22.0%',
+    image: 'https://i.ebayimg.com/images/g/4fYAAOSwakNkrWji/s-l1200.jpg',
+    description: 'A masterclass in 1:64 scale design. This Lamborghini Sian features the legendary FKP 37 hybrid powertrain styling with a premium finish that catches the light from every angle.',
+    specs: {
+      releaseDate: '2023',
+      colorway: 'Olive Green / Gold Wheels',
+      retailPrice: '$1.25',
+      stockNumber: '#HW-LAM-SIAN'
+    },
+    scarcity: 'SUPER TH',
+    condition: 'MINT (CARDED)',
+    category: 'Hot Wheels'
+  },
+];
+
+export const marketListings: Listing[] = [
+  // Bumblebee
+  {
+    id: 'l1',
+    assetId: 'a10',
+    seller: topCollectors[1],
+    type: 'Selling',
+    price: '$85.00',
+    note: 'Brand new, unopened box. Masterpiece scale.'
+  },
+  {
+    id: 'l2',
+    assetId: 'a10',
+    seller: topCollectors[2],
+    type: 'Trading',
+    note: 'Looking for 1:18 Porsche models or rare Hot Wheels.'
+  },
+  // Charizard
+  {
+    id: 'l3',
+    assetId: 'a11',
+    seller: topCollectors[3],
+    type: 'Selling',
+    price: '$120.00',
+    note: 'Pack fresh, sleeved immediately. NM condition.'
+  },
+  {
+    id: 'l4',
+    assetId: 'a11',
+    seller: topCollectors[2],
+    type: 'Trading',
+    note: 'Looking for other ex cards or vintage base set holos.'
+  },
+  // Lamborghini
+  {
+    id: 'l5',
+    assetId: 'a12',
+    seller: topCollectors[1],
+    type: 'Selling',
+    price: '$45.00',
+    note: 'Super Treasure Hunt. Card is in great condition.'
+  },
+  {
+    id: 'l6',
+    assetId: 'a12',
+    seller: topCollectors[3],
+    type: 'Trading',
+    note: 'Trading for other STHs of similar value.'
+  }
 ];
 
 export const badges: Badge[] = [

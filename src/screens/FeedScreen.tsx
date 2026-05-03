@@ -5,16 +5,18 @@
 
 import React from 'react';
 import { MoreHorizontal, Heart, MessageCircle, Share2, Plus, Bookmark, ChevronRight } from 'lucide-react';
-import { Post, User, Seller } from '../types';
+import { Post, User, Seller, Asset } from '../types';
 import { motion, AnimatePresence } from 'motion/react';
-import { collectibleCategories } from '../mockData';
+import { collectibleCategories, allAssets as mockAllAssets } from '../mockData';
 import LiveDiscussion from '../components/LiveDiscussion';
 
 interface FeedScreenProps {
   posts: Post[];
   collectors: User[];
   sellers: Seller[];
+  allAssets: Asset[];
   onPostClick: (post: Post) => void;
+  onProductClick: (product: Asset) => void;
   onCollectorClick: (user: User) => void;
   onSellerClick: (seller: Seller) => void;
   onWishlistToggle?: (postId: string) => void;
@@ -33,11 +35,20 @@ interface SuggestionModule {
   items: Post[];
 }
 
+interface AssetModule {
+  id: string;
+  type: 'asset-suggestion';
+  title: string;
+  items: Asset[];
+}
+
 export default function FeedScreen({ 
   posts, 
   collectors, 
   sellers, 
+  allAssets,
   onPostClick, 
+  onProductClick,
   onCollectorClick, 
   onSellerClick,
   onWishlistToggle, 
@@ -63,7 +74,7 @@ export default function FeedScreen({
   const feedItems = React.useMemo(() => {
     if (activeCategory) return displayedPosts.map(p => ({ ...p, feedType: 'post' as const }));
 
-    const items: ((Post & { feedType: 'post' }) | SuggestionModule)[] = [];
+    const items: ((Post & { feedType: 'post' }) | SuggestionModule | AssetModule)[] = [];
     const suggestionInterval = 3; // Every 3 posts
 
     displayedPosts.forEach((post, index) => {
@@ -71,34 +82,44 @@ export default function FeedScreen({
 
       // Insert suggestion module at interval
       if ((index + 1) % suggestionInterval === 0 && index < displayedPosts.length - 1) {
-        const suggestionId = `suggestion-${Math.floor(index / suggestionInterval)}`;
-        const suggestionTitles = [
-          'For You',
-          'Trending in Action Figures',
-          'Suggested Collectors',
-          'Community Rare Finds',
-          'Market Picks'
-        ];
-        const title = suggestionTitles[Math.floor(index / suggestionInterval) % suggestionTitles.length];
+        const moduleIndex = Math.floor(index / suggestionInterval);
         
-        // Pick random items that are NOT currently in the vertical feed if possible, 
-        // or just shuffle some relevant ones.
-        const suggestedItems = posts
-          .filter(p => p.id !== post.id)
-          .sort(() => 0.5 - Math.random())
-          .slice(0, 5);
+        if (moduleIndex === 0) {
+          // First module: Assets / Market Picks
+          const sellingItems = allAssets.filter(a => ['a10', 'a11', 'a12'].includes(a.id));
+          items.push({
+            id: 'market-picks',
+            type: 'asset-suggestion',
+            title: 'Market Picks',
+            items: sellingItems
+          });
+        } else {
+          const suggestionId = `suggestion-${moduleIndex}`;
+          const suggestionTitles = [
+            'For You',
+            'Trending in Action Figures',
+            'Suggested Collectors',
+            'Community Rare Finds'
+          ];
+          const title = suggestionTitles[moduleIndex % suggestionTitles.length];
+          
+          const suggestedItems = posts
+            .filter(p => p.id !== post.id)
+            .sort(() => 0.5 - Math.random())
+            .slice(0, 5);
 
-        items.push({
-          id: suggestionId,
-          type: 'suggestion',
-          title,
-          items: suggestedItems
-        });
+          items.push({
+            id: suggestionId,
+            type: 'suggestion',
+            title,
+            items: suggestedItems
+          });
+        }
       }
     });
 
     return items;
-  }, [displayedPosts, activeCategory, posts]);
+  }, [displayedPosts, activeCategory, posts, allAssets]);
 
   // Simple infinite scroll logic
   React.useEffect(() => {
@@ -169,6 +190,15 @@ export default function FeedScreen({
                   title={item.title}
                   items={item.items}
                   onItemClick={onPostClick}
+                />
+              );
+            } else if ('type' in item && item.type === 'asset-suggestion') {
+              return (
+                <AssetCarousel 
+                  key={item.id}
+                  title={item.title}
+                  items={item.items}
+                  onItemClick={onProductClick}
                 />
               );
             }
@@ -250,6 +280,51 @@ export default function FeedScreen({
         )}
       </AnimatePresence>
     </div>
+  );
+}
+
+function AssetCarousel({ title, items, onItemClick }: { title: string, items: Asset[], onItemClick: (product: Asset) => void }) {
+  return (
+    <motion.section 
+      initial={{ opacity: 0, x: 20 }}
+      whileInView={{ opacity: 1, x: 0 }}
+      viewport={{ once: true }}
+      className="py-4 -mx-4 md:-mx-6"
+    >
+      <div className="flex justify-between items-center px-4 md:px-6 mb-4">
+        <h3 className="text-xs font-black font-headline uppercase tracking-[0.2em] text-zinc-400">{title}</h3>
+        <button className="flex items-center gap-1 text-zinc-400 hover:text-zinc-900 transition-colors">
+          <span className="text-[10px] font-black uppercase tracking-widest">Marketplace</span>
+          <ChevronRight size={14} />
+        </button>
+      </div>
+      <div className="flex gap-4 overflow-x-auto px-4 md:px-6 no-scrollbar pb-4 scroll-smooth snap-x snap-mandatory">
+        {items.map((item) => (
+          <div 
+            key={item.id}
+            onClick={() => onItemClick(item)}
+            className="flex-shrink-0 w-48 snap-start active:scale-95 transition-transform cursor-pointer group"
+          >
+            <div className="aspect-square rounded-2xl overflow-hidden bg-zinc-100 dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 mb-3 relative flex items-center justify-center p-4">
+              <img 
+                src={item.image} 
+                alt={item.name} 
+                className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-500"
+                referrerPolicy="no-referrer"
+              />
+              <div className="absolute top-2 left-2 bg-indigo-500 text-white px-2 py-0.5 rounded text-[8px] font-black uppercase tracking-widest shadow-md">
+                Selling
+              </div>
+            </div>
+            <h4 className="text-[10px] font-black font-headline uppercase truncate text-zinc-900 dark:text-zinc-50">{item.name}</h4>
+            <div className="flex justify-between items-center mt-1">
+              <p className="text-[10px] font-bold text-zinc-900 dark:text-zinc-50">{item.price}</p>
+              <p className="text-[9px] text-green-500 font-bold">{item.change}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </motion.section>
   );
 }
 

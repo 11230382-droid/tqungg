@@ -5,11 +5,19 @@
 
 import * as React from 'react';
 import { Search, Camera, Heart, X } from 'lucide-react';
-import { categories, auctions, posts } from '../mockData';
+import { categories, auctions, posts, allAssets } from '../mockData';
 import { motion, AnimatePresence } from 'motion/react';
-import { Post } from '../types';
+import { Post, Asset } from '../types';
 
-export default function SearchScreen({ onScanTrigger }: { onScanTrigger: () => void }) {
+export default function SearchScreen({ 
+  onScanTrigger, 
+  onProductClick, 
+  onMarketListingsClick 
+}: { 
+  onScanTrigger: () => void, 
+  onProductClick?: (asset: Asset) => void,
+  onMarketListingsClick?: () => void
+}) {
   const [searchQuery, setSearchQuery] = React.useState('');
   const [selectedCategory, setSelectedCategory] = React.useState<string | null>(null);
 
@@ -117,6 +125,46 @@ export default function SearchScreen({ onScanTrigger }: { onScanTrigger: () => v
           })}
         </div>
       </section>
+
+      {/* Trending / Selling Section - Marketplace context */}
+      {!isSearching && (
+        <section className="space-y-6">
+          <div className="flex justify-between items-end">
+            <h2 className="font-headline font-bold text-2xl text-zinc-900 dark:text-zinc-100 tracking-tight">Marketplace Listings</h2>
+            <button 
+              onClick={onMarketListingsClick}
+              className="text-[10px] font-black text-indigo-500 uppercase tracking-[0.2em] px-4 py-2 bg-indigo-50 dark:bg-indigo-950/30 rounded-xl hover:bg-indigo-100 transition-colors"
+            >
+              View All Listings
+            </button>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {allAssets.filter(asset => ['a10', 'a11', 'a12'].includes(asset.id)).map((item) => (
+              <div 
+                key={item.id} 
+                onClick={() => onProductClick?.(item)}
+                className="group relative bg-white dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 rounded-3xl p-4 shadow-sm hover:shadow-md transition-all cursor-pointer"
+              >
+                <div className="aspect-square rounded-2xl overflow-hidden bg-zinc-50 dark:bg-zinc-950 mb-4 relative flex items-center justify-center p-6">
+                  <img src={item.image} alt={item.name} className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-500" referrerPolicy="no-referrer" />
+                  <div className="absolute top-2 left-2 bg-indigo-500 text-white px-2 py-1 rounded-lg text-[8px] font-black uppercase tracking-widest shadow-lg">
+                    Selling
+                  </div>
+                  <div className="absolute top-2 right-2 bg-black/50 backdrop-blur-md text-white px-2 py-1 rounded-lg text-[8px] font-black uppercase tracking-widest">
+                    {item.scarcity}
+                  </div>
+                </div>
+                <p className="text-[9px] font-black uppercase tracking-widest text-zinc-400 mb-1">{item.category}</p>
+                <h3 className="font-headline font-bold text-sm text-zinc-900 dark:text-zinc-100 truncate mb-2">{item.name}</h3>
+                <div className="flex justify-between items-center">
+                  <span className="text-lg font-headline font-black text-zinc-900 dark:text-zinc-50">{item.price}</span>
+                  <span className="text-[10px] font-black text-green-500">{item.change}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
 
       {isSearching ? (
         <section className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">

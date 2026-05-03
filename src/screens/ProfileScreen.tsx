@@ -13,13 +13,14 @@ interface ProfileScreenProps {
   user?: User;
   onProductClick: (product: Asset) => void;
   onPostClick: (post: Post) => void;
+  onWishlistClick?: () => void;
   wishlist: { posts: string[], products: string[] };
   allPosts: Post[];
   allAssets: Asset[];
   museumItemIds: string[];
 }
 
-export default function ProfileScreen({ user = currentUser, onProductClick, onPostClick, wishlist, allPosts, allAssets, museumItemIds }: ProfileScreenProps) {
+export default function ProfileScreen({ user = currentUser, onProductClick, onPostClick, onWishlistClick, wishlist, allPosts, allAssets, museumItemIds }: ProfileScreenProps) {
   const [activeTab, setActiveTab] = useState<'collection' | 'wishlist'>('collection');
   
   // Custom collection logic
@@ -216,10 +217,18 @@ export default function ProfileScreen({ user = currentUser, onProductClick, onPo
             {/* Wishlist Products */}
             {wishlistedProducts.length > 0 && (
               <div>
-                <h3 className="text-[10px] font-black uppercase tracking-widest text-zinc-400 mb-6 flex items-center gap-2">
-                  <Box size={14} />
-                  Saved Assets
-                </h3>
+                <div className="flex justify-between items-center mb-6">
+                  <h3 className="text-[10px] font-black uppercase tracking-widest text-zinc-400 flex items-center gap-2">
+                    <Box size={14} />
+                    Saved Assets
+                  </h3>
+                  <button 
+                    onClick={onWishlistClick}
+                    className="text-[10px] font-black uppercase bg-zinc-100 dark:bg-zinc-800 px-3 py-1.5 rounded-lg text-zinc-900 dark:text-zinc-100 active:scale-95 transition-all"
+                  >
+                    Manage All
+                  </button>
+                </div>
                 <div className="grid grid-cols-2 gap-4">
                   {wishlistedProducts.map((item) => (
                     <div 

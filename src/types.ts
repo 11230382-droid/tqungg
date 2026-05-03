@@ -1,4 +1,13 @@
-export type Screen = 'feed' | 'news' | 'search' | 'games' | 'rewards' | 'profile' | 'scanning' | 'post-detail' | 'product-detail' | 'wishlist' | 'article-detail' | 'live-discussion';
+export interface Listing {
+  id: string;
+  assetId: string;
+  seller: User;
+  type: 'Selling' | 'Trading';
+  price?: string;
+  note?: string;
+}
+
+export type Screen = 'feed' | 'news' | 'search' | 'games' | 'rewards' | 'profile' | 'scanning' | 'post-detail' | 'product-detail' | 'wishlist' | 'article-detail' | 'live-discussion' | 'market-listing';
 
 export interface ChatMessage {
   id: string;
@@ -110,7 +119,8 @@ export interface Asset {
     stockNumber: string;
   };
   scarcity: string;
-  category: 'Figure' | 'Card' | 'Car' | 'Book' | 'Other';
+  condition?: string;
+  category: string;
   isWishlisted?: boolean;
   matchPercentage?: number;
 }

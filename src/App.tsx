@@ -17,6 +17,7 @@ import PostDetailScreen from './screens/PostDetailScreen';
 import ProductDetailScreen from './screens/ProductDetailScreen';
 import ArticleDetailScreen from './screens/ArticleDetailScreen';
 import WishlistScreen from './screens/WishlistScreen';
+import MarketListingScreen from './screens/MarketListingScreen';
 import GamesScreen from './screens/GamesScreen';
 import LiveDiscussionScreen from './screens/LiveDiscussionScreen';
 import { AnimatePresence, motion } from 'motion/react';
@@ -33,9 +34,13 @@ export default function App() {
   const [selectedProduct, setSelectedProduct] = useState<Asset | null>(null);
   const [selectedArticle, setSelectedArticle] = useState<NewsArticle | null>(null);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
-  const [previousScreen, setPreviousScreen] = useState<Screen>('feed');
+  const [marketListingAsset, setMarketListingAsset] = useState<Asset | null>(null);
+  const [navigationStack, setNavigationStack] = useState<Screen[]>([]);
   const [discussionMode, setDiscussionMode] = useState<'chat' | 'forum'>('chat');
-  const [wishlist, setWishlist] = useState<{ posts: string[], products: string[] }>({ posts: [], products: [] });
+  const [wishlist, setWishlist] = useState<{ posts: string[], products: string[] }>({ 
+    posts: [], 
+    products: ['a10', 'a11', 'a12'] 
+  });
   const [museumItemIds, setMuseumItemIds] = useState<string[]>([]);
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
   const [isCategoryMenuOpen, setIsCategoryMenuOpen] = useState(false);
@@ -51,6 +56,7 @@ export default function App() {
       case 'product-detail': return `product:${selectedProduct?.id || 'none'}`;
       case 'article-detail': return `article:${selectedArticle?.id || 'none'}`;
       case 'profile': return `profile:${selectedUser?.id || 'me'}`;
+      case 'market-listing': return `market:${marketListingAsset?.id || 'all'}`;
       case 'search': return 'search';
       case 'news': return 'news';
       case 'rewards': return 'rewards';
@@ -91,8 +97,9 @@ export default function App() {
     setSellers(mockSellers);
     setCollectors(mockCollectors);
 
-    // Initial museum items: all assets except a2 (scanningAsset)
-    setMuseumItemIds(allAssets.filter(a => a.id !== 'a2').map(a => a.id));
+    // Initial museum items: all assets except a2 (scanningAsset) and new wishlist items
+    const excludedIds = ['a2', 'a10', 'a11', 'a12'];
+    setMuseumItemIds(allAssets.filter(a => !excludedIds.includes(a.id)).map(a => a.id));
     
     // Load wishlist from local storage if available
     const savedWishlist = localStorage.getItem('collector_wishlist');
@@ -126,26 +133,27 @@ export default function App() {
     }
   }, [activeScreen]);
 
+  const navigateTo = (screen: Screen) => {
+    setNavigationStack(prev => [...prev, activeScreen]);
+    setActiveScreen(screen);
+  };
+
   const handlePostClick = (post: Post) => {
-    setPreviousScreen(activeScreen);
     setSelectedPost(post);
-    setActiveScreen('post-detail');
+    navigateTo('post-detail');
   };
 
   const handleProductClick = (product: Asset) => {
-    setPreviousScreen(activeScreen);
     setSelectedProduct(product);
-    setActiveScreen('product-detail');
+    navigateTo('product-detail');
   };
 
   const handleCollectorClick = (user: User) => {
-    setPreviousScreen(activeScreen);
     setSelectedUser(user);
-    setActiveScreen('profile');
+    navigateTo('profile');
   };
 
   const handleSellerClick = (seller: Seller) => {
-    setPreviousScreen(activeScreen);
     setSelectedUser({
       id: seller.id,
       name: seller.name,
@@ -159,19 +167,27 @@ export default function App() {
       totalValue: '$84k',
       xp: seller.rating * 1000
     });
-    setActiveScreen('profile');
+    navigateTo('profile');
+  };
+
+  const handleSearchMarketListingClick = () => {
+    setMarketListingAsset(null);
+    navigateTo('market-listing');
+  };
+
+  const handleProductMarketListingClick = (product: Asset) => {
+    setMarketListingAsset(product);
+    navigateTo('market-listing');
   };
 
   const handleArticleClick = (article: NewsArticle) => {
-    setPreviousScreen(activeScreen);
     setSelectedArticle(article);
-    setActiveScreen('article-detail');
+    navigateTo('article-detail');
   };
 
   const handleLiveDiscussionClick = (mode: 'chat' | 'forum' = 'chat') => {
-    setPreviousScreen(activeScreen);
     setDiscussionMode(mode);
-    setActiveScreen('live-discussion');
+    navigateTo('live-discussion');
   };
 
   const togglePostWishlist = (postId: string) => {
@@ -247,7 +263,14 @@ export default function App() {
   };
 
   const handleBack = () => {
-    setActiveScreen(previousScreen);
+    if (navigationStack.length > 0) {
+      const newStack = [...navigationStack];
+      const prev = newStack.pop()!;
+      setNavigationStack(newStack);
+      setActiveScreen(prev);
+    } else {
+      setActiveScreen('feed');
+    }
   };
 
   const handleAddToMuseum = (productId: string) => {
@@ -268,7 +291,9 @@ export default function App() {
             posts={posts} 
             collectors={collectors}
             sellers={sellers}
-            onPostClick={handlePostClick} 
+            allAssets={allAssets}
+            onPostClick={handlePostClick}
+            onProductClick={handleProductClick}
             onCollectorClick={handleCollectorClick}
             onSellerClick={handleSellerClick}
             onWishlistToggle={togglePostWishlist}
@@ -285,7 +310,13 @@ export default function App() {
       case 'games':
         return <GamesScreen collectedItems={wishlistedProducts} />;
       case 'search':
-        return <SearchScreen onScanTrigger={() => setActiveScreen('scanning')} />;
+        return (
+          <SearchScreen 
+            onScanTrigger={() => setActiveScreen('scanning')} 
+            onProductClick={handleProductClick} 
+            onMarketListingsClick={handleSearchMarketListingClick}
+          />
+        );
       case 'rewards':
         return (
           <RewardsScreen 
@@ -301,6 +332,7 @@ export default function App() {
             user={selectedUser || currentUser}
             onProductClick={handleProductClick} 
             onPostClick={handlePostClick}
+            onWishlistClick={() => navigateTo('wishlist')}
             wishlist={wishlist} 
             allPosts={posts}
             allAssets={allAssets}
@@ -311,16 +343,12 @@ export default function App() {
         return (
           <MuseumScreen 
             onBack={() => {
-              if (previousScreen) {
-                setActiveScreen(previousScreen);
-              } else {
-                setActiveScreen('search');
-              }
+              handleBack();
             }}
             onMuseumClick={() => {
               handleAddToMuseum(scanningAsset.id);
               setSelectedProduct(scanningAsset);
-              setActiveScreen('product-detail');
+              navigateTo('product-detail');
             }}
             isInMuseum={museumItemIds.includes(scanningAsset.id)}
             onResultInView={setIsScanningResultInView}
@@ -353,7 +381,9 @@ export default function App() {
             posts={posts} 
             collectors={collectors}
             sellers={sellers}
-            onPostClick={handlePostClick} 
+            allAssets={allAssets}
+            onPostClick={handlePostClick}
+            onProductClick={handleProductClick}
             onCollectorClick={handleCollectorClick}
             onSellerClick={handleSellerClick}
             onWishlistToggle={togglePostWishlist}
@@ -368,6 +398,7 @@ export default function App() {
             onBack={handleBack}
             onWishlistToggle={toggleProductWishlist}
             onMuseumClick={() => handleAddToMuseum(selectedProduct.id)}
+            onMarketListingClick={handleProductMarketListingClick}
             isInMuseum={museumItemIds.includes(selectedProduct.id)}
           />
         ) : (
@@ -375,6 +406,7 @@ export default function App() {
             user={currentUser}
             onProductClick={handleProductClick} 
             onPostClick={handlePostClick}
+            onWishlistClick={() => navigateTo('wishlist')}
             wishlist={wishlist} 
             allPosts={posts}
             allAssets={allAssets}
@@ -390,12 +422,22 @@ export default function App() {
         ) : <NewsScreen onArticleClick={handleArticleClick} />;
       case 'live-discussion':
         return <LiveDiscussionScreen onBack={handleBack} initialMode={discussionMode} />;
+      case 'market-listing':
+        return (
+          <MarketListingScreen 
+            asset={marketListingAsset || undefined}
+            onBack={handleBack}
+            onSellerClick={(listing) => handleCollectorClick(listing.seller)}
+          />
+        );
       default:
         return <FeedScreen 
           posts={posts} 
           collectors={collectors}
           sellers={sellers}
+          allAssets={allAssets}
           onPostClick={handlePostClick} 
+          onProductClick={handleProductClick}
           onCollectorClick={handleCollectorClick}
           onSellerClick={handleSellerClick}
         />;
@@ -465,8 +507,7 @@ export default function App() {
       <TopAppBar 
         title={getTitle()} 
         onSearchClick={() => {
-          setPreviousScreen(activeScreen);
-          setActiveScreen('search');
+          navigateTo('search');
         }}
         onBackClick={activeScreen !== 'feed' ? handleBack : (activeCategory ? () => setActiveCategory(null) : undefined)}
         onMenuClick={activeScreen === 'feed' && !activeCategory ? () => setIsCategoryMenuOpen(prev => !prev) : undefined}
@@ -506,7 +547,8 @@ export default function App() {
               return;
             }
             setSelectedUser(null);
-            setPreviousScreen(activeScreen);
+            // When switching tabs, we clear the stack to prevent messy back navigation across tabs
+            setNavigationStack([]);
             setActiveScreen(screen);
           }} 
         />
