@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Screen, Post, Asset, NewsArticle, User, Seller } from './types';
 import TopAppBar from './components/TopAppBar';
 import BottomNavBar from './components/BottomNavBar';
@@ -37,6 +37,50 @@ export default function App() {
   const [museumItemIds, setMuseumItemIds] = useState<string[]>([]);
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
   const [isCategoryMenuOpen, setIsCategoryMenuOpen] = useState(false);
+
+  // View position memory
+  const scrollPositions = useRef<Record<string, number>>({});
+  const lastViewKey = useRef<string>('');
+
+  const currentViewKey = (() => {
+    switch (activeScreen) {
+      case 'feed': return `feed:${activeCategory || 'all'}`;
+      case 'post-detail': return `post:${selectedPost?.id || 'none'}`;
+      case 'product-detail': return `product:${selectedProduct?.id || 'none'}`;
+      case 'article-detail': return `article:${selectedArticle?.id || 'none'}`;
+      case 'profile': return `profile:${selectedUser?.id || 'me'}`;
+      case 'search': return 'search';
+      case 'news': return 'news';
+      case 'rewards': return 'rewards';
+      case 'games': return 'games';
+      case 'scanning': return 'scanning';
+      case 'wishlist': return 'wishlist';
+      default: return activeScreen;
+    }
+  })();
+
+  useEffect(() => {
+    const handleScrollReset = () => {
+      // Save current scroll for the view we are leaving
+      if (lastViewKey.current) {
+        scrollPositions.current[lastViewKey.current] = window.scrollY;
+      }
+      
+      // Determine target scroll position
+      const targetScroll = scrollPositions.current[currentViewKey] || 0;
+      
+      // Execute scroll
+      window.scrollTo({
+        top: targetScroll,
+        left: 0,
+        behavior: 'instant' as ScrollBehavior
+      });
+      
+      lastViewKey.current = currentViewKey;
+    };
+
+    handleScrollReset();
+  }, [currentViewKey]);
 
   // Initialize data
   useEffect(() => {
@@ -436,7 +480,21 @@ export default function App() {
         <BottomNavBar 
           activeScreen={activeScreen} 
           onScreenChange={(screen) => {
+            if (activeScreen === screen) {
+              // Tapping active tab scrolls to top
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+              scrollPositions.current[currentViewKey] = 0;
+              
+              // If on feed with category, or profile with another user, tapping again resets to main view
+              if (screen === 'feed' && activeCategory) {
+                setActiveCategory(null);
+              } else if (screen === 'profile' && selectedUser) {
+                setSelectedUser(null);
+              }
+              return;
+            }
             setSelectedUser(null);
+            setPreviousScreen(activeScreen);
             setActiveScreen(screen);
           }} 
         />
