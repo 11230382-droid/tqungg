@@ -37,6 +37,25 @@ export default function ProductDetailScreen({ product, onBack, onWishlistToggle,
               </div>
             </div>
 
+            <div className="absolute top-8 right-8 flex gap-2">
+              <button 
+                onClick={() => onWishlistToggle?.(product.id)}
+                className="w-10 h-10 flex items-center justify-center rounded-xl bg-white/80 dark:bg-zinc-800/80 backdrop-blur border border-zinc-100 dark:border-zinc-700 text-zinc-900 dark:text-zinc-50 active:scale-95 transition-all shadow-sm"
+              >
+                <Bookmark size={20} fill={product.isWishlisted ? 'currentColor' : 'none'} className={product.isWishlisted ? 'text-indigo-500' : ''} />
+              </button>
+              <button 
+                className="w-10 h-10 flex items-center justify-center rounded-xl bg-white/80 dark:bg-zinc-800/80 backdrop-blur border border-zinc-100 dark:border-zinc-700 text-zinc-900 dark:text-zinc-50 active:scale-95 transition-all shadow-sm"
+              >
+                <Share2 size={20} />
+              </button>
+              <button 
+                className="w-10 h-10 flex items-center justify-center rounded-xl bg-white/80 dark:bg-zinc-800/80 backdrop-blur border border-zinc-100 dark:border-zinc-700 text-zinc-900 dark:text-zinc-50 active:scale-95 transition-all shadow-sm"
+              >
+                <MoreHorizontal size={20} />
+              </button>
+            </div>
+
             <div className="absolute bottom-8 right-8 flex flex-col gap-2">
                <div className="bg-white/80 dark:bg-zinc-800/80 backdrop-blur px-3 py-1.5 rounded-lg border border-zinc-100 dark:border-zinc-700 flex items-center gap-2">
                   <ShieldCheck size={14} className="text-zinc-900 dark:text-zinc-100" />

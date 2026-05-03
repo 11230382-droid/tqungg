@@ -452,50 +452,8 @@ export default function App() {
   };
 
   const getHeaderActions = () => {
-    if (activeScreen === 'post-detail' && selectedPost) {
-      return (
-        <div className="flex items-center gap-2">
-          <button 
-             onClick={() => togglePostWishlist(selectedPost.id)}
-             className={`p-2 transition-all ${wishlist.posts.includes(selectedPost.id) ? 'text-zinc-900 dark:text-zinc-50 scale-110' : 'text-zinc-400'}`}
-          >
-            <Bookmark size={20} fill={wishlist.posts.includes(selectedPost.id) ? 'currentColor' : 'none'} />
-          </button>
-          <button className="p-2 text-zinc-900 dark:text-zinc-50">
-            <MoreHorizontal size={20} />
-          </button>
-        </div>
-      );
-    }
-    if (activeScreen === 'product-detail' && selectedProduct) {
-      return (
-        <div className="flex items-center gap-2">
-          <button 
-            onClick={() => toggleProductWishlist(selectedProduct.id)}
-            className={`p-2 transition-all ${wishlist.products.includes(selectedProduct.id) ? 'text-zinc-900 dark:text-zinc-50 scale-110' : 'text-zinc-400'}`}
-          >
-            <Bookmark size={20} fill={wishlist.products.includes(selectedProduct.id) ? 'currentColor' : 'none'} />
-          </button>
-          <button className="p-2 text-zinc-900 dark:text-zinc-50">
-            <Share2 size={20} />
-          </button>
-          <button className="p-2 text-zinc-900 dark:text-zinc-50">
-            <MoreHorizontal size={20} />
-          </button>
-        </div>
-      );
-    }
-    if (activeScreen === 'article-detail') {
-      return (
-        <div className="flex items-center gap-2">
-          <button className="p-2 text-zinc-900 dark:text-zinc-50">
-            <Bookmark size={20} />
-          </button>
-          <button className="p-2 text-zinc-900 dark:text-zinc-50">
-            <Share2 size={20} />
-          </button>
-        </div>
-      );
+    if (activeScreen === 'post-detail' || activeScreen === 'product-detail' || activeScreen === 'article-detail') {
+      return <div className="w-10" />;
     }
     return undefined;
   };
