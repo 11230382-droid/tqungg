@@ -18,6 +18,7 @@ interface FeedScreenProps {
   onCollectorClick: (user: User) => void;
   onSellerClick: (seller: Seller) => void;
   onWishlistToggle?: (postId: string) => void;
+  onLiveDiscussionClick?: (mode: 'chat' | 'forum') => void;
   wishlist?: string[];
   activeCategory?: string;
   isCategoryMenuOpen?: boolean;
@@ -44,7 +45,8 @@ export default function FeedScreen({
   activeCategory,
   isCategoryMenuOpen,
   onCategorySelect,
-  onCloseCategoryMenu
+  onCloseCategoryMenu,
+  onLiveDiscussionClick
 }: FeedScreenProps) {
   const [displayCount, setDisplayCount] = React.useState(activeCategory ? 20 : 6);
   const [isLoadingMore, setIsLoadingMore] = React.useState(false);
@@ -144,7 +146,7 @@ export default function FeedScreen({
       </section>
 
       {/* Live Discussion Hub */}
-      {!activeCategory && <LiveDiscussion />}
+      {!activeCategory && <LiveDiscussion onModeSelect={onLiveDiscussionClick} />}
 
       <div className="flex flex-col gap-10 mb-20">
         <AnimatePresence mode="popLayout">

@@ -18,6 +18,7 @@ import ProductDetailScreen from './screens/ProductDetailScreen';
 import ArticleDetailScreen from './screens/ArticleDetailScreen';
 import WishlistScreen from './screens/WishlistScreen';
 import GamesScreen from './screens/GamesScreen';
+import LiveDiscussionScreen from './screens/LiveDiscussionScreen';
 import { AnimatePresence, motion } from 'motion/react';
 import { posts as mockPosts, currentUser, articles as mockArticles, allAssets, scanningAsset, sellers as mockSellers, topCollectors as mockCollectors } from './mockData';
 import { Bookmark, Share2, MoreHorizontal } from 'lucide-react';
@@ -33,6 +34,7 @@ export default function App() {
   const [selectedArticle, setSelectedArticle] = useState<NewsArticle | null>(null);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [previousScreen, setPreviousScreen] = useState<Screen>('feed');
+  const [discussionMode, setDiscussionMode] = useState<'chat' | 'forum'>('chat');
   const [wishlist, setWishlist] = useState<{ posts: string[], products: string[] }>({ posts: [], products: [] });
   const [museumItemIds, setMuseumItemIds] = useState<string[]>([]);
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
@@ -166,6 +168,12 @@ export default function App() {
     setActiveScreen('article-detail');
   };
 
+  const handleLiveDiscussionClick = (mode: 'chat' | 'forum' = 'chat') => {
+    setPreviousScreen(activeScreen);
+    setDiscussionMode(mode);
+    setActiveScreen('live-discussion');
+  };
+
   const togglePostWishlist = (postId: string) => {
     setWishlist(prev => {
       const isIncluded = prev.posts.includes(postId);
@@ -269,6 +277,7 @@ export default function App() {
             isCategoryMenuOpen={isCategoryMenuOpen}
             onCategorySelect={(cat) => setActiveCategory(cat)}
             onCloseCategoryMenu={() => setIsCategoryMenuOpen(false)}
+            onLiveDiscussionClick={handleLiveDiscussionClick}
           />
         );
       case 'news':
@@ -349,6 +358,7 @@ export default function App() {
             onSellerClick={handleSellerClick}
             onWishlistToggle={togglePostWishlist}
             wishlist={wishlist.posts}
+            onLiveDiscussionClick={handleLiveDiscussionClick}
           />
         );
       case 'product-detail':
@@ -378,6 +388,8 @@ export default function App() {
             onBack={handleBack}
           />
         ) : <NewsScreen onArticleClick={handleArticleClick} />;
+      case 'live-discussion':
+        return <LiveDiscussionScreen onBack={handleBack} initialMode={discussionMode} />;
       default:
         return <FeedScreen 
           posts={posts} 
@@ -446,7 +458,7 @@ export default function App() {
     return undefined;
   };
 
-  const showBottomNav = activeScreen !== 'post-detail' && activeScreen !== 'product-detail' && activeScreen !== 'scanning' && activeScreen !== 'wishlist';
+  const showBottomNav = activeScreen !== 'post-detail' && activeScreen !== 'product-detail' && activeScreen !== 'scanning' && activeScreen !== 'wishlist' && activeScreen !== 'live-discussion';
 
   return (
     <div className="min-h-screen bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-50 font-body selection:bg-zinc-200">

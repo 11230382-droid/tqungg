@@ -5,8 +5,9 @@
 
 import * as React from 'react';
 import { NewsArticle } from '../types';
-import { articles } from '../mockData';
+import { articles, auctions } from '../mockData';
 import { motion, AnimatePresence } from 'motion/react';
+import LiveAuctions from '../components/LiveAuctions';
 
 interface NewsScreenProps {
   onArticleClick?: (article: NewsArticle) => void;
@@ -16,9 +17,9 @@ const NEWS_CATEGORIES = [
   'All',
   'Market Trends',
   'New Releases',
-  'Auctions',
-  'Collector Stories',
-  'Events'
+  'AUCTIONS',
+  'Events',
+  'Collector Stories'
 ];
 
 export default function NewsScreen({ onArticleClick }: NewsScreenProps) {
@@ -31,7 +32,11 @@ export default function NewsScreen({ onArticleClick }: NewsScreenProps) {
   const filteredArticles = React.useMemo(() => {
     let list = articles;
     if (selectedCategory !== 'All') {
-      list = articles.filter(a => a.category === selectedCategory);
+      if (selectedCategory === 'AUCTIONS') {
+        list = articles.filter(a => a.category === 'Auctions' || a.category === 'Live Auctions');
+      } else {
+        list = articles.filter(a => a.category === selectedCategory);
+      }
     }
     // Filter out hero article from the feed lists to avoid duplication if it's in the category
     return list.filter(a => a.id !== heroArticle?.id);
@@ -86,7 +91,7 @@ export default function NewsScreen({ onArticleClick }: NewsScreenProps) {
       </section>
 
       {/* Hero Editorial (Only shown in 'All' or if it matches category) */}
-      {(selectedCategory === 'All' || heroArticle?.category === selectedCategory) && heroArticle && (
+      {selectedCategory === 'All' && heroArticle && (
         <section onClick={() => onArticleClick?.(heroArticle)}>
           <motion.div 
             initial={{ opacity: 0, scale: 0.98 }}
@@ -127,38 +132,88 @@ export default function NewsScreen({ onArticleClick }: NewsScreenProps) {
           </div>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <AnimatePresence mode="popLayout">
-            {displayedArticles.map((article, index) => (
-              <motion.div 
-                key={article.id}
-                layout
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, scale: 0.95 }}
-                transition={{ duration: 0.4, delay: index * 0.05 }}
-                className="group cursor-pointer"
-                onClick={() => onArticleClick?.(article)}
-              >
-                <div className="aspect-[4/5] overflow-hidden rounded-lg mb-4 bg-zinc-100 dark:bg-zinc-800">
-                  <img 
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" 
-                    src={article.image} 
-                    alt={article.title}
-                    referrerPolicy="no-referrer"
-                  />
-                </div>
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">{article.publisher}</span>
-                  <span className="text-[9px] font-black px-2 py-0.5 bg-zinc-100 dark:bg-zinc-900 rounded uppercase tracking-tighter">{article.category}</span>
-                </div>
-                <h4 className="text-xl font-bold font-headline leading-tight group-hover:underline underline-offset-4 decoration-2">
-                  {article.title}
-                </h4>
-              </motion.div>
-            ))}
-          </AnimatePresence>
-        </div>
+        {selectedCategory === 'AUCTIONS' ? (
+          <div className="space-y-16">
+            <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+               <div className="mb-6">
+                 <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-red-500 mb-2 flex items-center gap-2">
+                   <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
+                   Happening Now
+                 </h4>
+               </div>
+               <LiveAuctions auctions={auctions} showTitle={false} />
+            </div>
+            
+            <div className="border-t border-zinc-100 dark:border-zinc-800 pt-16">
+              <h4 className="text-xl font-black font-headline uppercase tracking-tight mb-8">Auction Reports & Stories</h4>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <AnimatePresence mode="popLayout">
+                  {displayedArticles.map((article, index) => (
+                    <motion.div 
+                      layout
+                      key={article.id}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, scale: 0.95 }}
+                      transition={{ duration: 0.4, delay: index * 0.05 }}
+                      className="group cursor-pointer"
+                      onClick={() => onArticleClick?.(article)}
+                    >
+                      <div className="aspect-[4/5] overflow-hidden rounded-lg mb-4 bg-zinc-100 dark:bg-zinc-800">
+                        <img 
+                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" 
+                          src={article.image} 
+                          alt={article.title}
+                          referrerPolicy="no-referrer"
+                        />
+                      </div>
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">{article.publisher}</span>
+                        <span className="text-[9px] font-black px-2 py-0.5 bg-zinc-100 dark:bg-zinc-900 rounded uppercase tracking-tighter">{article.category}</span>
+                      </div>
+                      <h4 className="text-xl font-bold font-headline leading-tight group-hover:underline underline-offset-4 decoration-2">
+                        {article.title}
+                      </h4>
+                    </motion.div>
+                  ))}
+                </AnimatePresence>
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <AnimatePresence mode="popLayout">
+              {displayedArticles.map((article, index) => (
+                <motion.div 
+                   layout
+                  key={article.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.95 }}
+                  transition={{ duration: 0.4, delay: index * 0.05 }}
+                  className="group cursor-pointer"
+                  onClick={() => onArticleClick?.(article)}
+                >
+                  <div className="aspect-[4/5] overflow-hidden rounded-lg mb-4 bg-zinc-100 dark:bg-zinc-800">
+                    <img 
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" 
+                      src={article.image} 
+                      alt={article.title}
+                      referrerPolicy="no-referrer"
+                    />
+                  </div>
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">{article.publisher}</span>
+                    <span className="text-[9px] font-black px-2 py-0.5 bg-zinc-100 dark:bg-zinc-900 rounded uppercase tracking-tighter">{article.category}</span>
+                  </div>
+                  <h4 className="text-xl font-bold font-headline leading-tight group-hover:underline underline-offset-4 decoration-2">
+                    {article.title}
+                  </h4>
+                </motion.div>
+              ))}
+            </AnimatePresence>
+          </div>
+        )}
 
         {/* Loading Indicator */}
         {isLoadingMore && (

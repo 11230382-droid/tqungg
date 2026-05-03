@@ -1,4 +1,20 @@
-export type Screen = 'feed' | 'news' | 'search' | 'games' | 'rewards' | 'profile' | 'scanning' | 'post-detail' | 'product-detail' | 'wishlist' | 'article-detail';
+export type Screen = 'feed' | 'news' | 'search' | 'games' | 'rewards' | 'profile' | 'scanning' | 'post-detail' | 'product-detail' | 'wishlist' | 'article-detail' | 'live-discussion';
+
+export interface ChatMessage {
+  id: string;
+  user: User;
+  text: string;
+  timestamp: string;
+}
+
+export interface ForumThread {
+  id: string;
+  title: string;
+  author: User;
+  preview: string;
+  replies: number;
+  timestamp: string;
+}
 
 export interface Comment {
   id: string;
