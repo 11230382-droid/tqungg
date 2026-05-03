@@ -21,7 +21,7 @@ interface ProfileScreenProps {
 }
 
 export default function ProfileScreen({ user = currentUser, onProductClick, onPostClick, onWishlistClick, wishlist, allPosts, allAssets, museumItemIds }: ProfileScreenProps) {
-  const [activeTab, setActiveTab] = useState<'collection' | 'wishlist'>('collection');
+  const [activeTab, setActiveTab] = useState<'collection' | 'wishlist' | 'liked'>('collection');
   
   // Custom collection logic
   const isMe = user.id === currentUser.id;
@@ -31,10 +31,11 @@ export default function ProfileScreen({ user = currentUser, onProductClick, onPo
   
   const wishlistedPosts = allPosts.filter(p => wishlist.posts.includes(p.id));
   const wishlistedProducts = allAssets.filter(p => wishlist.products.includes(p.id));
+  const likedPosts = allPosts.filter(p => p.likedByCurrentUser);
 
   return (
     <div className="max-w-2xl mx-auto px-6 pt-24 pb-32 space-y-10">
-      {/* Profile Header */}
+      {/* ... prev header code ... */}
       <section className="flex flex-col items-center">
         <div className="relative group">
           <div className="w-28 h-28 rounded-full border-2 border-zinc-100 dark:border-zinc-800 overflow-hidden shadow-sm">
@@ -157,12 +158,18 @@ export default function ProfileScreen({ user = currentUser, onProductClick, onPo
           >
             Wishlist ({wishlistedPosts.length + wishlistedProducts.length})
           </button>
+          <button 
+            onClick={() => setActiveTab('liked')}
+            className={`flex-1 py-3 text-xs font-black uppercase tracking-widest transition-all ${activeTab === 'liked' ? 'text-zinc-900 dark:text-zinc-50 border-b-2 border-zinc-900 dark:border-zinc-50' : 'text-zinc-400'}`}
+          >
+            Liked ({likedPosts.length})
+          </button>
         </div>
       </section>
 
       {/* Tab Content */}
       <AnimatePresence mode="wait">
-        {activeTab === 'collection' ? (
+        {activeTab === 'collection' && (
           <motion.section 
             key="collection"
             initial={{ opacity: 0, y: 10 }}
@@ -205,7 +212,8 @@ export default function ProfileScreen({ user = currentUser, onProductClick, onPo
               ))}
             </div>
           </motion.section>
-        ) : (
+        )}
+        {activeTab === 'wishlist' && (
           <motion.section 
             key="wishlist"
             initial={{ opacity: 0, y: 10 }}
@@ -286,6 +294,47 @@ export default function ProfileScreen({ user = currentUser, onProductClick, onPo
               <div className="py-20 text-center">
                 <Bookmark size={32} className="mx-auto text-zinc-300 mb-4" />
                 <p className="text-zinc-500 font-medium text-sm italic">Your museum is currently empty.</p>
+              </div>
+            )}
+          </motion.section>
+        )}
+        {activeTab === 'liked' && (
+          <motion.section 
+            key="liked"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.2 }}
+          >
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-[10px] font-black uppercase tracking-widest text-zinc-900 dark:text-zinc-50 flex items-center gap-2">
+                <Heart size={14} className="text-red-500" fill="currentColor" />
+                Liked Posts ({likedPosts.length})
+              </h2>
+            </div>
+            {likedPosts.length > 0 ? (
+              <div className="grid grid-cols-2 lg:grid-cols-3 gap-2 md:gap-4">
+                {likedPosts.map((post) => (
+                  <div 
+                    key={post.id} 
+                    onClick={() => onPostClick(post)}
+                    className="aspect-square relative rounded-xl overflow-hidden cursor-pointer group active:scale-[0.98] transition-transform shadow-sm"
+                  >
+                    <img src={post.image} alt={post.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" referrerPolicy="no-referrer" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-3">
+                       <p className="text-white text-[10px] font-black uppercase tracking-tight truncate leading-none">{post.title}</p>
+                       <div className="flex items-center gap-1 mt-1">
+                          <Heart size={8} className="text-red-500" fill="currentColor" />
+                          <span className="text-white/80 text-[8px] font-bold uppercase tracking-widest">{post.likes}</span>
+                       </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="py-20 text-center">
+                <Heart size={32} className="mx-auto text-zinc-300 mb-4" />
+                <p className="text-zinc-500 font-medium text-sm italic">No liked posts yet.</p>
               </div>
             )}
           </motion.section>

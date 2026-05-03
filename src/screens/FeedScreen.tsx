@@ -20,6 +20,7 @@ interface FeedScreenProps {
   onCollectorClick: (user: User) => void;
   onSellerClick: (seller: Seller) => void;
   onWishlistToggle?: (postId: string) => void;
+  onLikeToggle?: (postId: string) => void;
   onLiveDiscussionClick?: (mode: 'chat' | 'forum') => void;
   wishlist?: string[];
   activeCategory?: string;
@@ -51,7 +52,8 @@ export default function FeedScreen({
   onProductClick,
   onCollectorClick, 
   onSellerClick,
-  onWishlistToggle, 
+  onWishlistToggle,
+  onLikeToggle,
   wishlist = [],
   activeCategory,
   isCategoryMenuOpen,
@@ -181,6 +183,7 @@ export default function FeedScreen({
                   isWishlisted={wishlist.includes(item.id)}
                   onClick={() => onPostClick(item)} 
                   onWishlistToggle={onWishlistToggle}
+                  onLikeToggle={onLikeToggle}
                 />
               );
             } else if ('type' in item && item.type === 'suggestion') {
@@ -373,12 +376,18 @@ interface PostCardProps {
   isWishlisted: boolean;
   onClick: () => void;
   onWishlistToggle?: (postId: string) => void;
+  onLikeToggle?: (postId: string) => void;
 }
 
-function PostCard({ post, index, isWishlisted, onClick, onWishlistToggle }: PostCardProps) {
+function PostCard({ post, index, isWishlisted, onClick, onWishlistToggle, onLikeToggle }: PostCardProps) {
   const handleWishlistClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     onWishlistToggle?.(post.id);
+  };
+
+  const handleLikeClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    onLikeToggle?.(post.id);
   };
 
   return (
@@ -444,7 +453,10 @@ function PostCard({ post, index, isWishlisted, onClick, onWishlistToggle }: Post
       {/* Actions */}
       <div className="p-4 pt-5 pb-2 flex items-center justify-between">
         <div className="flex items-center gap-5">
-          <button className="flex items-center gap-2 text-zinc-900 dark:text-zinc-100 hover:scale-110 transition-transform">
+          <button 
+            onClick={handleLikeClick}
+            className="flex items-center gap-2 text-zinc-900 dark:text-zinc-100 active:scale-125 transition-transform"
+          >
             <Heart 
               size={24} 
               className={post.likedByCurrentUser ? 'text-red-500' : 'text-zinc-900 dark:text-zinc-100'} 

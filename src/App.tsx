@@ -297,6 +297,7 @@ export default function App() {
             onCollectorClick={handleCollectorClick}
             onSellerClick={handleSellerClick}
             onWishlistToggle={togglePostWishlist}
+            onLikeToggle={handleLikeToggle}
             wishlist={wishlist.posts}
             activeCategory={activeCategory || undefined}
             isCategoryMenuOpen={isCategoryMenuOpen}
@@ -389,6 +390,7 @@ export default function App() {
             onCollectorClick={handleCollectorClick}
             onSellerClick={handleSellerClick}
             onWishlistToggle={togglePostWishlist}
+            onLikeToggle={handleLikeToggle}
             wishlist={wishlist.posts}
             onLiveDiscussionClick={handleLiveDiscussionClick}
           />
