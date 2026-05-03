@@ -100,7 +100,7 @@ export default function NewsScreen({ onArticleClick }: NewsScreenProps) {
           >
             <img 
               className="w-full h-[500px] object-cover opacity-80 group-hover:scale-105 transition-transform duration-700" 
-              src={heroArticle.image} 
+              src={heroArticle.image || null} 
               alt={heroArticle.title}
               referrerPolicy="no-referrer"
             />
@@ -162,7 +162,7 @@ export default function NewsScreen({ onArticleClick }: NewsScreenProps) {
                       <div className="aspect-[4/5] overflow-hidden rounded-lg mb-4 bg-zinc-100 dark:bg-zinc-800">
                         <img 
                           className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" 
-                          src={article.image} 
+                          src={article.image || null} 
                           alt={article.title}
                           referrerPolicy="no-referrer"
                         />
@@ -197,7 +197,7 @@ export default function NewsScreen({ onArticleClick }: NewsScreenProps) {
                   <div className="aspect-[4/5] overflow-hidden rounded-lg mb-4 bg-zinc-100 dark:bg-zinc-800">
                     <img 
                       className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" 
-                      src={article.image} 
+                      src={article.image || null} 
                       alt={article.title}
                       referrerPolicy="no-referrer"
                     />

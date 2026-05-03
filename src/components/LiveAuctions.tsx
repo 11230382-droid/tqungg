@@ -20,7 +20,7 @@ export default function LiveAuctions({ auctions, showTitle = true }: LiveAuction
           <div key={auction.id} className="relative group overflow-hidden rounded-xl bg-zinc-900 aspect-[3/4]">
             <img 
               className="w-full h-full object-cover opacity-60 group-hover:scale-110 transition-transform duration-700" 
-              src={auction.image} 
+              src={auction.image || null} 
               alt={auction.title}
               referrerPolicy="no-referrer"
             />

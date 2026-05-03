@@ -102,7 +102,7 @@ export const posts: Post[] = [
     likedByCurrentUser: false,
     comments: [
       { id: 'c1', user: currentUser, text: 'This looks incredible! The lighting is perfect.', timestamp: '1 hour ago' },
-      { id: 'c2', user: { id: 'u3', name: 'Speedy_B', username: 'Speedy_B', avatar: '', followers: '0', following: '0', itemCount: '0', totalValue: '0' }, text: 'How much did this set you back?', timestamp: '30 mins ago' }
+      { id: 'c2', user: { id: 'u3', name: 'Speedy_B', username: 'Speedy_B', avatar: 'https://picsum.photos/seed/user/100/100', followers: '0', following: '0', itemCount: '0', totalValue: '0' }, text: 'How much did this set you back?', timestamp: '30 mins ago' }
     ],
     estimatedValue: '$850.00',
     isPremium: true,
@@ -173,7 +173,7 @@ export const posts: Post[] = [
       id: 'u6',
       name: 'Diecast_Racer',
       username: 'Diecast_Racer',
-      avatar: '',
+      avatar: 'https://picsum.photos/seed/avatar178/100/100',
       followers: '300', following: '100', itemCount: '1000', totalValue: '$15k'
     },
     image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBPH5qSIHumI_zhcg7Kd6k2fDbdBh7zxnjkSKxRXOsw82-U6N_Kc2wkB3n-JdrrEmwfQCzTK4s1q2U_DIJf6vY--rUJ_AfIVWsuX9tUOiVOidWz4fo0xa2aAHnFF1tHj_XgE5zu5CsJLuO3DaRVYkt86IHlw-nVNsKcLA52wAajgPh5jY3wnCN1nLO8L75dWTbeSAlHpQCUTBuoRZbLHr2O76YIWpsjxo1xBSsxlGaGT-s8D-BwUWA3hbZaQMBWemp3V_LVy0w2sI8',

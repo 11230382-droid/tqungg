@@ -24,7 +24,7 @@ export default function ProductDetailScreen({ product, onBack, onWishlistToggle,
         <section className="mt-8 mb-10 overflow-hidden rounded-[2.5rem] bg-white dark:bg-zinc-900 shadow-2xl shadow-zinc-200 dark:shadow-none border border-zinc-100 dark:border-zinc-800">
           <div className="aspect-square relative p-8 md:p-12 flex items-center justify-center bg-zinc-50 dark:bg-zinc-950/50">
             <img 
-              src={product.image} 
+              src={product.image || null} 
               alt={product.name} 
               className="w-full h-full object-contain hover:scale-105 transition-transform duration-500 drop-shadow-2xl"
               referrerPolicy="no-referrer"
@@ -119,7 +119,7 @@ export default function ProductDetailScreen({ product, onBack, onWishlistToggle,
                   className="flex-1 bg-white dark:bg-zinc-800 border border-zinc-100 dark:border-zinc-700 text-zinc-900 dark:text-zinc-50 py-6 rounded-2xl font-black uppercase tracking-widest text-xs flex items-center justify-center gap-3 transition-all hover:bg-zinc-50 active:scale-[0.98]"
                >
                   <ArrowRight size={20} />
-                  Market Listing
+                  Market Listings
                </button>
             </div>
           </div>

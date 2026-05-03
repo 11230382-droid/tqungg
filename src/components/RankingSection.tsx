@@ -68,7 +68,7 @@ export default function RankingSection({ collectors, sellers, onCollectorClick, 
                   </div>
                   <div className="w-10 h-10 rounded-full overflow-hidden border border-zinc-100 dark:border-zinc-800">
                     <img 
-                      src={user.avatar} 
+                      src={user.avatar || null} 
                       alt={user.name} 
                       className="w-full h-full object-cover"
                       referrerPolicy="no-referrer"
@@ -99,7 +99,7 @@ export default function RankingSection({ collectors, sellers, onCollectorClick, 
                   </div>
                   <div className="w-10 h-10 rounded-xl overflow-hidden bg-zinc-100 dark:bg-zinc-800">
                     <img 
-                      src={seller.avatar} 
+                      src={seller.avatar || null} 
                       alt={seller.name} 
                       className="w-full h-full object-cover"
                       referrerPolicy="no-referrer"

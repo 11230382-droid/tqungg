@@ -256,7 +256,7 @@ export default function FeedScreen({
                       className={`flex items-center gap-4 p-3 rounded-2xl transition-all active:scale-[0.98] ${activeCategory === cat.name ? 'bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800' : 'hover:bg-zinc-50 dark:hover:bg-zinc-900'}`}
                     >
                       <div className="w-12 h-12 rounded-full overflow-hidden flex-shrink-0 bg-zinc-200 border border-zinc-100 dark:border-zinc-800">
-                        <img src={cat.icon} alt={cat.name} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+                        <img src={cat.icon || null} alt={cat.name} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
                       </div>
                       <span className="font-headline font-bold text-sm tracking-tight text-zinc-900 dark:text-zinc-50">{cat.name}</span>
                     </button>
@@ -307,7 +307,7 @@ function AssetCarousel({ title, items, onItemClick }: { title: string, items: As
           >
             <div className="aspect-square rounded-2xl overflow-hidden bg-zinc-100 dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 mb-3 relative flex items-center justify-center p-4">
               <img 
-                src={item.image} 
+                src={item.image || null} 
                 alt={item.name} 
                 className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-500"
                 referrerPolicy="no-referrer"
@@ -352,7 +352,7 @@ function SuggestionCarousel({ title, items, onItemClick }: { title: string, item
           >
             <div className="aspect-[4/5] rounded-xl overflow-hidden bg-zinc-100 dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 mb-2">
               <img 
-                src={item.image} 
+                src={item.image || null} 
                 alt={item.title} 
                 className="w-full h-full object-cover"
                 referrerPolicy="no-referrer"
@@ -428,7 +428,7 @@ function PostCard({ post, index, isWishlisted, onClick, onWishlistToggle }: Post
         className="relative aspect-square md:aspect-[4/5] overflow-hidden cursor-pointer"
       >
         <img
-          src={post.image}
+          src={post.image || null}
           alt={post.caption}
           className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
           referrerPolicy="no-referrer"

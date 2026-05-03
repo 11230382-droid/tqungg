@@ -315,6 +315,8 @@ export default function App() {
             onScanTrigger={() => setActiveScreen('scanning')} 
             onProductClick={handleProductClick} 
             onMarketListingsClick={handleSearchMarketListingClick}
+            onPostClick={handlePostClick}
+            onArticleClick={handleArticleClick}
           />
         );
       case 'rewards':

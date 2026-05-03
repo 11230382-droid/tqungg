@@ -46,7 +46,7 @@ export default function MarketListingScreen({ asset, onBack, onSellerClick }: Ma
         {displayedAsset && asset && (
           <div className="bg-white dark:bg-zinc-900 px-4 py-6 border-b border-zinc-100 dark:border-zinc-800 flex items-center gap-6">
             <div className="w-24 h-24 bg-zinc-50 dark:bg-zinc-950 rounded-2xl p-2 flex items-center justify-center">
-              <img src={displayedAsset.image} alt={displayedAsset.name} className="w-full h-full object-contain" referrerPolicy="no-referrer" />
+              <img src={displayedAsset.image || null} alt={displayedAsset.name} className="w-full h-full object-contain" referrerPolicy="no-referrer" />
             </div>
             <div className="flex-1 min-w-0">
                <span className="text-[9px] font-black uppercase tracking-widest text-indigo-500 mb-1 block">Active Listings</span>
@@ -86,7 +86,7 @@ export default function MarketListingScreen({ asset, onBack, onSellerClick }: Ma
                   <div className="flex items-center gap-4 mb-6">
                     <div className="w-12 h-12 rounded-2xl overflow-hidden bg-zinc-50 dark:bg-zinc-950 border border-zinc-100 dark:border-zinc-800 relative">
                        {item.seller.avatar ? (
-                         <img src={item.seller.avatar} alt={item.seller.name} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+                         <img src={item.seller.avatar || null} alt={item.seller.name} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
                        ) : (
                          <div className="w-full h-full flex items-center justify-center bg-zinc-100 dark:bg-zinc-800">
                             <User size={20} className="text-zinc-400" />
@@ -111,7 +111,7 @@ export default function MarketListingScreen({ asset, onBack, onSellerClick }: Ma
 
                   <div className="flex gap-4 items-center bg-zinc-50 dark:bg-zinc-950 rounded-[1.5rem] p-4 mb-6">
                     <div className="w-16 h-16 bg-white dark:bg-zinc-900 rounded-xl p-2 flex items-center justify-center shadow-sm">
-                       <img src={displayedAsset?.image} alt={displayedAsset?.name} className="w-full h-full object-contain" referrerPolicy="no-referrer" />
+                       <img src={displayedAsset?.image || null} alt={displayedAsset?.name} className="w-full h-full object-contain" referrerPolicy="no-referrer" />
                     </div>
                     <div className="flex-1 min-w-0">
                        <p className="text-[8px] font-black text-zinc-400 uppercase tracking-widest mb-1">{displayedAsset?.category}</p>
