@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Post, Comment, User } from '../types';
 import { ChevronLeft, Heart, MessageCircle, Send, MoreHorizontal, Share2, Bookmark } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
@@ -11,15 +11,37 @@ import { motion, AnimatePresence } from 'motion/react';
 interface PostDetailScreenProps {
   post: Post;
   currentUser: User;
+  isSaved: boolean;
+  focusCommentInput?: boolean;
   onBack: () => void;
   onLikeToggle: (postId: string) => void;
   onAddComment: (postId: string, text: string) => void;
-  onWishlistToggle?: (postId: string) => void;
+  onSaveToggle?: (postId: string) => void;
 }
 
-export default function PostDetailScreen({ post, currentUser, onBack, onLikeToggle, onAddComment, onWishlistToggle }: PostDetailScreenProps) {
+export default function PostDetailScreen({ post, currentUser, isSaved, focusCommentInput, onBack, onLikeToggle, onAddComment, onSaveToggle }: PostDetailScreenProps) {
   const [commentText, setCommentText] = useState('');
   const [activeImageIndex, setActiveImageIndex] = useState(0);
+  const commentsSectionRef = useRef<HTMLElement>(null);
+  const commentInputRef = useRef<HTMLInputElement>(null);
+
+  const scrollToComments = () => {
+    if (commentsSectionRef.current) {
+      commentsSectionRef.current.scrollIntoView({ behavior: 'smooth' });
+      // Minor delay to ensure scroll finishes or looks natural before focus
+      setTimeout(() => {
+        commentInputRef.current?.focus();
+      }, 500);
+    }
+  };
+
+  useEffect(() => {
+    if (focusCommentInput) {
+      scrollToComments();
+    } else {
+      window.scrollTo(0, 0);
+    }
+  }, [focusCommentInput, post.id]);
 
   const handleSendComment = (e: React.FormEvent) => {
     e.preventDefault();
@@ -114,7 +136,10 @@ export default function PostDetailScreen({ post, currentUser, onBack, onLikeTogg
                 <Heart size={24} fill={post.likedByCurrentUser ? 'currentColor' : 'none'} className="group-active:scale-125 transition-transform" />
                 <span className="text-sm font-black font-headline">{post.likes.toLocaleString()}</span>
               </button>
-              <button className="flex items-center gap-2 text-zinc-600 dark:text-zinc-400">
+              <button 
+                onClick={scrollToComments}
+                className="flex items-center gap-2 text-zinc-600 dark:text-zinc-400"
+              >
                 <MessageCircle size={24} />
                 <span className="text-sm font-black font-headline">{post.comments.length}</span>
               </button>
@@ -123,16 +148,16 @@ export default function PostDetailScreen({ post, currentUser, onBack, onLikeTogg
               </button>
             </div>
             <button 
-              onClick={() => onWishlistToggle?.(post.id)}
-              className={`p-2 rounded-xl transition-all ${post.isWishlisted ? 'text-zinc-900 dark:text-zinc-50 scale-110' : 'text-zinc-400'}`}
+              onClick={() => onSaveToggle?.(post.id)}
+              className={`p-2 rounded-xl transition-all ${isSaved ? 'text-indigo-500 scale-110' : 'text-zinc-400'}`}
             >
-              <Bookmark size={24} fill={post.isWishlisted ? 'currentColor' : 'none'} />
+              <Bookmark size={24} fill={isSaved ? 'currentColor' : 'none'} />
             </button>
           </div>
         </section>
 
         {/* Comments Section */}
-        <section className="px-6 py-12 bg-zinc-50/50 dark:bg-zinc-900/10 border-t border-zinc-100 dark:border-zinc-800">
+        <section ref={commentsSectionRef} className="px-6 py-12 bg-zinc-50/50 dark:bg-zinc-900/10 border-t border-zinc-100 dark:border-zinc-800">
           <h3 className="font-headline font-black text-xl mb-8 uppercase tracking-widest">Discussions ({post.comments.length})</h3>
           
           <div className="space-y-8 mb-12">
@@ -159,6 +184,7 @@ export default function PostDetailScreen({ post, currentUser, onBack, onLikeTogg
           {/* Comment Input */}
           <form onSubmit={handleSendComment} className="relative">
             <input 
+              ref={commentInputRef}
               type="text" 
               value={commentText}
               onChange={(e) => setCommentText(e.target.value)}

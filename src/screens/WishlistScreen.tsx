@@ -12,7 +12,7 @@ interface WishlistScreenProps {
   wishlistedProducts: Asset[];
   onPostClick: (post: Post) => void;
   onProductClick: (product: Asset) => void;
-  onPostWishlistToggle?: (postId: string) => void;
+  onPostSaveToggle?: (postId: string) => void;
   onProductWishlistToggle?: (productId: string) => void;
   onBack: () => void;
 }
@@ -22,7 +22,7 @@ export default function WishlistScreen({
   wishlistedProducts, 
   onPostClick, 
   onProductClick, 
-  onPostWishlistToggle,
+  onPostSaveToggle,
   onProductWishlistToggle,
   onBack 
 }: WishlistScreenProps) {
@@ -120,7 +120,7 @@ export default function WishlistScreen({
                       <button 
                         onClick={(e) => {
                           e.stopPropagation();
-                          onPostWishlistToggle?.(post.id);
+                          onPostSaveToggle?.(post.id);
                         }}
                         className="absolute top-4 right-4 p-2 bg-zinc-900 dark:bg-zinc-50 text-white dark:text-zinc-900 rounded-full opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity z-10"
                       >

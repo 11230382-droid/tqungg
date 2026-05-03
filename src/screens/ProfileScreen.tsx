@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Verified, Grid, List, ArrowRight, Box, Plus, Bookmark, Image } from 'lucide-react';
+import { Verified, Grid, List, ArrowRight, Box, Plus, Bookmark, Image, LayoutGrid, LayoutList, Trophy, TrendingUp, DollarSign, Heart } from 'lucide-react';
 import { currentUser } from '../mockData';
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
@@ -15,23 +15,31 @@ interface ProfileScreenProps {
   onPostClick: (post: Post) => void;
   onWishlistClick?: () => void;
   wishlist: { posts: string[], products: string[] };
+  savedPostIds: string[];
   allPosts: Post[];
   allAssets: Asset[];
   museumItemIds: string[];
 }
 
-export default function ProfileScreen({ user = currentUser, onProductClick, onPostClick, onWishlistClick, wishlist, allPosts, allAssets, museumItemIds }: ProfileScreenProps) {
-  const [activeTab, setActiveTab] = useState<'collection' | 'wishlist' | 'liked'>('collection');
+export default function ProfileScreen({ user = currentUser, onProductClick, onPostClick, onWishlistClick, wishlist, savedPostIds, allPosts, allAssets, museumItemIds }: ProfileScreenProps) {
+  const [activeTab, setActiveTab] = useState<'collection' | 'wishlist' | 'saved'>('collection');
+  const [collectionView, setCollectionView] = useState<'grid' | 'showcase' | 'ranked'>('grid');
   
   // Custom collection logic
   const isMe = user.id === currentUser.id;
-  const collectionItems = isMe 
+  const ownedItems = isMe 
     ? allAssets.filter(asset => museumItemIds.includes(asset.id))
-    : allAssets.slice(0, 2); // Mock some items for others
+    : allAssets.slice(0, 3);
   
-  const wishlistedPosts = allPosts.filter(p => wishlist.posts.includes(p.id));
+  const savedPosts = allPosts.filter(p => savedPostIds.includes(p.id));
   const wishlistedProducts = allAssets.filter(p => wishlist.products.includes(p.id));
-  const likedPosts = allPosts.filter(p => p.likedByCurrentUser);
+
+  // Sorting logic for ranked view
+  const rankedItems = [...ownedItems].sort((a, b) => {
+    const valA = parseFloat(a.price.replace(/[^0-9.]/g, '')) || 0;
+    const valB = parseFloat(b.price.replace(/[^0-9.]/g, '')) || 0;
+    return valB - valA;
+  });
 
   return (
     <div className="max-w-2xl mx-auto px-6 pt-24 pb-32 space-y-10">
@@ -156,13 +164,13 @@ export default function ProfileScreen({ user = currentUser, onProductClick, onPo
             onClick={() => setActiveTab('wishlist')}
             className={`flex-1 py-3 text-xs font-black uppercase tracking-widest transition-all ${activeTab === 'wishlist' ? 'text-zinc-900 dark:text-zinc-50 border-b-2 border-zinc-900 dark:border-zinc-50' : 'text-zinc-400'}`}
           >
-            Wishlist ({wishlistedPosts.length + wishlistedProducts.length})
+            Wishlist ({wishlistedProducts.length})
           </button>
           <button 
-            onClick={() => setActiveTab('liked')}
-            className={`flex-1 py-3 text-xs font-black uppercase tracking-widest transition-all ${activeTab === 'liked' ? 'text-zinc-900 dark:text-zinc-50 border-b-2 border-zinc-900 dark:border-zinc-50' : 'text-zinc-400'}`}
+            onClick={() => setActiveTab('saved')}
+            className={`flex-1 py-3 text-xs font-black uppercase tracking-widest transition-all ${activeTab === 'saved' ? 'text-zinc-900 dark:text-zinc-50 border-b-2 border-zinc-900 dark:border-zinc-50' : 'text-zinc-400'}`}
           >
-            Liked ({likedPosts.length})
+            Saved ({savedPosts.length})
           </button>
         </div>
       </section>
@@ -179,38 +187,113 @@ export default function ProfileScreen({ user = currentUser, onProductClick, onPo
           >
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-[10px] font-black uppercase tracking-widest text-zinc-900 dark:text-zinc-50">Collection Museum</h2>
-              <div className="flex gap-4 text-zinc-400">
-                <Grid size={18} className="text-zinc-900 dark:text-zinc-50" />
-                <List size={18} />
+              <div className="flex gap-4 p-1 bg-zinc-100 dark:bg-zinc-900 rounded-xl">
+                <button 
+                  onClick={() => setCollectionView('grid')}
+                  className={`p-1.5 rounded-lg transition-colors ${collectionView === 'grid' ? 'bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-50 shadow-sm' : 'text-zinc-400'}`}
+                >
+                  <LayoutGrid size={16} />
+                </button>
+                <button 
+                  onClick={() => setCollectionView('showcase')}
+                  className={`p-1.5 rounded-lg transition-colors ${collectionView === 'showcase' ? 'bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-50 shadow-sm' : 'text-zinc-400'}`}
+                >
+                  <LayoutList size={16} />
+                </button>
+                <button 
+                  onClick={() => setCollectionView('ranked')}
+                  className={`p-1.5 rounded-lg transition-colors ${collectionView === 'ranked' ? 'bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-50 shadow-sm' : 'text-zinc-400'}`}
+                >
+                  <Trophy size={16} />
+                </button>
               </div>
             </div>
-            <div className="grid grid-cols-1 gap-8">
-              {collectionItems.map((item) => (
-                <div 
-                  key={item.id} 
-                  onClick={() => onProductClick(item)}
-                  className="flex flex-col gap-3 group cursor-pointer active:scale-[0.98] transition-transform"
-                >
-                  <div className="aspect-[4/3] rounded-2xl overflow-hidden bg-zinc-100 dark:bg-zinc-800 relative shadow-sm">
+
+            {collectionView === 'grid' && (
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                {ownedItems.map((item) => (
+                  <div 
+                    key={item.id} 
+                    onClick={() => onProductClick(item)}
+                    className="aspect-square rounded-2xl overflow-hidden bg-zinc-100 dark:bg-zinc-800 relative group cursor-pointer active:scale-[0.98] transition-transform shadow-sm"
+                  >
                     <img src={item.image} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" alt={item.name} referrerPolicy="no-referrer" />
-                    <div className="absolute top-4 left-4">
-                      {wishlist.products.includes(item.id) && (
-                        <div className="p-2 bg-white/90 dark:bg-zinc-900/90 backdrop-blur-md rounded-full border border-white/20 text-zinc-900 dark:text-zinc-50 shadow-lg">
-                          <Bookmark size={14} fill="currentColor" />
+                    <div className="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
+                      <p className="text-[9px] font-black text-white uppercase tracking-tight truncate leading-none">{item.name}</p>
+                      <p className="text-[8px] font-bold text-white/70 uppercase mt-1">{item.price}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {collectionView === 'showcase' && (
+              <div className="flex flex-col gap-8">
+                {ownedItems.map((item) => (
+                  <div 
+                    key={item.id} 
+                    onClick={() => onProductClick(item)}
+                    className="flex flex-col gap-4 group cursor-pointer active:scale-[0.98] transition-transform"
+                  >
+                    <div className="aspect-[16/9] rounded-3xl overflow-hidden bg-zinc-100 dark:bg-zinc-800 relative shadow-md">
+                      <img src={item.image} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" alt={item.name} referrerPolicy="no-referrer" />
+                      <div className="absolute top-4 right-4 px-4 py-2 bg-white/90 dark:bg-zinc-900/90 backdrop-blur-md rounded-2xl border border-white/20 shadow-lg flex items-center gap-2">
+                        <TrendingUp size={14} className="text-emerald-500" />
+                        <span className="text-[10px] font-black tracking-widest text-zinc-900 dark:text-zinc-50 uppercase">Market Value: {item.price}</span>
+                      </div>
+                    </div>
+                    <div>
+                      <div className="flex justify-between items-start">
+                        <div>
+                          <h4 className="font-headline font-black text-zinc-900 dark:text-zinc-50 tracking-tight text-xl leading-tight">{item.name}</h4>
+                          <p className="text-[10px] text-zinc-500 font-bold uppercase tracking-widest mt-1">{item.series} • {item.scarcity || 'Legendary'}</p>
                         </div>
-                      )}
-                    </div>
-                    <div className="absolute top-4 right-4 px-3 py-1 bg-white/90 dark:bg-zinc-900/90 backdrop-blur-md rounded-full border border-white/20">
-                      <span className="text-[9px] font-black tracking-widest text-zinc-900 dark:text-zinc-50 uppercase">{item.scarcity || 'Authenticated'}</span>
+                        <div className="flex items-center gap-1 bg-zinc-50 dark:bg-zinc-900 px-3 py-1.5 rounded-xl border border-zinc-100 dark:border-zinc-800">
+                          <DollarSign size={12} className="text-emerald-500" />
+                          <span className="text-xs font-black text-zinc-900 dark:text-zinc-50">{item.price.replace('$', '')}</span>
+                        </div>
+                      </div>
+                      <div className="mt-4 flex items-center gap-1.5">
+                        {[1, 2, 3, 4, 5].map((bar) => (
+                          <div 
+                            key={bar} 
+                            className={`h-1.5 flex-1 rounded-full ${bar <= 4 ? 'bg-emerald-500' : 'bg-zinc-100 dark:bg-zinc-800'}`}
+                          ></div>
+                        ))}
+                        <span className="text-[9px] font-black text-zinc-400 uppercase tracking-tight ml-2">Market Strength</span>
+                      </div>
                     </div>
                   </div>
-                  <div>
-                    <h4 className="font-bold text-zinc-900 dark:text-zinc-50 tracking-tight text-lg leading-tight truncate">{item.name}</h4>
-                    <p className="text-[10px] text-zinc-500 font-black uppercase tracking-widest mt-1 truncate">{item.series}</p>
+                ))}
+              </div>
+            )}
+
+            {collectionView === 'ranked' && (
+              <div className="space-y-4">
+                {rankedItems.map((item, i) => (
+                  <div 
+                    key={item.id}
+                    onClick={() => onProductClick(item)}
+                    className="flex items-center gap-4 bg-white dark:bg-zinc-900 p-4 rounded-2xl border border-zinc-100 dark:border-zinc-800 group cursor-pointer active:scale-[0.98] transition-transform shadow-sm"
+                  >
+                    <div className="text-2xl font-black text-zinc-200 dark:text-zinc-800 w-8 italic">
+                      #{i + 1}
+                    </div>
+                    <div className="w-16 h-16 rounded-xl overflow-hidden bg-zinc-50 dark:bg-zinc-950 flex-shrink-0">
+                      <img src={item.image} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" alt={item.name} referrerPolicy="no-referrer" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <h4 className="font-bold text-zinc-900 dark:text-zinc-50 tracking-tight truncate">{item.name}</h4>
+                      <p className="text-[10px] text-zinc-500 font-bold uppercase tracking-widest truncate">{item.series}</p>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-xs font-black text-emerald-500">{item.price}</p>
+                      <p className="text-[8px] font-black text-zinc-400 uppercase tracking-widest mt-1">Value</p>
+                    </div>
                   </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
           </motion.section>
         )}
         {activeTab === 'wishlist' && (
@@ -220,87 +303,52 @@ export default function ProfileScreen({ user = currentUser, onProductClick, onPo
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.2 }}
-            className="space-y-12"
+            className="space-y-8"
           >
-            {/* Wishlist Products */}
-            {wishlistedProducts.length > 0 && (
-              <div>
-                <div className="flex justify-between items-center mb-6">
-                  <h3 className="text-[10px] font-black uppercase tracking-widest text-zinc-400 flex items-center gap-2">
-                    <Box size={14} />
-                    Saved Assets
-                  </h3>
-                  <button 
-                    onClick={onWishlistClick}
-                    className="text-[10px] font-black uppercase bg-zinc-100 dark:bg-zinc-800 px-3 py-1.5 rounded-lg text-zinc-900 dark:text-zinc-100 active:scale-95 transition-all"
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-[10px] font-black uppercase tracking-widest text-zinc-900 dark:text-zinc-50 flex items-center gap-2">
+                <Box size={14} className="text-indigo-500" />
+                Asset Wishlist ({wishlistedProducts.length})
+              </h2>
+              <button 
+                onClick={onWishlistClick}
+                className="text-[10px] font-black uppercase bg-zinc-100 dark:bg-zinc-800 px-3 py-1.5 rounded-lg text-zinc-900 dark:text-zinc-100 active:scale-95 transition-all"
+              >
+                Manage
+              </button>
+            </div>
+            {wishlistedProducts.length > 0 ? (
+              <div className="grid grid-cols-2 gap-4">
+                {wishlistedProducts.map((item) => (
+                  <div 
+                    key={item.id} 
+                    onClick={() => onProductClick(item)}
+                    className="flex flex-col gap-2 group cursor-pointer active:scale-[0.98] transition-transform"
                   >
-                    Manage All
-                  </button>
-                </div>
-                <div className="grid grid-cols-2 gap-4">
-                  {wishlistedProducts.map((item) => (
-                    <div 
-                      key={item.id} 
-                      onClick={() => onProductClick(item)}
-                      className="flex flex-col gap-2 group cursor-pointer active:scale-[0.98] transition-transform"
-                    >
-                      <div className="aspect-square rounded-xl overflow-hidden bg-zinc-100 dark:bg-zinc-900 relative">
-                        <img src={item.image} className="w-full h-full object-cover" alt={item.name} referrerPolicy="no-referrer" />
-                        <div className="absolute top-2 right-2">
-                           <div className="p-1.5 bg-zinc-900 text-white rounded-lg">
-                              <Bookmark size={10} fill="currentColor" />
-                           </div>
-                        </div>
+                    <div className="aspect-square rounded-2xl overflow-hidden bg-zinc-100 dark:bg-zinc-900 relative shadow-sm">
+                      <img src={item.image} className="w-full h-full object-cover" alt={item.name} referrerPolicy="no-referrer" />
+                      <div className="absolute top-2 right-2">
+                         <div className="p-1.5 bg-indigo-500 text-white rounded-lg shadow-lg">
+                            <Bookmark size={10} fill="currentColor" />
+                         </div>
                       </div>
-                      <h4 className="font-bold text-sm text-zinc-900 dark:text-zinc-50 truncate">{item.name}</h4>
-                      <p className="text-[9px] text-zinc-500 font-bold uppercase tracking-widest">{item.price}</p>
                     </div>
-                  ))}
-                </div>
+                    <h4 className="font-bold text-sm text-zinc-900 dark:text-zinc-50 truncate">{item.name}</h4>
+                    <p className="text-[9px] text-zinc-500 font-bold uppercase tracking-widest">{item.price}</p>
+                  </div>
+                ))}
               </div>
-            )}
-
-            {/* Wishlist Posts */}
-            {wishlistedPosts.length > 0 && (
-              <div>
-                <h3 className="text-[10px] font-black uppercase tracking-widest text-zinc-400 mb-6 flex items-center gap-2">
-                  <Image size={14} />
-                  Saved Posts
-                </h3>
-                <div className="grid grid-cols-2 gap-4">
-                  {wishlistedPosts.map((post) => (
-                    <div 
-                      key={post.id} 
-                      onClick={() => onPostClick(post)}
-                      className="flex flex-col gap-2 group cursor-pointer active:scale-[0.98] transition-transform"
-                    >
-                      <div className="aspect-square rounded-xl overflow-hidden bg-zinc-100 dark:bg-zinc-900 relative">
-                        <img src={post.image} className="w-full h-full object-cover" alt={post.title} referrerPolicy="no-referrer" />
-                        <div className="absolute top-2 right-2">
-                           <div className="p-1.5 bg-zinc-900 text-white rounded-lg">
-                              <Bookmark size={10} fill="currentColor" />
-                           </div>
-                        </div>
-                      </div>
-                      <h4 className="font-bold text-sm text-zinc-900 dark:text-zinc-50 truncate">{post.title}</h4>
-                      <p className="text-[9px] text-zinc-500 font-bold uppercase tracking-widest">Est. {post.estimatedValue}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {wishlistedPosts.length === 0 && wishlistedProducts.length === 0 && (
+            ) : (
               <div className="py-20 text-center">
-                <Bookmark size={32} className="mx-auto text-zinc-300 mb-4" />
-                <p className="text-zinc-500 font-medium text-sm italic">Your museum is currently empty.</p>
+                <Box size={32} className="mx-auto text-zinc-300 mb-4" />
+                <p className="text-zinc-500 font-medium text-sm italic">Nothing in your wishlist yet.</p>
               </div>
             )}
           </motion.section>
         )}
-        {activeTab === 'liked' && (
+        {activeTab === 'saved' && (
           <motion.section 
-            key="liked"
+            key="saved"
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
@@ -308,13 +356,13 @@ export default function ProfileScreen({ user = currentUser, onProductClick, onPo
           >
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-[10px] font-black uppercase tracking-widest text-zinc-900 dark:text-zinc-50 flex items-center gap-2">
-                <Heart size={14} className="text-red-500" fill="currentColor" />
-                Liked Posts ({likedPosts.length})
+                <Bookmark size={14} className="text-indigo-500" fill="currentColor" />
+                Saved Posts ({savedPosts.length})
               </h2>
             </div>
-            {likedPosts.length > 0 ? (
+            {savedPosts.length > 0 ? (
               <div className="grid grid-cols-2 lg:grid-cols-3 gap-2 md:gap-4">
-                {likedPosts.map((post) => (
+                {savedPosts.map((post) => (
                   <div 
                     key={post.id} 
                     onClick={() => onPostClick(post)}
@@ -323,9 +371,9 @@ export default function ProfileScreen({ user = currentUser, onProductClick, onPo
                     <img src={post.image} alt={post.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" referrerPolicy="no-referrer" />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-3">
                        <p className="text-white text-[10px] font-black uppercase tracking-tight truncate leading-none">{post.title}</p>
-                       <div className="flex items-center gap-1 mt-1">
+                       <div className="flex items-center gap-1 mt-1 text-white/80 text-[8px] font-bold uppercase tracking-widest">
                           <Heart size={8} className="text-red-500" fill="currentColor" />
-                          <span className="text-white/80 text-[8px] font-bold uppercase tracking-widest">{post.likes}</span>
+                          <span>{post.likes}</span>
                        </div>
                     </div>
                   </div>
@@ -333,8 +381,8 @@ export default function ProfileScreen({ user = currentUser, onProductClick, onPo
               </div>
             ) : (
               <div className="py-20 text-center">
-                <Heart size={32} className="mx-auto text-zinc-300 mb-4" />
-                <p className="text-zinc-500 font-medium text-sm italic">No liked posts yet.</p>
+                <Bookmark size={32} className="mx-auto text-zinc-300 mb-4" />
+                <p className="text-zinc-500 font-medium text-sm italic">No saved posts yet.</p>
               </div>
             )}
           </motion.section>

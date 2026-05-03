@@ -41,9 +41,11 @@ export default function App() {
     posts: [], 
     products: ['a10', 'a11', 'a12'] 
   });
+  const [savedPosts, setSavedPosts] = useState<string[]>([]);
   const [museumItemIds, setMuseumItemIds] = useState<string[]>([]);
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
   const [isCategoryMenuOpen, setIsCategoryMenuOpen] = useState(false);
+  const [focusCommentInput, setFocusCommentInput] = useState(false);
 
   // View position memory
   const scrollPositions = useRef<Record<string, number>>({});
@@ -140,6 +142,13 @@ export default function App() {
 
   const handlePostClick = (post: Post) => {
     setSelectedPost(post);
+    setFocusCommentInput(false);
+    navigateTo('post-detail');
+  };
+
+  const handleCommentClick = (post: Post) => {
+    setSelectedPost(post);
+    setFocusCommentInput(true);
     navigateTo('post-detail');
   };
 
@@ -190,13 +199,10 @@ export default function App() {
     navigateTo('live-discussion');
   };
 
-  const togglePostWishlist = (postId: string) => {
-    setWishlist(prev => {
-      const isIncluded = prev.posts.includes(postId);
-      return {
-        ...prev,
-        posts: isIncluded ? prev.posts.filter(id => id !== postId) : [...prev.posts, postId]
-      };
+  const handleSaveToggle = (postId: string) => {
+    setSavedPosts(prev => {
+      const isSaved = prev.includes(postId);
+      return isSaved ? prev.filter(id => id !== postId) : [...prev, postId];
     });
   };
 
@@ -280,7 +286,7 @@ export default function App() {
     });
   };
 
-  const wishlistedPosts = posts.filter(p => wishlist.posts.includes(p.id));
+  const wishlistedPosts = posts.filter(p => savedPosts.includes(p.id));
   const wishlistedProducts = allAssets.filter(p => wishlist.products.includes(p.id));
 
   const renderScreen = () => {
@@ -296,9 +302,10 @@ export default function App() {
             onProductClick={handleProductClick}
             onCollectorClick={handleCollectorClick}
             onSellerClick={handleSellerClick}
-            onWishlistToggle={togglePostWishlist}
+            onSaveToggle={handleSaveToggle}
             onLikeToggle={handleLikeToggle}
-            wishlist={wishlist.posts}
+            onCommentClick={handleCommentClick}
+            savedPostIds={savedPosts}
             activeCategory={activeCategory || undefined}
             isCategoryMenuOpen={isCategoryMenuOpen}
             onCategorySelect={(cat) => setActiveCategory(cat)}
@@ -337,6 +344,7 @@ export default function App() {
             onPostClick={handlePostClick}
             onWishlistClick={() => navigateTo('wishlist')}
             wishlist={wishlist} 
+            savedPostIds={savedPosts}
             allPosts={posts}
             allAssets={allAssets}
             museumItemIds={museumItemIds}
@@ -364,7 +372,7 @@ export default function App() {
             wishlistedProducts={wishlistedProducts}
             onPostClick={handlePostClick}
             onProductClick={handleProductClick}
-            onPostWishlistToggle={togglePostWishlist}
+            onPostSaveToggle={handleSaveToggle}
             onProductWishlistToggle={toggleProductWishlist}
             onBack={handleBack}
           />
@@ -372,12 +380,14 @@ export default function App() {
       case 'post-detail':
         return selectedPost ? (
           <PostDetailScreen 
-            post={{...selectedPost, isWishlisted: wishlist.posts.includes(selectedPost.id)}} 
+            post={selectedPost} 
             currentUser={currentUser}
+            isSaved={savedPosts.includes(selectedPost.id)}
+            focusCommentInput={focusCommentInput}
             onBack={handleBack}
             onLikeToggle={handleLikeToggle}
             onAddComment={handleAddComment}
-            onWishlistToggle={togglePostWishlist}
+            onSaveToggle={handleSaveToggle}
           />
         ) : (
           <FeedScreen 
@@ -389,9 +399,10 @@ export default function App() {
             onProductClick={handleProductClick}
             onCollectorClick={handleCollectorClick}
             onSellerClick={handleSellerClick}
-            onWishlistToggle={togglePostWishlist}
+            onSaveToggle={handleSaveToggle}
             onLikeToggle={handleLikeToggle}
-            wishlist={wishlist.posts}
+            onCommentClick={handleCommentClick}
+            savedPostIds={savedPosts}
             onLiveDiscussionClick={handleLiveDiscussionClick}
           />
         );
@@ -412,6 +423,7 @@ export default function App() {
             onPostClick={handlePostClick}
             onWishlistClick={() => navigateTo('wishlist')}
             wishlist={wishlist} 
+            savedPostIds={savedPosts}
             allPosts={posts}
             allAssets={allAssets}
             museumItemIds={museumItemIds}
@@ -444,6 +456,10 @@ export default function App() {
           onProductClick={handleProductClick}
           onCollectorClick={handleCollectorClick}
           onSellerClick={handleSellerClick}
+          onSaveToggle={handleSaveToggle}
+          onLikeToggle={handleLikeToggle}
+          onCommentClick={handleCommentClick}
+          savedPostIds={savedPosts}
         />;
     }
   };

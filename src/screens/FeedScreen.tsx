@@ -19,10 +19,11 @@ interface FeedScreenProps {
   onProductClick: (product: Asset) => void;
   onCollectorClick: (user: User) => void;
   onSellerClick: (seller: Seller) => void;
-  onWishlistToggle?: (postId: string) => void;
+  onSaveToggle?: (postId: string) => void;
   onLikeToggle?: (postId: string) => void;
+  onCommentClick?: (post: Post) => void;
   onLiveDiscussionClick?: (mode: 'chat' | 'forum') => void;
-  wishlist?: string[];
+  savedPostIds?: string[];
   activeCategory?: string;
   isCategoryMenuOpen?: boolean;
   onCategorySelect?: (category: string | null) => void;
@@ -52,9 +53,10 @@ export default function FeedScreen({
   onProductClick,
   onCollectorClick, 
   onSellerClick,
-  onWishlistToggle,
+  onSaveToggle,
   onLikeToggle,
-  wishlist = [],
+  onCommentClick,
+  savedPostIds = [],
   activeCategory,
   isCategoryMenuOpen,
   onCategorySelect,
@@ -180,10 +182,11 @@ export default function FeedScreen({
                   key={item.id} 
                   post={item} 
                   index={index} 
-                  isWishlisted={wishlist.includes(item.id)}
+                  isSaved={savedPostIds.includes(item.id)}
                   onClick={() => onPostClick(item)} 
-                  onWishlistToggle={onWishlistToggle}
+                  onSaveToggle={onSaveToggle}
                   onLikeToggle={onLikeToggle}
+                  onCommentClick={() => onCommentClick?.(item)}
                 />
               );
             } else if ('type' in item && item.type === 'suggestion') {
@@ -373,21 +376,27 @@ function SuggestionCarousel({ title, items, onItemClick }: { title: string, item
 interface PostCardProps {
   post: Post;
   index: number;
-  isWishlisted: boolean;
+  isSaved: boolean;
   onClick: () => void;
-  onWishlistToggle?: (postId: string) => void;
+  onSaveToggle?: (postId: string) => void;
   onLikeToggle?: (postId: string) => void;
+  onCommentClick?: () => void;
 }
 
-function PostCard({ post, index, isWishlisted, onClick, onWishlistToggle, onLikeToggle }: PostCardProps) {
-  const handleWishlistClick = (e: React.MouseEvent) => {
+function PostCard({ post, index, isSaved, onClick, onSaveToggle, onLikeToggle, onCommentClick }: PostCardProps) {
+  const handleSaveClick = (e: React.MouseEvent) => {
     e.stopPropagation();
-    onWishlistToggle?.(post.id);
+    onSaveToggle?.(post.id);
   };
 
   const handleLikeClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     onLikeToggle?.(post.id);
+  };
+
+  const handleCommentClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    onCommentClick?.();
   };
 
   return (
@@ -463,7 +472,10 @@ function PostCard({ post, index, isWishlisted, onClick, onWishlistToggle, onLike
               fill={post.likedByCurrentUser ? 'currentColor' : 'none'} 
             />
           </button>
-          <button className="flex items-center gap-2 text-zinc-900 dark:text-zinc-100 hover:scale-110 transition-transform">
+          <button 
+            onClick={handleCommentClick}
+            className="flex items-center gap-2 text-zinc-900 dark:text-zinc-100 hover:scale-110 transition-transform"
+          >
             <MessageCircle size={24} />
           </button>
           <button className="flex items-center gap-2 text-zinc-900 dark:text-zinc-100 hover:scale-110 transition-transform">
@@ -471,10 +483,10 @@ function PostCard({ post, index, isWishlisted, onClick, onWishlistToggle, onLike
           </button>
         </div>
         <button 
-          onClick={handleWishlistClick}
-          className={`hover:scale-110 transition-transform ${isWishlisted ? 'text-zinc-900 dark:text-zinc-100' : 'text-zinc-300 dark:text-zinc-700'}`}
+          onClick={handleSaveClick}
+          className={`hover:scale-110 active:scale-95 transition-transform ${isSaved ? 'text-indigo-500' : 'text-zinc-300 dark:text-zinc-700'}`}
         >
-          <Bookmark size={24} fill={isWishlisted ? 'currentColor' : 'none'} />
+          <Bookmark size={24} fill={isSaved ? 'currentColor' : 'none'} />
         </button>
       </div>
 
@@ -494,6 +506,7 @@ function PostCard({ post, index, isWishlisted, onClick, onWishlistToggle, onLike
         </div>
         {post.comments.length > 0 && (
           <button 
+            onClick={handleCommentClick}
             className="mt-2 text-xs font-bold text-zinc-400 hover:text-zinc-500 transition-colors uppercase tracking-widest"
           >
             View all {post.comments.length} comments

@@ -67,6 +67,7 @@ export interface Post {
   timestamp: string;
   likes: number; 
   likedByCurrentUser?: boolean;
+  savedByCurrentUser?: boolean;
   comments: Comment[];
   estimatedValue?: string;
   category?: string;
