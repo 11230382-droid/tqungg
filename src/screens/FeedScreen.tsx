@@ -390,19 +390,21 @@ function PostCard({ post, index, isWishlisted, onClick, onWishlistToggle }: Post
       </div>
 
       {/* Caption Area */}
-      <div className="px-4 pb-6 pt-2">
+      <div 
+        onClick={onClick}
+        className="px-4 pb-6 pt-2 cursor-pointer"
+      >
         <p className="text-sm font-bold text-zinc-900 dark:text-zinc-100 mb-1">
           {post.likes.toLocaleString()} likes
         </p>
         <div className="text-sm text-zinc-800 dark:text-zinc-200">
-          <span className="font-black font-headline mr-2">{post.user.username}</span>
+          <span className="font-headline font-black mr-2">{post.user.username}</span>
           <span className="font-medium leading-relaxed opacity-90 line-clamp-2">
             {post.caption}
           </span>
         </div>
         {post.comments.length > 0 && (
           <button 
-            onClick={onClick}
             className="mt-2 text-xs font-bold text-zinc-400 hover:text-zinc-500 transition-colors uppercase tracking-widest"
           >
             View all {post.comments.length} comments

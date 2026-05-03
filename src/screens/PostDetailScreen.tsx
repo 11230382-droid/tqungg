@@ -32,8 +32,27 @@ export default function PostDetailScreen({ post, currentUser, onBack, onLikeTogg
   const displayImages = post.images && post.images.length > 0 ? post.images : [post.image];
 
   return (
-    <div className="pt-24 pb-32 min-h-screen bg-white dark:bg-zinc-950">
+    <div className="pt-24 pb-32 min-h-screen bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-50">
       <div className="max-w-4xl mx-auto">
+        {/* User Info Header */}
+        <div className="px-6 py-4 flex items-center justify-between border-b border-zinc-100 dark:border-zinc-900">
+          <div className="flex items-center gap-3">
+            <img 
+              src={post.user.avatar || 'https://picsum.photos/seed/user/100/100'} 
+              alt={post.user.username} 
+              className="w-10 h-10 rounded-full object-cover border border-zinc-200 dark:border-zinc-800" 
+              referrerPolicy="no-referrer" 
+            />
+            <div>
+              <p className="font-headline font-black text-sm tracking-tight">{post.user.username}</p>
+              <p className="text-[10px] text-zinc-500 font-bold uppercase tracking-widest leading-none">{post.timestamp}</p>
+            </div>
+          </div>
+          <button className="p-2 text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-50 transition-colors">
+            <MoreHorizontal size={20} />
+          </button>
+        </div>
+
         {/* Image Carousel / Display */}
         <section className="relative aspect-square md:aspect-video overflow-hidden bg-zinc-100 dark:bg-zinc-900">
            <AnimatePresence mode="wait">
@@ -62,54 +81,58 @@ export default function PostDetailScreen({ post, currentUser, onBack, onLikeTogg
            )}
         </section>
 
-        {/* Post Actions & Content */}
+        {/* Post Content & Metadata */}
         <section className="p-6">
-          <div className="flex items-center justify-between mb-6">
+          <div className="flex flex-col md:flex-row md:items-start justify-between gap-4 mb-6">
+            <div className="flex-1 space-y-3">
+              <h1 className="text-2xl font-black font-headline tracking-tighter uppercase leading-tight break-words">{post.title}</h1>
+              <div className="flex flex-wrap gap-2">
+                {post.tags?.map(tag => (
+                  <span key={tag} className="text-[10px] font-black text-zinc-500 uppercase tracking-widest bg-zinc-50 dark:bg-zinc-900 px-2.5 py-1 rounded-lg border border-zinc-200 dark:border-zinc-800">#{tag}</span>
+                ))}
+              </div>
+            </div>
+            {post.estimatedValue && (
+              <div className="flex-shrink-0 bg-zinc-900 dark:bg-zinc-50 text-white dark:text-zinc-900 px-5 py-3 rounded-xl text-center border border-transparent dark:border-zinc-800">
+                <p className="text-[10px] font-black uppercase tracking-widest leading-none opacity-60 mb-1">Est. Value</p>
+                <p className="font-headline font-black text-xl leading-tight tracking-tighter">{post.estimatedValue}</p>
+              </div>
+            )}
+          </div>
+
+          <p className="text-zinc-700 dark:text-zinc-300 leading-relaxed font-medium mb-8 whitespace-pre-wrap">
+            {post.caption}
+          </p>
+
+          {/* Interactions Bar */}
+          <div className="pt-6 border-t border-zinc-100 dark:border-zinc-900 flex items-center justify-between">
             <div className="flex items-center gap-6">
               <button 
                 onClick={() => onLikeToggle(post.id)}
                 className={`flex items-center gap-2 group transition-all ${post.likedByCurrentUser ? 'text-red-500 font-bold scale-110' : 'text-zinc-600 dark:text-zinc-400'}`}
               >
                 <Heart size={24} fill={post.likedByCurrentUser ? 'currentColor' : 'none'} className="group-active:scale-125 transition-transform" />
-                <span className="text-sm">{post.likes.toLocaleString()}</span>
+                <span className="text-sm font-black font-headline">{post.likes.toLocaleString()}</span>
               </button>
               <button className="flex items-center gap-2 text-zinc-600 dark:text-zinc-400">
                 <MessageCircle size={24} />
-                <span className="text-sm">{post.comments.length}</span>
+                <span className="text-sm font-black font-headline">{post.comments.length}</span>
               </button>
               <button className="text-zinc-600 dark:text-zinc-400">
                 <Share2 size={24} />
               </button>
-              <button 
-                onClick={() => onWishlistToggle?.(post.id)}
-                className={`transition-all ${post.isWishlisted ? 'text-zinc-900 dark:text-zinc-50 scale-110' : 'text-zinc-400'}`}
-              >
-                <Bookmark size={24} fill={post.isWishlisted ? 'currentColor' : 'none'} />
-              </button>
             </div>
-            {post.estimatedValue && (
-              <div className="bg-zinc-900 dark:bg-zinc-50 text-white dark:text-zinc-900 px-4 py-2 rounded-lg text-center">
-                <p className="text-[10px] font-black uppercase tracking-widest leading-none">Est. Value</p>
-                <p className="font-headline font-black text-lg leading-tight mt-0.5">{post.estimatedValue}</p>
-              </div>
-            )}
-          </div>
-
-          <div className="space-y-4">
-            <h1 className="text-2xl font-black font-headline tracking-tighter uppercase leading-tight break-words">{post.title}</h1>
-            <p className="text-zinc-700 dark:text-zinc-300 leading-relaxed font-medium">
-              {post.caption}
-            </p>
-            <div className="flex flex-wrap gap-2 pt-2">
-              {post.tags?.map(tag => (
-                <span key={tag} className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest bg-zinc-50 dark:bg-zinc-900 px-2 py-1 rounded">#{tag}</span>
-              ))}
-            </div>
+            <button 
+              onClick={() => onWishlistToggle?.(post.id)}
+              className={`p-2 rounded-xl transition-all ${post.isWishlisted ? 'text-zinc-900 dark:text-zinc-50 scale-110' : 'text-zinc-400'}`}
+            >
+              <Bookmark size={24} fill={post.isWishlisted ? 'currentColor' : 'none'} />
+            </button>
           </div>
         </section>
 
         {/* Comments Section */}
-        <section className="px-6 py-10 border-t border-zinc-100 dark:border-zinc-800">
+        <section className="px-6 py-12 bg-zinc-50/50 dark:bg-zinc-900/10 border-t border-zinc-100 dark:border-zinc-800">
           <h3 className="font-headline font-black text-xl mb-8 uppercase tracking-widest">Discussions ({post.comments.length})</h3>
           
           <div className="space-y-8 mb-12">
